@@ -1,0 +1,7 @@
+## Title: RaidSummon
+## Notes: RaidSummon
+## Version: 1.0.0
+## Author: Luise
+## Interface: 11200
+## SavedVariables: RaidSummon
+RaidSummon.xml
