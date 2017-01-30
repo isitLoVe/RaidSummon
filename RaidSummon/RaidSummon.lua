@@ -11,25 +11,32 @@ function RaidSummon_EventFrame_OnLoad()
 	SLASH_RAIDSUMMON1 = "/raidsummon";
 	SLASH_RAIDSUMMON2 = "/rs";
 	
-	local MSG_PREFIX = "RaidSummon"
-	SummonDB = {}
+	MSG_PREFIX_ADD	= "RSAdd"
+	MSG_PREFIX_REMOVE	= "RSRemove"
+	RaidSummonDB = {}
+	
 end
 
 function RaidSummon_EventFrame_OnEvent()
 
 	if event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" then
-
 		if string.find(arg1, "123") then
-		DEFAULT_CHAT_FRAME:AddMessage("sum req ".. arg2)
-			if not RaidSummon_hasValue(SummonDB, arg2) then
-				table.insert(SummonDB, arg2)
-				SendAddonMessage(MSG_PREFIX, arg2, "RAID")
-			end
+			SendAddonMessage(MSG_PREFIX_ADD, arg2, "RAID")
 		end
 	elseif event == "CHAT_MSG_ADDON" then
-		if arg1 == MSG_PREFIX then
-			if not RaidSummon_hasValue(SummonDB, arg2) then
-				table.insert(SummonDB, arg2)
+		if arg1 == MSG_PREFIX_ADD then
+			if not RaidSummon_hasValue(RaidSummonDB, arg2) then
+				table.insert(RaidSummonDB, arg2)
+				RaidSummon_RequestFrameScrollFrame_Update()
+			end
+		elseif arg1 == MSG_PREFIX_REMOVE then
+			if RaidSummon_hasValue(RaidSummonDB, arg2) then
+				for i, v in ipairs (RaidSummonDB) do
+					if v == arg2 then
+						table.remove(RaidSummonDB, i)
+						RaidSummon_RequestFrameScrollFrame_Update()
+					end
+				end
 			end
 		end
 	end
@@ -41,7 +48,7 @@ function RaidSummon_SlashCommand( msg )
 		DEFAULT_CHAT_FRAME:AddMessage("no help available yet")
 	
 	elseif msg == "show" then
-		for i,v in pairs(SummonDB) do
+		for i,v in pairs(RaidSummonDB) do
 			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
 		end
 	else
@@ -49,6 +56,7 @@ function RaidSummon_SlashCommand( msg )
 		if RaidSummon_RequestFrame:IsVisible() then
 			RaidSummon_RequestFrame:Hide()
 		else
+			RaidSummon_RequestFrameScrollFrame_Update()
 			ShowUIPanel(RaidSummon_RequestFrame, 1)
 		end
 	
@@ -67,43 +75,89 @@ end
 
 
 --GUI
-function RaidSummon_NameListButton_OnClick()
+function RaidSummon_NameListButton_OnClick(button)
 
-	local name = getglobal(this:GetName().."RaidSummon_NameListButton"):GetText();
-	getglobal("LootTracker_RaidIDBox"):SetText(raidid_browse)
+	local name = getglobal(this:GetName().."TextName"):GetText();
+
+	if button == "LeftButton" then
 	
-	HideUIPanel(LootTracker_RaidIDFrame, 1)
-	LootTracker_ListScrollFrame_Update()
+		RaidSummon_getRaidMembers()
+		
+		for i, v in ipairs (RaidSummon_UnitIDDB) do
+			if v.rName == name then
+				UnitID = "raid"..v.rIndex
+			end
+		end
+			
+		TargetUnit(UnitID)
+		CastSpellByName("Ritual of Summoning")
+		
+		SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+		SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+
+	elseif button == "RightButton" then
+
+	end
+	for i, v in ipairs (RaidSummonDB) do
+		if v == name then
+			SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+		end
+	end
 	
+		
+			
+	--HideUIPanel(RaidSummon_RequestFrame, 1)
+	RaidSummon_RequestFrameScrollFrame_Update()
 end
 
+function RaidSummon_getRaidMembers()
+    local raidnum = GetNumRaidMembers();
 
-function LootTracker_RaidIDScrollFrame_Update()
+    if ( raidnum > 0 ) then
+	RaidSummon_UnitIDDB = {}; 
 
-	LootTracker_RaidIDBrowseTable = {}
+	for i = 1, raidnum do
+	    local rName = GetRaidRosterInfo(i);
+
+		RaidSummon_UnitIDDB[i] = {};
+		if (not rName) then 
+		    rName = "unknown"..i;
+		end
 		
-	for k in pairs(LootTrackerDB) do
-		table.insert(LootTracker_RaidIDBrowseTable, k)
+		RaidSummon_UnitIDDB[i].rName    = rName;
+		RaidSummon_UnitIDDB[i].rIndex   = i; 
+		
+	    end
+	end
+end
+
+function RaidSummon_RequestFrameScrollFrame_Update()
+
+
+	RaidSummon_NameBrowseTable = {}
+		
+	for k,v in pairs(RaidSummonDB) do
+		table.insert(RaidSummon_NameBrowseTable, v)
 	end
 
-	local maxlines = getn(LootTracker_RaidIDBrowseTable)
+	local maxlines = getn(RaidSummon_NameBrowseTable)
 	local line; -- 1 through 10 of our window to scroll
 	local lineplusoffset; -- an index into our data calculated from the scroll offset
    
 	 -- maxlines is max entries, 1 is number of lines, 16 is pixel height of each line
-	FauxScrollFrame_Update(LootTracker_RaidIDScrollFrame, maxlines, 1, 16)
+	FauxScrollFrame_Update(RaidSummon_RequestFrameScrollFrame, maxlines, 1, 16)
 
 	--sort table
-	table.sort(LootTracker_RaidIDBrowseTable, function(a, b) return a > b end)
-	--table.sort(LootTracker_RaidIDBrowseTable)
+	--table.sort(RaidSummon_NameBrowseTable, function(a, b) return a > b end)
+	--table.sort(RaidSummon_NameBrowseTable)
 
 	for line=1,10 do
-		 lineplusoffset = line + FauxScrollFrame_GetOffset(LootTracker_RaidIDScrollFrame);
+		 lineplusoffset = line + FauxScrollFrame_GetOffset(RaidSummon_RequestFrameScrollFrame);
 		 if lineplusoffset <= maxlines then
-			getglobal("LootTracker_RaidIDList"..line.."TextRaidID"):SetText(LootTracker_RaidIDBrowseTable[lineplusoffset])
-			getglobal("LootTracker_RaidIDList"..line):Show()
+			getglobal("RaidSummon_NameList"..line.."TextName"):SetText(RaidSummon_NameBrowseTable[lineplusoffset])
+			getglobal("RaidSummon_NameList"..line):Show()
 		 else
-			getglobal("LootTracker_RaidIDList"..line):Hide()
+			getglobal("RaidSummon_NameList"..line):Hide()
 		 end
    end
 end
