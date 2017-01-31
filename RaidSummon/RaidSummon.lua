@@ -1,11 +1,29 @@
+local RaidSummonOptions_DefaultSettings = {
+	whisper = true,
+	zone = true
+}
+
+local function RaidSummon_Initialize()
+	if not RaidSummonOptions  then
+		RaidSummonOptions = {};
+	end
+
+	for i in RaidSummonOptions_DefaultSettings do
+		if (not RaidSummonOptions[i]) then
+			RaidSummonOptions[i] = RaidSummonOptions_DefaultSettings[i];
+		end
+	end
+end
+
 function RaidSummon_EventFrame_OnLoad()
 
 	DEFAULT_CHAT_FRAME:AddMessage(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")));
-    this:RegisterEvent("ADDON_LOADED")
+    this:RegisterEvent("VARIABLES_LOADED");
     this:RegisterEvent("CHAT_MSG_ADDON")
     this:RegisterEvent("CHAT_MSG_RAID")
 	this:RegisterEvent("CHAT_MSG_RAID_LEADER")
     this:RegisterEvent("CHAT_MSG_SAY")
+    this:RegisterEvent("CHAT_MSG_YELL")
     
 	SlashCmdList["RAIDSUMMON"] = RaidSummon_SlashCommand;
 	SLASH_RAIDSUMMON1 = "/raidsummon";
@@ -19,7 +37,11 @@ end
 
 function RaidSummon_EventFrame_OnEvent()
 
-	if event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" then
+	if event == "VARIABLES_LOADED" then
+		this:UnregisterEvent("VARIABLES_LOADED");
+		RaidSummon_Initialize();
+
+	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" then
 		if string.find(arg1, "123") then
 			SendAddonMessage(MSG_PREFIX_ADD, arg2, "RAID")
 		end
@@ -27,41 +49,19 @@ function RaidSummon_EventFrame_OnEvent()
 		if arg1 == MSG_PREFIX_ADD then
 			if not RaidSummon_hasValue(RaidSummonDB, arg2) then
 				table.insert(RaidSummonDB, arg2)
-				RaidSummon_RequestFrameScrollFrame_Update()
+				RaidSummon_UpdateList()
 			end
 		elseif arg1 == MSG_PREFIX_REMOVE then
 			if RaidSummon_hasValue(RaidSummonDB, arg2) then
 				for i, v in ipairs (RaidSummonDB) do
 					if v == arg2 then
 						table.remove(RaidSummonDB, i)
-						RaidSummon_RequestFrameScrollFrame_Update()
+						RaidSummon_UpdateList()
 					end
 				end
 			end
 		end
 	end
-end
-
-function RaidSummon_SlashCommand( msg )
-
-	if msg == "help" then
-		DEFAULT_CHAT_FRAME:AddMessage("no help available yet")
-	
-	elseif msg == "show" then
-		for i,v in pairs(RaidSummonDB) do
-			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
-		end
-	else
-	
-		if RaidSummon_RequestFrame:IsVisible() then
-			RaidSummon_RequestFrame:Hide()
-		else
-			RaidSummon_RequestFrameScrollFrame_Update()
-			ShowUIPanel(RaidSummon_RequestFrame, 1)
-		end
-	
-	end
-	
 end
 
 function RaidSummon_hasValue (tab, val)
@@ -88,26 +88,41 @@ function RaidSummon_NameListButton_OnClick(button)
 				UnitID = "raid"..v.rIndex
 			end
 		end
-			
-		TargetUnit(UnitID)
-		CastSpellByName("Ritual of Summoning")
 		
-		SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-		SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
-
+		if UnitID then
+			TargetUnit(UnitID)
+			CastSpellByName("Ritual of Summoning")
+			
+			
+			if RaidSummonOptions.zone and RaidSummonOptions.whisper then
+				SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+				SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper  then
+				SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+			elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
+				SendChatMessage("RS - Summoning ".. name, "RAID")
+				SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
+			elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+				SendChatMessage("RS - Summoning ".. name, "RAID")
+			end
+			for i, v in ipairs (RaidSummonDB) do
+				if v == name then
+					SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+				end
+			end
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player " .. tostring(name) .. " not found in raid. UnitID: " .. tostring(UnitID))
+		end
+		
 	elseif button == "RightButton" then
-
-	end
-	for i, v in ipairs (RaidSummonDB) do
-		if v == name then
-			SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+		for i, v in ipairs (RaidSummonDB) do
+			if v == name then
+				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+			end
 		end
 	end
-	
-		
 			
-	--HideUIPanel(RaidSummon_RequestFrame, 1)
-	RaidSummon_RequestFrameScrollFrame_Update()
+	RaidSummon_UpdateList()
 end
 
 function RaidSummon_getRaidMembers()
@@ -131,34 +146,65 @@ function RaidSummon_getRaidMembers()
 	end
 end
 
-function RaidSummon_RequestFrameScrollFrame_Update()
-
-
-	RaidSummon_NameBrowseTable = {}
-		
-	for k,v in pairs(RaidSummonDB) do
-		table.insert(RaidSummon_NameBrowseTable, v)
+function RaidSummon_UpdateList()
+	for i=1,10 do
+		if RaidSummonDB[i] then
+			getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummonDB[i])
+			getglobal("RaidSummon_NameList"..i):Show()
+		else
+			getglobal("RaidSummon_NameList"..i):Hide()
+		end
 	end
-
-	local maxlines = getn(RaidSummon_NameBrowseTable)
-	local line; -- 1 through 10 of our window to scroll
-	local lineplusoffset; -- an index into our data calculated from the scroll offset
-   
-	 -- maxlines is max entries, 1 is number of lines, 16 is pixel height of each line
-	FauxScrollFrame_Update(RaidSummon_RequestFrameScrollFrame, maxlines, 1, 16)
-
-	--sort table
-	--table.sort(RaidSummon_NameBrowseTable, function(a, b) return a > b end)
-	--table.sort(RaidSummon_NameBrowseTable)
-
-	for line=1,10 do
-		 lineplusoffset = line + FauxScrollFrame_GetOffset(RaidSummon_RequestFrameScrollFrame);
-		 if lineplusoffset <= maxlines then
-			getglobal("RaidSummon_NameList"..line.."TextName"):SetText(RaidSummon_NameBrowseTable[lineplusoffset])
-			getglobal("RaidSummon_NameList"..line):Show()
-		 else
-			getglobal("RaidSummon_NameList"..line):Hide()
-		 end
-   end
+	
+	if not RaidSummonDB[1] then
+		if RaidSummon_RequestFrame:IsVisible() then
+			RaidSummon_RequestFrame:Hide()
+		end
+	else
+		ShowUIPanel(RaidSummon_RequestFrame, 1)
+	end
 end
 
+--Slash Handler
+function RaidSummon_SlashCommand( msg )
+
+	if msg == "help" then
+		DEFAULT_CHAT_FRAME:AddMessage("RaidSummon usage:")
+		DEFAULT_CHAT_FRAME:AddMessage("/rs or /raidsummon { help | show | zone | whisper }")
+		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9help|r: prints out this help")
+		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9show|r: shows the current summon list")
+		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9zone|r: toggles zoneinfo in /ra and /w")
+		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9whisper|r: toggles the usage of /w")
+		DEFAULT_CHAT_FRAME:AddMessage("To drag the frame use shift + left mouse button")
+	elseif msg == "show" then
+		for i, v in ipairs(RaidSummonDB) do
+			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
+		end
+	elseif msg == "zone" then
+		if RaidSummonOptions["zone"] == true then
+			RaidSummonOptions["zone"] = false
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - zoneinfo: |cffff0000disabled|r")
+		elseif RaidSummonOptions["zone"] == false then
+			RaidSummonOptions["zone"] = true
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - zoneinfo: |cff00ff00enabled|r")
+		end
+	elseif msg == "whisper" then
+		if RaidSummonOptions["whisper"] == true then
+			RaidSummonOptions["whisper"] = false
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - whisper: |cffff0000disabled|r")
+		elseif RaidSummonOptions["whisper"] == false then
+			RaidSummonOptions["whisper"] = true
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - whisper: |cff00ff00enabled|r")
+		end
+	else
+	
+		if RaidSummon_RequestFrame:IsVisible() then
+			RaidSummon_RequestFrame:Hide()
+		else
+			RaidSummon_UpdateList()
+			ShowUIPanel(RaidSummon_RequestFrame, 1)
+		end
+	
+	end
+	
+end

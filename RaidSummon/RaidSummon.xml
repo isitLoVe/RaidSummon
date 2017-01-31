@@ -13,12 +13,12 @@
 	
 	<Button name="RaidSummon_NameListButton" virtual="true">
 		<Size>
-			<AbsDimension x="200" y="16"/>
+			<AbsDimension x="75" y="16"/>
 		</Size>
 		<Scripts>
 			<OnLoad>
 				this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-				this:SetBackdropColor(0.8, 0.8, 0.8, 0.2);
+				this:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
 			<OnClick>
 				RaidSummon_NameListButton_OnClick(arg1);
@@ -30,7 +30,7 @@
 		</Scripts>
 		<NormalText name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT">
 			<Size>
-				<AbsDimension x="160" y="10"/>
+				<AbsDimension x="75" y="10"/>
 			</Size>
 			<Anchors>
 				<Anchor point="LEFT">
@@ -42,12 +42,12 @@
 		</NormalText>
 		<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD">
 			<Size>
-				<AbsDimension x="170" y="16"/>
+				<AbsDimension x="75" y="16"/>
 			</Size>
 			<Anchors>
 				<Anchor point="TOP">
 					<Offset>
-						<AbsDimension x="2" y="0"/>
+						<AbsDimension x="5" y="0"/>
 					</Offset>
 				</Anchor>
 			</Anchors>
@@ -74,7 +74,7 @@
 
 	<Frame name="RaidSummon_RequestFrame" frameStrata="DIALOG" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true" clampedToScreen="true">
 		<Size>
-			<AbsDimension x="220" y="200"/>
+			<AbsDimension x="100" y="180"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
@@ -96,43 +96,6 @@
 			</EdgeSize>
 		</Backdrop>
 		<Frames>
-			<Button inherits="UIPanelCloseButton" name="$parent_CloseButton">
-				<Anchors>
-					<Anchor point="TOPRIGHT">
-						<Offset>
-							<AbsDimension x="0" y="0"></AbsDimension>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnClick>RaidSummon_RequestFrame:Hide();</OnClick>
-				</Scripts>
-			</Button>
-			<ScrollFrame name="RaidSummon_RequestFrameScrollFrame" inherits="FauxScrollFrameTemplate">
-				<Size>
-					<AbsDimension x="20" y="158"/>
-				</Size>
-			<Anchors>
-				<Anchor point="TOPLEFT">
-					<Offset>
-						<AbsDimension x="0" y="-30"/>
-					</Offset>
-				</Anchor>
-				<Anchor point="BOTTOMRIGHT">
-					<Offset>
-						<AbsDimension x="-33" y="10"/>
-					</Offset>
-				</Anchor>
-			</Anchors>
-			<Scripts>
-				 <OnVerticalScroll>
-					   FauxScrollFrame_OnVerticalScroll(16, RaidSummon_RequestFrameScrollFrame_Update); 
-				 </OnVerticalScroll>
-				 <OnShow>
-					   RaidSummon_RequestFrameScrollFrame_Update()
-				 </OnShow>
-			</Scripts>
-		   </ScrollFrame>
 			<Button name="RaidSummon_NameList1" inherits="RaidSummon_NameListButton" id="1" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
@@ -142,7 +105,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-30"/>
+							<AbsDimension x="10" y="-8"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -275,18 +238,17 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnMouseDown>
-				if ( not this.isMoving ) then
-				this:StartMoving();
-				this.isMoving = true;
-				end
-			</OnMouseDown>
-			<OnMouseUp>
-				if ( this.isMoving) then
-				this:StopMovingOrSizing();
-				this.isMoving = false;
-				end
-			</OnMouseUp>
+			<OnLoad>
+				this:RegisterForDrag("LeftButton")
+			</OnLoad>
+			<OnDragStart>
+					if IsShiftKeyDown() then
+						this:StartMoving();
+					end
+			</OnDragStart>
+			<OnDragStop>
+					this:StopMovingOrSizing();
+			</OnDragStop>
 		</Scripts>
 	</Frame>
 </Ui>
