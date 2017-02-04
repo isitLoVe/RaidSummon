@@ -118,6 +118,8 @@ function RaidSummon_NameListButton_OnClick(button)
 		for i, v in ipairs (RaidSummonDB) do
 			if v == name then
 				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+				table.remove(RaidSummonDB, i)
+				RaidSummon_UpdateList()
 			end
 		end
 	end
