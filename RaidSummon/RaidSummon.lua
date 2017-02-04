@@ -29,8 +29,8 @@ function RaidSummon_EventFrame_OnLoad()
 	SLASH_RAIDSUMMON1 = "/raidsummon";
 	SLASH_RAIDSUMMON2 = "/rs";
 	
-	MSG_PREFIX_ADD	= "RSAdd"
-	MSG_PREFIX_REMOVE	= "RSRemove"
+	MSG_PREFIX_ADD	= "RSAdd" .. GetAddOnMetadata("RaidSummon", "Version")
+	MSG_PREFIX_REMOVE	= "RSRemove" .. GetAddOnMetadata("RaidSummon", "Version")
 	RaidSummonDB = {}
 	
 end
@@ -42,7 +42,8 @@ function RaidSummon_EventFrame_OnEvent()
 		RaidSummon_Initialize();
 
 	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" then
-		if string.find(arg1, "123") then
+		
+		if string.find(arg1, "^123") then
 			SendAddonMessage(MSG_PREFIX_ADD, arg2, "RAID")
 		end
 	elseif event == "CHAT_MSG_ADDON" then
@@ -94,11 +95,24 @@ function RaidSummon_NameListButton_OnClick(button)
 			CastSpellByName("Ritual of Summoning")
 			
 			
+			
+			
+			
 			if RaidSummonOptions.zone and RaidSummonOptions.whisper then
-				SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-				SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+			
+				if GetSubZoneText() ~= "" then
+					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+					SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
+				else
+					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. c, "RAID")
+					SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+				end
 			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper  then
-				SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+				if GetSubZoneText() ~= "" then
+					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+				else
+					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+				end
 			elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
 				SendChatMessage("RS - Summoning ".. name, "RAID")
 				SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
