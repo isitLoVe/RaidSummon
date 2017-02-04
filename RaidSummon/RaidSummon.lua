@@ -100,15 +100,15 @@ function RaidSummon_NameListButton_OnClick(button)
 			
 			if RaidSummonOptions.zone and RaidSummonOptions.whisper then
 			
-				if GetSubZoneText() ~= "" then
+				if GetSubZoneText() == "" then
 					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
 					SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
 				else
 					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
 					SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
 				end
-			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper  then
-				if GetSubZoneText() ~= "" then
+			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+				if GetSubZoneText() == "" then
 					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
 				else
 					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
