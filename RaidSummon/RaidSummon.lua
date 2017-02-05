@@ -163,22 +163,24 @@ function RaidSummon_getRaidMembers()
 end
 
 function RaidSummon_UpdateList()
-	for i=1,10 do
-		if RaidSummonDB[i] then
-			getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummonDB[i])
-			getglobal("RaidSummon_NameList"..i):Show()
+	 if (UnitClass("player") == "Warlock") then
+		for i=1,10 do
+			if RaidSummonDB[i] then
+				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummonDB[i])
+				getglobal("RaidSummon_NameList"..i):Show()
+			else
+				getglobal("RaidSummon_NameList"..i):Hide()
+			end
+		end
+		
+		if not RaidSummonDB[1] then
+			if RaidSummon_RequestFrame:IsVisible() then
+				RaidSummon_RequestFrame:Hide()
+			end
 		else
-			getglobal("RaidSummon_NameList"..i):Hide()
+			ShowUIPanel(RaidSummon_RequestFrame, 1)
 		end
-	end
-	
-	if not RaidSummonDB[1] then
-		if RaidSummon_RequestFrame:IsVisible() then
-			RaidSummon_RequestFrame:Hide()
-		end
-	else
-		ShowUIPanel(RaidSummon_RequestFrame, 1)
-	end
+	end	
 end
 
 --Slash Handler
