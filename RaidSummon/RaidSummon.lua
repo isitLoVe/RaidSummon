@@ -89,40 +89,43 @@ function RaidSummon_NameListButton_OnClick(button)
 				UnitID = "raid"..v.rIndex
 			end
 		end
-		
+	
 		if UnitID then
-			TargetUnit(UnitID)
-			CastSpellByName("Ritual of Summoning")
-			
-			
-			
-			
-			
-			if RaidSummonOptions.zone and RaidSummonOptions.whisper then
-			
-				if GetSubZoneText() == "" then
-					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-					SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
-				else
-					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-					SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+			playercombat = UnitAffectingCombat("player")
+			targetcombat = UnitAffectingCombat(UnitID)
+		
+			if not playercombat and not targetcombat then
+				TargetUnit(UnitID)
+				CastSpellByName("Ritual of Summoning")
+				
+				if RaidSummonOptions.zone and RaidSummonOptions.whisper then
+				
+					if GetSubZoneText() == "" then
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+						SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
+					else
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+						SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+					end
+				elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+					if GetSubZoneText() == "" then
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+					else
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+					end
+				elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
+					SendChatMessage("RS - Summoning ".. name, "RAID")
+					SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
+				elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+					SendChatMessage("RS - Summoning ".. name, "RAID")
 				end
-			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-				if GetSubZoneText() == "" then
-					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-				else
-					SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+				for i, v in ipairs (RaidSummonDB) do
+					if v == name then
+						SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+					end
 				end
-			elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
-				SendChatMessage("RS - Summoning ".. name, "RAID")
-				SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
-			elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-				SendChatMessage("RS - Summoning ".. name, "RAID")
-			end
-			for i, v in ipairs (RaidSummonDB) do
-				if v == name then
-					SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-				end
+			else
+				DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player is in combat")
 			end
 		else
 			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player " .. tostring(name) .. " not found in raid. UnitID: " .. tostring(UnitID))
