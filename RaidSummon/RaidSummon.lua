@@ -49,6 +49,10 @@ function RaidSummon_EventFrame_OnEvent()
 	elseif event == "CHAT_MSG_ADDON" then
 		if arg1 == MSG_PREFIX_ADD then
 			if not RaidSummon_hasValue(RaidSummonDB, arg2) then
+				
+				
+				
+				
 				table.insert(RaidSummonDB, arg2)
 				RaidSummon_UpdateList()
 			end
@@ -80,7 +84,21 @@ function RaidSummon_NameListButton_OnClick(button)
 
 	local name = getglobal(this:GetName().."TextName"):GetText();
 
-	if button == "LeftButton" then
+	if button  == "LeftButton" and IsControlKeyDown() then
+	
+		RaidSummon_getRaidMembers()
+		
+		for i, v in ipairs (RaidSummon_UnitIDDB) do
+			if v.rName == name then
+				UnitID = "raid"..v.rIndex
+			end
+		end
+	
+		if UnitID then
+			TargetUnit(UnitID)
+		end
+		
+	elseif button == "LeftButton" and not IsControlKeyDown() then
 	
 		RaidSummon_getRaidMembers()
 		
@@ -145,21 +163,22 @@ function RaidSummon_NameListButton_OnClick(button)
 end
 
 function RaidSummon_getRaidMembers()
-    local raidnum = GetNumRaidMembers();
+    local raidnum = GetNumRaidMembers()
 
     if ( raidnum > 0 ) then
-	RaidSummon_UnitIDDB = {}; 
+	RaidSummon_UnitIDDB = {};
 
 	for i = 1, raidnum do
-	    local rName = GetRaidRosterInfo(i);
+	    local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
 
-		RaidSummon_UnitIDDB[i] = {};
+		RaidSummon_UnitIDDB[i] = {}
 		if (not rName) then 
-		    rName = "unknown"..i;
+		    rName = "unknown"..i
 		end
 		
-		RaidSummon_UnitIDDB[i].rName    = rName;
-		RaidSummon_UnitIDDB[i].rIndex   = i; 
+		RaidSummon_UnitIDDB[i].rName    = rName
+		RaidSummon_UnitIDDB[i].rClass    = rClass
+		RaidSummon_UnitIDDB[i].rIndex   = i
 		
 	    end
 	end
@@ -167,6 +186,7 @@ end
 
 function RaidSummon_UpdateList()
 	 if (UnitClass("player") == "Warlock") then
+	 
 		for i=1,10 do
 			if RaidSummonDB[i] then
 				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummonDB[i])
