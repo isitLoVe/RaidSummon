@@ -2,7 +2,6 @@
 
 ## How it works:
 You are in a RAID group
-
 Someone types 123 in /ra or /s or /y
 
 Playername gets added to the small RaidSummon frame and is synced accros all RaidSummon users
