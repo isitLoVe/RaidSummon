@@ -25,14 +25,16 @@ function RaidSummon_EventFrame_OnLoad()
     this:RegisterEvent("CHAT_MSG_SAY")
     this:RegisterEvent("CHAT_MSG_YELL")
     
-	SlashCmdList["RAIDSUMMON"] = RaidSummon_SlashCommand;
-	SLASH_RAIDSUMMON1 = "/raidsummon";
-	SLASH_RAIDSUMMON2 = "/rs";
+	SlashCmdList["RAIDSUMMON"] = RaidSummon_SlashCommand
+	SLASH_RAIDSUMMON1 = "/raidsummon"
+	SLASH_RAIDSUMMON2 = "/rs"
 	
-	MSG_PREFIX_ADD	= "RSAdd" .. GetAddOnMetadata("RaidSummon", "Version")
-	MSG_PREFIX_REMOVE	= "RSRemove" .. GetAddOnMetadata("RaidSummon", "Version")
+	--increase this to disable sync from older versions
+	MSG_PREFIX_SYNC_VERSION = "1.0.2"
+	
+	MSG_PREFIX_ADD	= "RSAdd" .. MSG_PREFIX_SYNC_VERSION
+	MSG_PREFIX_REMOVE	= "RSRemove" .. MSG_PREFIX_SYNC_VERSION
 	RaidSummonDB = {}
-	
 end
 
 function RaidSummon_EventFrame_OnEvent()
@@ -49,10 +51,6 @@ function RaidSummon_EventFrame_OnEvent()
 	elseif event == "CHAT_MSG_ADDON" then
 		if arg1 == MSG_PREFIX_ADD then
 			if not RaidSummon_hasValue(RaidSummonDB, arg2) then
-				
-				
-				
-				
 				table.insert(RaidSummonDB, arg2)
 				RaidSummon_UpdateList()
 			end
@@ -185,11 +183,75 @@ function RaidSummon_getRaidMembers()
 end
 
 function RaidSummon_UpdateList()
+	RaidSummon_BrowseDB = {}
+
+	--only Update and show if Player is Warlock
 	 if (UnitClass("player") == "Warlock") then
 	 
+		--get Raid data
+		local raidnum = GetNumRaidMembers()
+		if ( raidnum > 0 ) then
+			for raidmember = 1, raidnum do
+				local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(raidmember)
+				
+				--check Raid data for RaidSummon data
+				for i, v in ipairs (RaidSummonDB) do 
+				
+					--if player is found fill BrowseDB
+					if v == rName then
+						RaidSummon_BrowseDB[i] = {}
+						RaidSummon_BrowseDB[i].rName = rName
+						RaidSummon_BrowseDB[i].rClass = rClass
+						RaidSummon_BrowseDB[i].rIndex = i
+						
+						if rClass == "Warlock" then
+							RaidSummon_BrowseDB[i].rVIP = true
+						else
+							RaidSummon_BrowseDB[i].rVIP = false
+						end
+					end
+				end
+			end
+
+			--sort warlocks first
+			table.sort(RaidSummon_BrowseDB, function(a,b) return tostring(a.rVIP) > tostring(b.rVIP) end)
+
+		end
+		
 		for i=1,10 do
-			if RaidSummonDB[i] then
-				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummonDB[i])
+			if RaidSummon_BrowseDB[i] then
+				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummon_BrowseDB[i].rName)
+				
+				--set class color
+				if RaidSummon_BrowseDB[i].rClass == "Druid" then
+					local c = RaidSummon_GetClassColour("DRUID")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Hunter" then
+					local c = RaidSummon_GetClassColour("HUNTER")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Mage" then
+					local c = RaidSummon_GetClassColour("MAGE")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Paladin" then
+					local c = RaidSummon_GetClassColour("PALADIN")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Priest" then
+					local c = RaidSummon_GetClassColour("PRIEST")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Rogue" then
+					local c = RaidSummon_GetClassColour("ROGUE")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Shaman" then
+					local c = RaidSummon_GetClassColour("SHAMAN")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Warlock" then
+					local c = RaidSummon_GetClassColour("WARLOCK")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				elseif RaidSummon_BrowseDB[i].rClass == "Warrior" then
+					local c = RaidSummon_GetClassColour("WARRIOR")
+					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+				end				
+				
 				getglobal("RaidSummon_NameList"..i):Show()
 			else
 				getglobal("RaidSummon_NameList"..i):Hide()
@@ -248,4 +310,15 @@ function RaidSummon_SlashCommand( msg )
 	
 	end
 	
+end
+
+--class color
+function RaidSummon_GetClassColour(class)
+	if (class) then
+		local color = RAID_CLASS_COLORS[class]
+		if (color) then
+			return color
+		end
+	end
+	return {r = 0.5, g = 0.5, b = 1}
 end
