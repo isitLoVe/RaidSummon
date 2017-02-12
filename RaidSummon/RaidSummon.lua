@@ -29,11 +29,8 @@ function RaidSummon_EventFrame_OnLoad()
 	SLASH_RAIDSUMMON1 = "/raidsummon"
 	SLASH_RAIDSUMMON2 = "/rs"
 	
-	--increase this to disable sync from older versions
-	MSG_PREFIX_SYNC_VERSION = "1.0.2"
-	
-	MSG_PREFIX_ADD	= "RSAdd" .. MSG_PREFIX_SYNC_VERSION
-	MSG_PREFIX_REMOVE	= "RSRemove" .. MSG_PREFIX_SYNC_VERSION
+	MSG_PREFIX_ADD	= "RSAdd"
+	MSG_PREFIX_REMOVE	= "RSRemove"
 	RaidSummonDB = {}
 end
 
@@ -160,35 +157,13 @@ function RaidSummon_NameListButton_OnClick(button)
 	RaidSummon_UpdateList()
 end
 
-function RaidSummon_getRaidMembers()
-    local raidnum = GetNumRaidMembers()
-
-    if ( raidnum > 0 ) then
-	RaidSummon_UnitIDDB = {};
-
-	for i = 1, raidnum do
-	    local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
-
-		RaidSummon_UnitIDDB[i] = {}
-		if (not rName) then 
-		    rName = "unknown"..i
-		end
-		
-		RaidSummon_UnitIDDB[i].rName    = rName
-		RaidSummon_UnitIDDB[i].rClass    = rClass
-		RaidSummon_UnitIDDB[i].rIndex   = i
-		
-	    end
-	end
-end
-
 function RaidSummon_UpdateList()
 	RaidSummon_BrowseDB = {}
 
 	--only Update and show if Player is Warlock
 	 if (UnitClass("player") == "Warlock") then
 	 
-		--get Raid data
+		--get raid member data
 		local raidnum = GetNumRaidMembers()
 		if ( raidnum > 0 ) then
 			for raidmember = 1, raidnum do
@@ -321,4 +296,27 @@ function RaidSummon_GetClassColour(class)
 		end
 	end
 	return {r = 0.5, g = 0.5, b = 1}
+end
+
+--raid member
+function RaidSummon_getRaidMembers()
+    local raidnum = GetNumRaidMembers()
+
+    if ( raidnum > 0 ) then
+	RaidSummon_UnitIDDB = {};
+
+	for i = 1, raidnum do
+	    local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+
+		RaidSummon_UnitIDDB[i] = {}
+		if (not rName) then 
+		    rName = "unknown"..i
+		end
+		
+		RaidSummon_UnitIDDB[i].rName    = rName
+		RaidSummon_UnitIDDB[i].rClass    = rClass
+		RaidSummon_UnitIDDB[i].rIndex   = i
+		
+	    end
+	end
 end
