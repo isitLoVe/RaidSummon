@@ -18,7 +18,7 @@ Options:
 /rs whispers (enabled/disables whispering the target)  
 
 
-## 1.0.3 Updates:
+## 1.1.0 Updates:
 Class Colors are now used in the List  
 Warlocks are always on top of the list  
 Checks if player and target are in combat
