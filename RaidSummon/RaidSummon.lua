@@ -32,13 +32,16 @@ function RaidSummon_EventFrame_OnLoad()
 	MSG_PREFIX_ADD	= "RSAdd"
 	MSG_PREFIX_REMOVE	= "RSRemove"
 	RaidSummonDB = {}
+	
+	--localization
+	RaidSummonLoc_Header = "RaidSummon v" .. GetAddOnMetadata("RaidSummon", "Version")
 end
 
 function RaidSummon_EventFrame_OnEvent()
 
 	if event == "VARIABLES_LOADED" then
-		this:UnregisterEvent("VARIABLES_LOADED");
-		RaidSummon_Initialize();
+		this:UnregisterEvent("VARIABLES_LOADED")
+		RaidSummon_Initialize()
 
 	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" then
 		
