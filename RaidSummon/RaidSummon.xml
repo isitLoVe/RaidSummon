@@ -1,4 +1,4 @@
-<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 <script file="RaidSummon.lua"/>
 	<Frame name="RaidSummon_EventFrame" parent="UIParent" hidden="true">
 		<Scripts>
@@ -6,7 +6,7 @@
 				RaidSummon_EventFrame_OnLoad();
 			</OnLoad>
 			<OnEvent>
-				RaidSummon_EventFrame_OnEvent();
+				RaidSummon_EventFrame_OnEvent(self,event,...);
 			</OnEvent>
 		</Scripts>
 	</Frame>
@@ -17,8 +17,8 @@
 		</Size>
 		<Scripts>
 			<OnLoad>
-				this:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-				this:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
+				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
+				self:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
 			<OnClick>
 				RaidSummon_NameListButton_OnClick(arg1);
@@ -257,15 +257,15 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				this:RegisterForDrag("LeftButton")
+				self:RegisterForDrag("LeftButton")
 			</OnLoad>
 			<OnDragStart>
 					if IsShiftKeyDown() then
-						this:StartMoving();
+						self:StartMoving();
 					end
 			</OnDragStart>
 			<OnDragStop>
-					this:StopMovingOrSizing();
+					self:StopMovingOrSizing();
 			</OnDragStop>
 		</Scripts>
 	</Frame>

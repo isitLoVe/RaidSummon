@@ -1,7 +1,8 @@
 ## Title: RaidSummon
-## Notes: A small helper for Warlock Summons
-## Version: 1.1.1
-## Author: |cff02bf02Luise|r
-## Interface: 11200
+## Notes: A small helper for Warlock summoning
+## Version: 3.0.0
+## Author: |cff02bf02Tyche|r
+## Interface: 11302
 ## SavedVariables: RaidSummonOptions
 RaidSummon.xml
+RaidSummon.lua

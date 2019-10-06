@@ -1,29 +1,31 @@
-local RaidSummonOptions_DefaultSettings = {
-	whisper = true,
-	zone = true
-}
+function RaidSummon_Initialize()
 
-local function RaidSummon_Initialize()
-	if not RaidSummonOptions  then
-		RaidSummonOptions = {};
+	local RaidSummonOptions_DefaultSettings = {
+		whisper = true,
+		zone = true
+	}
+
+	if not RaidSummonOptions then
+		RaidSummonOptions = {}
 	end
 
-	for i in RaidSummonOptions_DefaultSettings do
-		if (not RaidSummonOptions[i]) then
-			RaidSummonOptions[i] = RaidSummonOptions_DefaultSettings[i];
+	for k, v in pairs (RaidSummonOptions_DefaultSettings) do
+		if (RaidSummonOptions[k] == nil) then
+			RaidSummonOptions[k] = v
 		end
 	end
 end
 
 function RaidSummon_EventFrame_OnLoad()
 
-	DEFAULT_CHAT_FRAME:AddMessage(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")));
-    this:RegisterEvent("VARIABLES_LOADED");
-    this:RegisterEvent("CHAT_MSG_ADDON")
-    this:RegisterEvent("CHAT_MSG_RAID")
-	this:RegisterEvent("CHAT_MSG_RAID_LEADER")
-    this:RegisterEvent("CHAT_MSG_SAY")
-    this:RegisterEvent("CHAT_MSG_YELL")
+	DEFAULT_CHAT_FRAME:AddMessage(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
+    RaidSummon_EventFrame:RegisterEvent("ADDON_LOADED")
+    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_ADDON")
+    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID")
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID_LEADER")
+    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_SAY")
+    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_YELL")
+    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_WHISPER")
     
 	SlashCmdList["RAIDSUMMON"] = RaidSummon_SlashCommand
 	SLASH_RAIDSUMMON1 = "/raidsummon"
@@ -37,27 +39,28 @@ function RaidSummon_EventFrame_OnLoad()
 	RaidSummonLoc_Header = "RaidSummon v" .. GetAddOnMetadata("RaidSummon", "Version")
 end
 
-function RaidSummon_EventFrame_OnEvent()
-
-	if event == "VARIABLES_LOADED" then
-		this:UnregisterEvent("VARIABLES_LOADED")
+function RaidSummon_EventFrame_OnEvent(self,event,...)
+	if event == "ADDON_LOADED" then
 		RaidSummon_Initialize()
-
-	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" then
-		
-		if string.find(arg1, "^123") then
-			SendAddonMessage(MSG_PREFIX_ADD, arg2, "RAID")
+		RaidSummon_EventFrame:UnregisterEvent("ADDON_LOADED")
+	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
+		local msg, author = ...
+		if string.find(msg, "^123") or string.find(msg, "^summon") or string.find(msg, "^sum") or string.find(msg, "^port") then
+			C_ChatInfo.SendAddonMessage(MSG_PREFIX_ADD, author, "RAID")
 		end
 	elseif event == "CHAT_MSG_ADDON" then
-		if arg1 == MSG_PREFIX_ADD then
-			if not RaidSummon_hasValue(RaidSummonDB, arg2) then
-				table.insert(RaidSummonDB, arg2)
+		local prefix, text, channel, sender = ...
+		if prefix == MSG_PREFIX_ADD then
+			print("RS "..prefix..text..sender)
+			if not RaidSummon_hasValue(RaidSummonDB, text) then
+				print("RS add to table")
+				table.insert(RaidSummonDB, text)
 				RaidSummon_UpdateList()
 			end
-		elseif arg1 == MSG_PREFIX_REMOVE then
-			if RaidSummon_hasValue(RaidSummonDB, arg2) then
+		elseif prefix == MSG_PREFIX_REMOVE then
+			if RaidSummon_hasValue(RaidSummonDB, text) then
 				for i, v in ipairs (RaidSummonDB) do
-					if v == arg2 then
+					if v == text then
 						table.remove(RaidSummonDB, i)
 						RaidSummon_UpdateList()
 					end
@@ -67,20 +70,10 @@ function RaidSummon_EventFrame_OnEvent()
 	end
 end
 
-function RaidSummon_hasValue (tab, val)
-    for i, v in ipairs (tab) do
-        if v == val then
-            return true
-        end
-    end
-    return false
-end
-
-
 --GUI
 function RaidSummon_NameListButton_OnClick(button)
 
-	local name = getglobal(this:GetName().."TextName"):GetText();
+	local name = getglobal(RaidSummon_NameListButton:GetName().."TextName"):GetText()
 
 	if button  == "LeftButton" and IsControlKeyDown() then
 	
@@ -99,7 +92,7 @@ function RaidSummon_NameListButton_OnClick(button)
 			end
 			
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no Raid found")
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no raid found")
 		end
 		
 	elseif button == "LeftButton" and not IsControlKeyDown() then
@@ -145,7 +138,7 @@ function RaidSummon_NameListButton_OnClick(button)
 					end
 					for i, v in ipairs (RaidSummonDB) do
 						if v == name then
-							SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+							C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
 						end
 					end
 				else
@@ -153,16 +146,16 @@ function RaidSummon_NameListButton_OnClick(button)
 				end
 			else
 				DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player " .. tostring(name) .. " not found in raid. UnitID: " .. tostring(UnitID))
-				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
 				RaidSummon_UpdateList()
 			end
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no Raid found")
+			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no raid found")
 		end
 	elseif button == "RightButton" then
 		for i, v in ipairs (RaidSummonDB) do
 			if v == name then
-				SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
+				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
 				table.remove(RaidSummonDB, i)
 				RaidSummon_UpdateList()
 			end
@@ -173,26 +166,29 @@ function RaidSummon_NameListButton_OnClick(button)
 end
 
 function RaidSummon_UpdateList()
-	RaidSummon_BrowseDB = {}
+	local RaidSummon_BrowseDB = {}
 
 	--only Update and show if Player is Warlock
 	 if (UnitClass("player") == "Warlock") then
-	 
-		--get raid member data
-		local raidnum = GetNumRaidMembers()
-		if ( raidnum > 0 ) then
+
+	 --classic fix
+		if IsInGroup() then 
+			--get raid member data
+			local raidnum = GetNumGroupMembers()
+
 			for raidmember = 1, raidnum do
 				local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(raidmember)
-				
+
 				--check raid data for RaidSummon data
 				for i, v in ipairs (RaidSummonDB) do 
 				
 					--if player is found fill BrowseDB
 					if v == rName then
+						print(v)
 						RaidSummon_BrowseDB[i] = {}
 						RaidSummon_BrowseDB[i].rName = rName
 						RaidSummon_BrowseDB[i].rClass = rClass
-						RaidSummon_BrowseDB[i].rIndex = i
+						RaidSummon_BrowseDB[i].rIndex = i --needed?
 						
 						if rClass == "Warlock" then
 							RaidSummon_BrowseDB[i].rVIP = true
@@ -210,6 +206,7 @@ function RaidSummon_UpdateList()
 		
 		for i=1,10 do
 			if RaidSummon_BrowseDB[i] then
+				print(tostring(RaidSummon_BrowseDB[i].rName))
 				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummon_BrowseDB[i].rName)
 				
 				--set class color
@@ -270,6 +267,10 @@ function RaidSummon_SlashCommand( msg )
 		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9whisper|r: toggles the usage of /w")
 		DEFAULT_CHAT_FRAME:AddMessage("To drag the frame use shift + left mouse button")
 	elseif msg == "show" then
+		--show msg if list is empty
+		if next(RaidSummonDB) == nil then
+			DEFAULT_CHAT_FRAME:AddMessage("|cffff0000RaidSummon list is empty|r")
+		end		
 		for i, v in ipairs(RaidSummonDB) do
 			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
 		end
@@ -315,23 +316,37 @@ end
 
 --raid member
 function RaidSummon_getRaidMembers()
-    local raidnum = GetNumRaidMembers()
 
-    if ( raidnum > 0 ) then
-	RaidSummon_UnitIDDB = {};
+	--classic fix
+	if IsInGroup() then 
 
-	for i = 1, raidnum do
-	    local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+		local raidnum = GetNumGroupMembers()
 
-		RaidSummon_UnitIDDB[i] = {}
-		if (not rName) then 
-		    rName = "unknown"..i
+		if (raidnum > 0) then
+		RaidSummon_UnitIDDB = {}
+
+		for i = 1, raidnum do
+			local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+
+			RaidSummon_UnitIDDB[i] = {}
+			if (not rName) then 
+				rName = "unknown"..i
+			end
+			
+			RaidSummon_UnitIDDB[i].rName    = rName
+			RaidSummon_UnitIDDB[i].rClass    = rClass
+			RaidSummon_UnitIDDB[i].rIndex   = i
+			
+			end
 		end
-		
-		RaidSummon_UnitIDDB[i].rName    = rName
-		RaidSummon_UnitIDDB[i].rClass    = rClass
-		RaidSummon_UnitIDDB[i].rIndex   = i
-		
-	    end
 	end
+end
+
+function RaidSummon_hasValue (tab, val)
+    for i, v in ipairs (tab) do
+        if v == val then
+            return true
+        end
+    end
+    return false
 end
