@@ -19,14 +19,14 @@ end
 function RaidSummon_EventFrame_OnLoad()
 
 	DEFAULT_CHAT_FRAME:AddMessage(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
-    RaidSummon_EventFrame:RegisterEvent("ADDON_LOADED")
-    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_ADDON")
-    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID")
+	RaidSummon_EventFrame:RegisterEvent("ADDON_LOADED")
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_ADDON")
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID")
 	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID_LEADER")
-    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_SAY")
-    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_YELL")
-    RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_WHISPER")
-    
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_SAY")
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_YELL")
+	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_WHISPER")
+
 	SlashCmdList["RAIDSUMMON"] = RaidSummon_SlashCommand
 	SLASH_RAIDSUMMON1 = "/raidsummon"
 	SLASH_RAIDSUMMON2 = "/rs"
@@ -43,7 +43,8 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 	if event == "ADDON_LOADED" then
 		RaidSummon_Initialize()
 		RaidSummon_EventFrame:UnregisterEvent("ADDON_LOADED")
-	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID"  or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
+	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
+		--CHAT_MSG returns Playername-Realm in Classic, we sync this so it could be used later when cross realm Play is implementet, hopfully NEVER
 		local msg, author = ...
 		if string.find(msg, "^123") or string.find(msg, "^summon") or string.find(msg, "^sum") or string.find(msg, "^port") then
 			C_ChatInfo.SendAddonMessage(MSG_PREFIX_ADD, author, "RAID")
@@ -75,7 +76,7 @@ function RaidSummon_NameListButton_OnClick(button)
 
 	local name = getglobal(RaidSummon_NameListButton:GetName().."TextName"):GetText()
 
-	if button  == "LeftButton" and IsControlKeyDown() then
+	if button == "LeftButton" and IsControlKeyDown() then
 	
 		RaidSummon_getRaidMembers()
 		
@@ -183,8 +184,10 @@ function RaidSummon_UpdateList()
 				for i, v in ipairs (RaidSummonDB) do 
 				
 					--if player is found fill BrowseDB
-					if v == rName then
-						print(v)
+					--we sync Playername-Realm but GetRaidRosterInfo only gives us Playername so we need to split it
+					--s1, s2, s3 ... sn = strsplit("delimiter", "subject"[, pieces])
+					local vName, vRealm = strsplit("-", rName, 2)
+					if vName == rName then
 						RaidSummon_BrowseDB[i] = {}
 						RaidSummon_BrowseDB[i].rName = rName
 						RaidSummon_BrowseDB[i].rClass = rClass
@@ -333,9 +336,9 @@ function RaidSummon_getRaidMembers()
 				rName = "unknown"..i
 			end
 			
-			RaidSummon_UnitIDDB[i].rName    = rName
-			RaidSummon_UnitIDDB[i].rClass    = rClass
-			RaidSummon_UnitIDDB[i].rIndex   = i
+			RaidSummon_UnitIDDB[i].rName	= rName
+			RaidSummon_UnitIDDB[i].rClass	= rClass
+			RaidSummon_UnitIDDB[i].rIndex	= i
 			
 			end
 		end
@@ -343,10 +346,10 @@ function RaidSummon_getRaidMembers()
 end
 
 function RaidSummon_hasValue (tab, val)
-    for i, v in ipairs (tab) do
-        if v == val then
-            return true
-        end
-    end
-    return false
+	for i, v in ipairs (tab) do
+		if v == val then
+			return true
+		end
+	end
+	return false
 end
