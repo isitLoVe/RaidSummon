@@ -11,7 +11,14 @@
 		</Scripts>
 	</Frame>
 	
-	<Button name="RaidSummon_NameListButton" virtual="true">
+	<Button name="RaidSummon_NameListButton" inherits="SecureActionButtonTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="type1" value="target" />
+			<Attribute name="target"  type="string" value="raid1" /> 
+			<Attribute name="type2" type="string" value="spell" /> 
+			<Attribute name="spell"  type="string" value="Ritual of Summoning" /> 
+			<Attribute name="unit"  type="string" value="raid1" /> 
+		</Attributes>
 		<Size>
 			<AbsDimension x="75" y="16"/>
 		</Size>
@@ -20,9 +27,9 @@
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				self:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
-			<OnClick>
-				RaidSummon_NameListButton_OnClick(arg1);
-			</OnClick>
+			<PostClick>
+				RaidSummon_NameListButton_PostClick(self:GetName());
+			</PostClick>
 			<OnEnter>
 			</OnEnter>
 			<OnLeave>

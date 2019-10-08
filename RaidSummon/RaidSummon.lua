@@ -52,9 +52,9 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 	elseif event == "CHAT_MSG_ADDON" then
 		local prefix, text, channel, sender = ...
 		if prefix == MSG_PREFIX_ADD then
-			print("RS "..prefix..text..sender)
+			print("RS Prefix "..prefix.." text "..text.." sender "..sender)
 			if not RaidSummon_hasValue(RaidSummonDB, text) then
-				print("RS add to table")
+				print("RS add to table - "..text)
 				table.insert(RaidSummonDB, text)
 				RaidSummon_UpdateList()
 			end
@@ -72,12 +72,13 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 end
 
 --GUI
-function RaidSummon_NameListButton_OnClick(button)
+function RaidSummon_NameListButton_PostClick(id)
 
-	local name = getglobal(RaidSummon_NameListButton:GetName().."TextName"):GetText()
+	local name = _G[id.."TextName"]:GetText()
+	buttonName = GetMouseButtonClicked()
+	local targetname, targetrealm = UnitName("target")
 
-	if button == "LeftButton" and IsControlKeyDown() then
-	
+	if buttonName == "RightButton" and targetname ~= nil then
 		RaidSummon_getRaidMembers()
 		
 		if RaidSummon_UnitIDDB then
@@ -87,63 +88,33 @@ function RaidSummon_NameListButton_OnClick(button)
 					UnitID = "raid"..v.rIndex
 				end
 			end
-		
-			if UnitID then
-				TargetUnit(UnitID)
-			end
 			
-		else
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no raid found")
-		end
-		
-	elseif button == "LeftButton" and not IsControlKeyDown() then
-	
-		RaidSummon_getRaidMembers()
-		
-		if RaidSummon_UnitIDDB then
-		
-			for i, v in ipairs (RaidSummon_UnitIDDB) do
-				if v.rName == name then
-					UnitID = "raid"..v.rIndex
+			if UnitID then
+				if RaidSummonOptions.zone and RaidSummonOptions.whisper then
+				
+					if GetSubZoneText() == "" then
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+						SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
+					else
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+						SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
+					end
+				elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+					if GetSubZoneText() == "" then
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
+					else
+						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+					end
+				elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
+					SendChatMessage("RS - Summoning ".. name, "RAID")
+					SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
+				elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+					SendChatMessage("RS - Summoning ".. name, "RAID")
 				end
-			end
-		
-			if UnitID then
-				playercombat = UnitAffectingCombat("player")
-				targetcombat = UnitAffectingCombat(UnitID)
-			
-				if not playercombat and not targetcombat then
-					TargetUnit(UnitID)
-					CastSpellByName("Ritual of Summoning")
-					
-					if RaidSummonOptions.zone and RaidSummonOptions.whisper then
-					
-						if GetSubZoneText() == "" then
-							SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-							SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
-						else
-							SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-							SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
-						end
-					elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-						if GetSubZoneText() == "" then
-							SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-						else
-							SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-						end
-					elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
-						SendChatMessage("RS - Summoning ".. name, "RAID")
-						SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
-					elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-						SendChatMessage("RS - Summoning ".. name, "RAID")
+				for i, v in ipairs (RaidSummonDB) do
+					if v == name then
+						C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
 					end
-					for i, v in ipairs (RaidSummonDB) do
-						if v == name then
-							C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-						end
-					end
-				else
-					DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player is in combat")
 				end
 			else
 				DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player " .. tostring(name) .. " not found in raid. UnitID: " .. tostring(UnitID))
@@ -153,7 +124,7 @@ function RaidSummon_NameListButton_OnClick(button)
 		else
 			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no raid found")
 		end
-	elseif button == "RightButton" then
+	elseif buttonName == "LeftButton" and not IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonDB) do
 			if v == name then
 				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
@@ -186,8 +157,10 @@ function RaidSummon_UpdateList()
 					--if player is found fill BrowseDB
 					--we sync Playername-Realm but GetRaidRosterInfo only gives us Playername so we need to split it
 					--s1, s2, s3 ... sn = strsplit("delimiter", "subject"[, pieces])
-					local vName, vRealm = strsplit("-", rName, 2)
+					local vName, vRealm = strsplit("-", v, 2)
 					if vName == rName then
+						print("UpdateBrowseDB"..i.." rName " .. rName)
+
 						RaidSummon_BrowseDB[i] = {}
 						RaidSummon_BrowseDB[i].rName = rName
 						RaidSummon_BrowseDB[i].rClass = rClass
@@ -209,42 +182,42 @@ function RaidSummon_UpdateList()
 		
 		for i=1,10 do
 			if RaidSummon_BrowseDB[i] then
-				print(tostring(RaidSummon_BrowseDB[i].rName))
-				getglobal("RaidSummon_NameList"..i.."TextName"):SetText(RaidSummon_BrowseDB[i].rName)
+				print("Load Frame "..RaidSummon_BrowseDB[i].rName)
+				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
 				
 				--set class color
 				if RaidSummon_BrowseDB[i].rClass == "Druid" then
 					local c = RaidSummon_GetClassColour("DRUID")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Hunter" then
 					local c = RaidSummon_GetClassColour("HUNTER")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Mage" then
 					local c = RaidSummon_GetClassColour("MAGE")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Paladin" then
 					local c = RaidSummon_GetClassColour("PALADIN")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Priest" then
 					local c = RaidSummon_GetClassColour("PRIEST")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Rogue" then
 					local c = RaidSummon_GetClassColour("ROGUE")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Shaman" then
 					local c = RaidSummon_GetClassColour("SHAMAN")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Warlock" then
 					local c = RaidSummon_GetClassColour("WARLOCK")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				elseif RaidSummon_BrowseDB[i].rClass == "Warrior" then
 					local c = RaidSummon_GetClassColour("WARRIOR")
-					getglobal("RaidSummon_NameList"..i.."TextName"):SetTextColor(c.r, c.g, c.b, 1)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				end				
 				
-				getglobal("RaidSummon_NameList"..i):Show()
+				_G["RaidSummon_NameList"..i]:Show()
 			else
-				getglobal("RaidSummon_NameList"..i):Hide()
+				_G["RaidSummon_NameList"..i]:Hide()
 			end
 		end
 		
@@ -339,7 +312,7 @@ function RaidSummon_getRaidMembers()
 			RaidSummon_UnitIDDB[i].rName	= rName
 			RaidSummon_UnitIDDB[i].rClass	= rClass
 			RaidSummon_UnitIDDB[i].rIndex	= i
-			
+
 			end
 		end
 	end
