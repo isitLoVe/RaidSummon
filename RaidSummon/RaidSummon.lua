@@ -282,7 +282,7 @@ function RaidSummon_SlashCommand( msg )
 		end
 	elseif msg == "clear" then
 		RaidSummonDB = {}
-		RaidSummon_UpdateList
+		RaidSummon_UpdateList()
 	else
 	
 		if RaidSummon_RequestFrame:IsVisible() then
