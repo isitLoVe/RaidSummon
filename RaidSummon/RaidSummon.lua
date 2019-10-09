@@ -18,7 +18,7 @@ end
 
 function RaidSummon_EventFrame_OnLoad()
 
-	DEFAULT_CHAT_FRAME:AddMessage(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
+	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 	RaidSummon_EventFrame:RegisterEvent("ADDON_LOADED")
 	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_ADDON")
 	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID")
@@ -45,7 +45,8 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 		RaidSummon_EventFrame:UnregisterEvent("ADDON_LOADED")
 	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
 		--CHAT_MSG returns Playername-Realm in Classic, we sync this so it could be used later when cross realm Play is implementet, hopfully NEVER
-		local msg, author = ...
+		local msg, authorrealm = ...
+		local author, realm = strsplit("-", authorrealm, 2)
 		if string.find(msg, "^123") or string.find(msg, "^summon") or string.find(msg, "^sum") or string.find(msg, "^port") then
 			C_ChatInfo.SendAddonMessage(MSG_PREFIX_ADD, author, "RAID")
 		end
@@ -81,15 +82,15 @@ function RaidSummon_NameListButton_PostClick(id)
 	if buttonName == "RightButton" and targetname ~= nil then
 		RaidSummon_getRaidMembers()
 		
-		if RaidSummon_UnitIDDB then
+		if RaidSummon_RaidMembersDB then
 		
-			for i, v in ipairs (RaidSummon_UnitIDDB) do
+			for i, v in ipairs (RaidSummon_RaidMembersDB) do
 				if v.rName == name then
-					UnitID = "raid"..v.rIndex
+					raidIndex = "raid"..v.rIndex
 				end
 			end
 			
-			if UnitID then
+			if raidIndex then
 				if RaidSummonOptions.zone and RaidSummonOptions.whisper then
 				
 					if GetSubZoneText() == "" then
@@ -117,19 +118,19 @@ function RaidSummon_NameListButton_PostClick(id)
 					end
 				end
 			else
-				DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - Player " .. tostring(name) .. " not found in raid. UnitID: " .. tostring(UnitID))
+				print("RaidSummon Error - Player " .. tostring(name) .. " not found in raid. raidIndex: " .. tostring(raidIndex))
 				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-				RaidSummon_UpdateList()
+				--RaidSummon_UpdateList()
 			end
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - no raid found")
+			print("RaidSummon Error - no raid found")
 		end
 	elseif buttonName == "LeftButton" and not IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonDB) do
 			if v == name then
 				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
 				table.remove(RaidSummonDB, i)
-				RaidSummon_UpdateList()
+				--RaidSummon_UpdateList()
 			end
 		end
 	end
@@ -140,36 +141,34 @@ end
 function RaidSummon_UpdateList()
 	local RaidSummon_BrowseDB = {}
 
-	--only Update and show if Player is Warlock
+	--only Update and show if Player is Warlock localization
 	 if (UnitClass("player") == "Warlock") then
 
 	 --classic fix
-		if IsInGroup() then 
+		if IsInRaid() then 
+		
 			--get raid member data
-			local raidnum = GetNumGroupMembers()
+			RaidSummon_getRaidMembers()
+			if RaidSummon_RaidMembersDB then
 
-			for raidmember = 1, raidnum do
-				local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(raidmember)
+				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummon_RaidMembersDB) do
 
-				--check raid data for RaidSummon data
-				for i, v in ipairs (RaidSummonDB) do 
+					--check raid data for RaidSummon data
+					for RaidSummonDBindex, RaidSummonDBvalue in ipairs (RaidSummonDB) do 
 				
-					--if player is found fill BrowseDB
-					--we sync Playername-Realm but GetRaidRosterInfo only gives us Playername so we need to split it
-					--s1, s2, s3 ... sn = strsplit("delimiter", "subject"[, pieces])
-					local vName, vRealm = strsplit("-", v, 2)
-					if vName == rName then
-						print("UpdateBrowseDB"..i.." rName " .. rName)
-
-						RaidSummon_BrowseDB[i] = {}
-						RaidSummon_BrowseDB[i].rName = rName
-						RaidSummon_BrowseDB[i].rClass = rClass
-						RaidSummon_BrowseDB[i].rIndex = i --needed?
-						
-						if rClass == "Warlock" then
-							RaidSummon_BrowseDB[i].rVIP = true
-						else
-							RaidSummon_BrowseDB[i].rVIP = false
+						--if player is found fill BrowseDB
+						if RaidSummonDBvalue == RaidMembersDBvalue.rName then
+							RaidSummon_BrowseDB[RaidSummonDBindex] = {}
+							RaidSummon_BrowseDB[RaidSummonDBindex].rIndex = RaidMembersDBindex
+							RaidSummon_BrowseDB[RaidSummonDBindex].rName = RaidMembersDBvalue.rName
+							RaidSummon_BrowseDB[RaidSummonDBindex].rClass = RaidMembersDBvalue.rClass
+							RaidSummon_BrowseDB[RaidSummonDBindex].rfileName = RaidMembersDBvalue.rfileName
+							
+							if RaidMembersDBvalue.rfileName == "WARLOCK" then --localization
+								RaidSummon_BrowseDB[RaidSummonDBindex].rVIP = true
+							else
+								RaidSummon_BrowseDB[RaidSummonDBindex].rVIP = false
+							end
 						end
 					end
 				end
@@ -185,7 +184,20 @@ function RaidSummon_UpdateList()
 				print("Load Frame "..RaidSummon_BrowseDB[i].rName)
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
 				
-				--set class color
+				--Secure Button Attributes
+				--Target Raid Member Left Click type1
+				_G["RaidSummon_NameList"..i]:SetAttribute("type1", "target")
+				_G["RaidSummon_NameList"..i]:SetAttribute("target", "raid"..RaidSummon_BrowseDB[i].rName)
+
+				--Cast Spell Right Click type2
+				_G["RaidSummon_NameList"..i]:SetAttribute("type2", "spell")
+				--_G["RaidSummon_NameList"..i..]:SetAttribute("spell", "Ritual of Summoning") --localization?
+				_G["RaidSummon_NameList"..i]:SetAttribute("spell", "698") --localization?
+				--_G["RaidSummon_NameList"..i]:SetAttribute("spellid", "698") --localization?
+				--_G["RaidSummon_NameList"..i]:SetAttribute("spellid", 698) --localization?
+				_G["RaidSummon_NameList"..i]:SetAttribute("target", "raid"..RaidSummon_BrowseDB[i].rName)
+							
+				--set class color localization
 				if RaidSummon_BrowseDB[i].rClass == "Druid" then
 					local c = RaidSummon_GetClassColour("DRUID")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
@@ -235,37 +247,42 @@ end
 function RaidSummon_SlashCommand( msg )
 
 	if msg == "help" then
-		DEFAULT_CHAT_FRAME:AddMessage("RaidSummon usage:")
-		DEFAULT_CHAT_FRAME:AddMessage("/rs or /raidsummon { help | show | zone | whisper }")
-		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9help|r: prints out this help")
-		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9show|r: shows the current summon list")
-		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9zone|r: toggles zoneinfo in /ra and /w")
-		DEFAULT_CHAT_FRAME:AddMessage(" - |cff9482c9whisper|r: toggles the usage of /w")
-		DEFAULT_CHAT_FRAME:AddMessage("To drag the frame use shift + left mouse button")
+		print("RaidSummon usage:")
+		print("/rs or /raidsummon { help | show | zone | whisper }")
+		print(" - |cff9482c9help|r: prints out this help")
+		print(" - |cff9482c9show|r: shows the current summon list")
+		print(" - |cff9482c9clear|r: clears the summon list")
+		print(" - |cff9482c9zone|r: toggles zoneinfo in /ra and /w")
+		print(" - |cff9482c9whisper|r: toggles the usage of /w")
+		print("To drag the frame use shift + left mouse button")
 	elseif msg == "show" then
 		--show msg if list is empty
 		if next(RaidSummonDB) == nil then
-			DEFAULT_CHAT_FRAME:AddMessage("|cffff0000RaidSummon list is empty|r")
+			print("RaidSummon - list is empty")
 		end		
 		for i, v in ipairs(RaidSummonDB) do
-			DEFAULT_CHAT_FRAME:AddMessage(tostring(v))
+			print("RaidSummon - raid members that need a summon:")
+			print(tostring(v))
 		end
 	elseif msg == "zone" then
 		if RaidSummonOptions["zone"] == true then
 			RaidSummonOptions["zone"] = false
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - zoneinfo: |cffff0000disabled|r")
+			print("RaidSummon - zoneinfo: |cffff0000disabled|r")
 		elseif RaidSummonOptions["zone"] == false then
 			RaidSummonOptions["zone"] = true
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - zoneinfo: |cff00ff00enabled|r")
+			print("RaidSummon - zoneinfo: |cff00ff00enabled|r")
 		end
 	elseif msg == "whisper" then
 		if RaidSummonOptions["whisper"] == true then
 			RaidSummonOptions["whisper"] = false
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - whisper: |cffff0000disabled|r")
+			print("RaidSummon - whisper: |cffff0000disabled|r")
 		elseif RaidSummonOptions["whisper"] == false then
 			RaidSummonOptions["whisper"] = true
-			DEFAULT_CHAT_FRAME:AddMessage("RaidSummon - whisper: |cff00ff00enabled|r")
+			print("RaidSummon - whisper: |cff00ff00enabled|r")
 		end
+	elseif msg == "clear" then
+		RaidSummonDB = {}
+		RaidSummon_UpdateList
 	else
 	
 		if RaidSummon_RequestFrame:IsVisible() then
@@ -294,25 +311,27 @@ end
 function RaidSummon_getRaidMembers()
 
 	--classic fix
-	if IsInGroup() then 
+	if IsInRaid() then 
 
-		local raidnum = GetNumGroupMembers()
+		local members = GetNumGroupMembers()
 
-		if (raidnum > 0) then
-		RaidSummon_UnitIDDB = {}
+		if (members > 0) then
+		RaidSummon_RaidMembersDB = {}
 
-		for i = 1, raidnum do
-			local rName, rRank, rSubgroup, rLevel, rClass = GetRaidRosterInfo(i)
+		for i = 1, members do
+			local rName, rRank, rSubgroup, rLevel, rClass, rfileName = GetRaidRosterInfo(i)
 
-			RaidSummon_UnitIDDB[i] = {}
-			if (not rName) then 
+			RaidSummon_RaidMembersDB[i] = {}
+			if (not rName) then
+				print("RaidSummon Error - raid member with index "..i.." not found")
 				rName = "unknown"..i
 			end
 			
-			RaidSummon_UnitIDDB[i].rName	= rName
-			RaidSummon_UnitIDDB[i].rClass	= rClass
-			RaidSummon_UnitIDDB[i].rIndex	= i
-
+			RaidSummon_RaidMembersDB[i].rIndex = i
+			RaidSummon_RaidMembersDB[i].rName = rName
+			RaidSummon_RaidMembersDB[i].rClass = rClass
+			RaidSummon_RaidMembersDB[i].rfileName = rfileName
+			
 			end
 		end
 	end
