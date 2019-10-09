@@ -1,24 +1,24 @@
 # RaidSummon
 
-## How it works:
-You are in a RAID group  
-Someone types 123 in /ra or /s or /y  
-Playername gets added to the small RaidSummon frame and is synced accros all RaidSummon users  
-SHIFT + leftclick to move the frame  
-If a player is on the list the frame is visible (type /rs to show/hide it manually)  
-Left click to summon and remove (synced)  
-Control Left click to just target the player  
-Right click to remove (synced)  
+## Update for Classic
+I am currently rewriting the code for this addon, it may not working correctly right now  
+When i am finished i will upload it to Curse / Twitch Client
+
+## How it works
+Only works in a raid group  
+Someone types 123, summon or port in chat (say, yell, raid or whisper)  
+This player gets added to the small RaidSummon frame and is synced accros all RaidSummon users  
+SHIFT + LEFTCLICK to move the frame  
+LEFTCLICK to target the player  
+RIGHTCLICK to summon the player and send a message to him and the raid (messages can be disabled)  
+CTRL+LEFTCLICK to remove the player(synced)  
 
 If no player is on the list the frame is hidden again (type /rs to show/hide it manually)  
 
 Options:  
 /rs help  
-/rs zone(enabled/disables zoneinfo in /w and /ra)  
+/rs zone (enabled/disables zoneinfo in /w and /ra) 
 /rs whispers (enabled/disables whispering the target)  
 
-
-## 1.1.0 Updates:
-Class Colors are now used in the List  
-Warlocks are always on top of the list  
-Checks if player and target are in combat
+## Donate
+[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VMUGZ4VH2CYRY)
