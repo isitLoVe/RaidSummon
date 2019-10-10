@@ -1,4 +1,7 @@
-function RaidSummon_Initialize()
+RaidSummon = LibStub("AceAddon-3.0"):NewAddon("RaidSummon", "AceTimer-3.0")
+local L = LibStub("AceLocale-3.0"):GetLocale("RaidSummon", true)
+
+function RaidSummon:Initialize()
 
 	local RaidSummonOptions_DefaultSettings = {
 		whisper = true,
@@ -14,11 +17,13 @@ function RaidSummon_Initialize()
 			RaidSummonOptions[k] = v
 		end
 	end
+	
+	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
+	
 end
 
-function RaidSummon_EventFrame_OnLoad()
+function RaidSummon:EventFrameOnLoad()
 
-	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 	RaidSummon_EventFrame:RegisterEvent("ADDON_LOADED")
 	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_ADDON")
 	RaidSummon_EventFrame:RegisterEvent("CHAT_MSG_RAID")
@@ -39,9 +44,9 @@ function RaidSummon_EventFrame_OnLoad()
 	RaidSummonLoc_Header = "RaidSummon v" .. GetAddOnMetadata("RaidSummon", "Version")
 end
 
-function RaidSummon_EventFrame_OnEvent(self,event,...)
+function RaidSummon:EventFrameOnEvent(self,event,...)
 	if event == "ADDON_LOADED" then
-		RaidSummon_Initialize()
+		RaidSummon:Initialize()
 		RaidSummon_EventFrame:UnregisterEvent("ADDON_LOADED")
 	elseif event == "CHAT_MSG_SAY" or event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" or event == "CHAT_MSG_YELL" or event == "CHAT_MSG_WHISPER" then
 		--CHAT_MSG returns Playername-Realm in Classic, we sync this so it could be used later when cross realm Play is implementet, hopfully NEVER
@@ -53,18 +58,16 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 	elseif event == "CHAT_MSG_ADDON" then
 		local prefix, text, channel, sender = ...
 		if prefix == MSG_PREFIX_ADD then
-			print("RS Prefix "..prefix.." text "..text.." sender "..sender)
 			if not RaidSummon_hasValue(RaidSummonDB, text) then
-				print("RS add to table - "..text)
 				table.insert(RaidSummonDB, text)
-				RaidSummon_UpdateList()
+				RaidSummon:UpdateList()
 			end
 		elseif prefix == MSG_PREFIX_REMOVE then
 			if RaidSummon_hasValue(RaidSummonDB, text) then
 				for i, v in ipairs (RaidSummonDB) do
 					if v == text then
 						table.remove(RaidSummonDB, i)
-						RaidSummon_UpdateList()
+						RaidSummon:UpdateList()
 					end
 				end
 			end
@@ -73,72 +76,83 @@ function RaidSummon_EventFrame_OnEvent(self,event,...)
 end
 
 --GUI
-function RaidSummon_NameListButton_PostClick(id)
+function RaidSummon_NameListButton_PreClick(self, button)
 
-	local name = _G[id.."TextName"]:GetText()
-	buttonName = GetMouseButtonClicked()
+	local buttonname = self:GetName()
+	local name = _G[buttonname.."TextName"]:GetText()
+	local buttonName = GetMouseButtonClicked()
 	local targetname, targetrealm = UnitName("target")
 
-	if buttonName == "RightButton" and targetname ~= nil then
-		RaidSummon_getRaidMembers()
+	RaidSummon_getRaidMembers()
+	
+	if RaidSummon_RaidMembersDB then
+		for i, v in ipairs (RaidSummon_RaidMembersDB) do
+			if v.rName == name then
+				raidIndex = "raid"..v.rIndex
+			end
+		end
+
+		if raidIndex then
+			--set target when not in combat (securetemplate)
+			if not InCombatLockdown() then
+				if RaidSummon_RaidMembersDB then
+					self:SetAttribute("type1", "target")
+					self:SetAttribute("unit", raidIndex)
+				end
+				self:SetAttribute("type2", "spell")
+				self:SetAttribute("spell", "698") --698 - Ritual of Summoning
+			else
+				print("RS Error - in combat")
+			end
+		end
+	end
+
+	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
 		
 		if RaidSummon_RaidMembersDB then
 		
-			for i, v in ipairs (RaidSummon_RaidMembersDB) do
-				if v.rName == name then
-					raidIndex = "raid"..v.rIndex
-				end
-			end
+			if RaidSummonOptions.zone and RaidSummonOptions.whisper then
 			
-			if raidIndex then
-				if RaidSummonOptions.zone and RaidSummonOptions.whisper then
-				
-					if GetSubZoneText() == "" then
-						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-						SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, name)
-					else
-						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-						SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, name)
-					end
-				elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-					if GetSubZoneText() == "" then
-						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText(), "RAID")
-					else
-						SendChatMessage("RS - Summoning ".. name .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-					end
-				elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
-					SendChatMessage("RS - Summoning ".. name, "RAID")
-					SendChatMessage("RS - Summoning you", "WHISPER", nil, name)
-				elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
-					SendChatMessage("RS - Summoning ".. name, "RAID")
+				if GetSubZoneText() == "" then
+					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText(), "RAID")
+					SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, targetname)
+				else
+					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
+					SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, targetname)
 				end
-				for i, v in ipairs (RaidSummonDB) do
-					if v == name then
-						C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-					end
+			elseif RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+				if GetSubZoneText() == "" then
+					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText(), "RAID")
+				else
+					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
 				end
-			else
-				print("RaidSummon Error - Player " .. tostring(name) .. " not found in raid. raidIndex: " .. tostring(raidIndex))
-				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-				--RaidSummon_UpdateList()
+			elseif not RaidSummonOptions.zone and RaidSummonOptions.whisper then
+				SendChatMessage("RS - Summoning ".. targetname, "RAID")
+				SendChatMessage("RS - Summoning you", "WHISPER", nil, targetname)
+			elseif not RaidSummonOptions.zone and not RaidSummonOptions.whisper then
+				SendChatMessage("RS - Summoning ".. targetname, "RAID")
+			end
+			for i, v in ipairs (RaidSummonDB) do
+				if v == targetname then
+					C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, targetname, "RAID")
+				end
 			end
 		else
 			print("RaidSummon Error - no raid found")
 		end
-	elseif buttonName == "LeftButton" and not IsControlKeyDown() then
+	elseif buttonName == "LeftButton" and IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonDB) do
 			if v == name then
 				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, name, "RAID")
-				table.remove(RaidSummonDB, i)
-				--RaidSummon_UpdateList()
 			end
 		end
 	end
 			
-	RaidSummon_UpdateList()
+	RaidSummon:UpdateList()
 end
 
-function RaidSummon_UpdateList()
+function RaidSummon:UpdateList()
+
 	local RaidSummon_BrowseDB = {}
 
 	--only Update and show if Player is Warlock localization
@@ -164,7 +178,7 @@ function RaidSummon_UpdateList()
 							RaidSummon_BrowseDB[RaidSummonDBindex].rClass = RaidMembersDBvalue.rClass
 							RaidSummon_BrowseDB[RaidSummonDBindex].rfileName = RaidMembersDBvalue.rfileName
 							
-							if RaidMembersDBvalue.rfileName == "WARLOCK" then --localization
+							if RaidMembersDBvalue.rfileName == "WARLOCK" then
 								RaidSummon_BrowseDB[RaidSummonDBindex].rVIP = true
 							else
 								RaidSummon_BrowseDB[RaidSummonDBindex].rVIP = false
@@ -181,64 +195,62 @@ function RaidSummon_UpdateList()
 		
 		for i=1,10 do
 			if RaidSummon_BrowseDB[i] then
-				print("Load Frame "..RaidSummon_BrowseDB[i].rName)
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
-				
-				--Secure Button Attributes
-				--Target Raid Member Left Click type1
-				_G["RaidSummon_NameList"..i]:SetAttribute("type1", "target")
-				_G["RaidSummon_NameList"..i]:SetAttribute("target", "raid"..RaidSummon_BrowseDB[i].rName)
 
-				--Cast Spell Right Click type2
-				_G["RaidSummon_NameList"..i]:SetAttribute("type2", "spell")
-				--_G["RaidSummon_NameList"..i..]:SetAttribute("spell", "Ritual of Summoning") --localization?
-				_G["RaidSummon_NameList"..i]:SetAttribute("spell", "698") --localization?
-				--_G["RaidSummon_NameList"..i]:SetAttribute("spellid", "698") --localization?
-				--_G["RaidSummon_NameList"..i]:SetAttribute("spellid", 698) --localization?
-				_G["RaidSummon_NameList"..i]:SetAttribute("target", "raid"..RaidSummon_BrowseDB[i].rName)
-							
-				--set class color localization
-				if RaidSummon_BrowseDB[i].rClass == "Druid" then
+				if RaidSummon_BrowseDB[i].rfileName == "DRUID" then
 					local c = RaidSummon_GetClassColour("DRUID")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Hunter" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "HUNTER" then
 					local c = RaidSummon_GetClassColour("HUNTER")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Mage" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "MAGE" then
 					local c = RaidSummon_GetClassColour("MAGE")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Paladin" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "PALADIN" then
 					local c = RaidSummon_GetClassColour("PALADIN")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Priest" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "PRIEST" then
 					local c = RaidSummon_GetClassColour("PRIEST")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Rogue" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "ROGUE" then
 					local c = RaidSummon_GetClassColour("ROGUE")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Shaman" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "SHAMAN" then
 					local c = RaidSummon_GetClassColour("SHAMAN")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Warlock" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "WARLOCK" then
 					local c = RaidSummon_GetClassColour("WARLOCK")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rClass == "Warrior" then
+				elseif RaidSummon_BrowseDB[i].rfileName == "WARRIOR" then
 					local c = RaidSummon_GetClassColour("WARRIOR")
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
 				end				
 				
-				_G["RaidSummon_NameList"..i]:Show()
+				if not InCombatLockdown() then
+					_G["RaidSummon_NameList"..i]:Show()
+				else
+					RaidSummon:UpdateListCombatCheck()
+				end
 			else
-				_G["RaidSummon_NameList"..i]:Hide()
+				if not InCombatLockdown() then
+					_G["RaidSummon_NameList"..i]:Hide()
+				else
+					RaidSummon:UpdateListCombatCheck()
+				end
 			end
 		end
 		
-		if not RaidSummonDB[1] then
-			if RaidSummon_RequestFrame:IsVisible() then
-				RaidSummon_RequestFrame:Hide()
+		if not InCombatLockdown() then
+		
+			if not RaidSummonDB[1] then
+				if RaidSummon_RequestFrame:IsVisible() then
+					RaidSummon_RequestFrame:Hide()
+				end
+			else
+				ShowUIPanel(RaidSummon_RequestFrame, 1)
 			end
 		else
-			ShowUIPanel(RaidSummon_RequestFrame, 1)
+			RaidSummon:UpdateListCombatCheck()
 		end
 	end	
 end
@@ -282,13 +294,15 @@ function RaidSummon_SlashCommand( msg )
 		end
 	elseif msg == "clear" then
 		RaidSummonDB = {}
-		RaidSummon_UpdateList()
+		RaidSummon:UpdateList()
+	elseif msg == "test" then
+		print(L["Language"])
 	else
 	
 		if RaidSummon_RequestFrame:IsVisible() then
 			RaidSummon_RequestFrame:Hide()
 		else
-			RaidSummon_UpdateList()
+			RaidSummon:UpdateList()
 			ShowUIPanel(RaidSummon_RequestFrame, 1)
 		end
 	
@@ -296,7 +310,7 @@ function RaidSummon_SlashCommand( msg )
 	
 end
 
---class color
+--returns class color
 function RaidSummon_GetClassColour(class)
 	if (class) then
 		local color = RAID_CLASS_COLORS[class]
@@ -307,10 +321,9 @@ function RaidSummon_GetClassColour(class)
 	return {r = 0.5, g = 0.5, b = 1}
 end
 
---raid member
+--collects raid member information to RaidSummon_RaidMembersDB
 function RaidSummon_getRaidMembers()
 
-	--classic fix
 	if IsInRaid() then 
 
 		local members = GetNumGroupMembers()
@@ -337,6 +350,7 @@ function RaidSummon_getRaidMembers()
 	end
 end
 
+--checks for a value in a table
 function RaidSummon_hasValue (tab, val)
 	for i, v in ipairs (tab) do
 		if v == val then
@@ -345,3 +359,15 @@ function RaidSummon_hasValue (tab, val)
 	end
 	return false
 end
+
+--checks for combat every 10 seconds and calls RaidSummon:UpdateList
+function RaidSummon:UpdateListCombatCheck()
+	if InCombatLockdown() then
+		--button and frame did not hide while in combat, try again in 10 seconds
+		self:ScheduleTimer("UpdateListCombatCheck",10)
+		return
+	else
+		RaidSummon:UpdateList()
+	end
+end
+

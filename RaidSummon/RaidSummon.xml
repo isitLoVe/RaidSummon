@@ -1,24 +1,16 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-<script file="RaidSummon.lua"/>
 	<Frame name="RaidSummon_EventFrame" parent="UIParent" hidden="true">
 		<Scripts>
 			<OnLoad>
-				RaidSummon_EventFrame_OnLoad();
+				RaidSummon:EventFrameOnLoad();
 			</OnLoad>
 			<OnEvent>
-				RaidSummon_EventFrame_OnEvent(self,event,...);
+				RaidSummon:EventFrameOnEvent(self,event,...);
 			</OnEvent>
 		</Scripts>
 	</Frame>
 	
 	<Button name="RaidSummon_NameListButton" inherits="SecureActionButtonTemplate" virtual="true">
-		<Attributes>
-			<Attribute name="type1" value="target" />
-			<Attribute name="target"  type="string" value="raid1" /> 
-			<Attribute name="type2" type="string" value="spell" /> 
-			<Attribute name="spell"  type="string" value="Ritual of Summoning" /> 
-			<Attribute name="unit"  type="string" value="raid1" /> 
-		</Attributes>
 		<Size>
 			<AbsDimension x="75" y="16"/>
 		</Size>
@@ -27,9 +19,9 @@
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
 				self:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
-			<PostClick>
-				RaidSummon_NameListButton_PostClick(self:GetName());
-			</PostClick>
+			<PreClick>
+				RaidSummon_NameListButton_PreClick(self, button);
+			</PreClick>
 			<OnEnter>
 			</OnEnter>
 			<OnLeave>
