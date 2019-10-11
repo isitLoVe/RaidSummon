@@ -40,9 +40,6 @@ function RaidSummon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SAY", "msgParser")
 	self:RegisterEvent("CHAT_MSG_YELL", "msgParser")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "msgParser")
-	
-	--load header in RaidSummon Frame self:?
-	RaidSummon_RequestFrameHeader = L["FrameHeader"](GetAddOnMetadata("RaidSummon", "Version"))
 end
 
 function RaidSummon:OnDisable()
@@ -61,6 +58,9 @@ function RaidSummon:OnInitialize()
 
 	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 	
+	--load version in RaidSummon Frame
+	RaidSummon_RequestFrameHeader:SetText(L["FrameHeader"](GetAddOnMetadata("RaidSummon", "Version")))
+
 	MSG_PREFIX_ADD	= "RSAdd"
 	MSG_PREFIX_REMOVE	= "RSRemove"
 	RaidSummonSyncDB = {}
