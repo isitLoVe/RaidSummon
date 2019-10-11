@@ -1,10 +1,10 @@
 ## Title: RaidSummon |cff7fff7f -Ace3-|r
-## Notes: A small helper for Warlock summoning
+## Notes: Helps Warlocks managing summoning
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
 ## Version: 3.0.0
-## Author: |cff02bf02Tyche|r
+## Author: |cff02bf02Tyche-Lucifron|r
 ## Interface: 11302
-## SavedVariables: RaidSummonOptions
+## SavedVariables: RaidSummonOptionsDB
 ## OptionalDeps:  Ace3
 
 #@no-lib-strip@

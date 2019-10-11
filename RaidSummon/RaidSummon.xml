@@ -1,15 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-	<Frame name="RaidSummon_EventFrame" parent="UIParent" hidden="true">
-		<Scripts>
-			<OnLoad>
-				RaidSummon:EventFrameOnLoad();
-			</OnLoad>
-			<OnEvent>
-				RaidSummon:EventFrameOnEvent(self,event,...);
-			</OnEvent>
-		</Scripts>
-	</Frame>
-	
 	<Button name="RaidSummon_NameListButton" inherits="SecureActionButtonTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="75" y="16"/>
@@ -20,7 +9,7 @@
 				self:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
 			<PreClick>
-				RaidSummon_NameListButton_PreClick(self, button);
+				RaidSummon:NameListButton_PreClick(self, button);
 			</PreClick>
 			<OnEnter>
 			</OnEnter>
@@ -91,7 +80,7 @@
 		</Anchors>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="RaidSummon_RequestFrame_Header" inherits="RaidSummon_GameFontHeader" text="RaidSummonLoc_Header">
+				<FontString name="$parentHeader" inherits="RaidSummon_GameFontHeader" text="RaidSummonLoc_Header">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
 							<Offset>
