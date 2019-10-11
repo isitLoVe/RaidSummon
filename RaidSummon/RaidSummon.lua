@@ -28,7 +28,7 @@ local options = {
 local defaults = {
 	profile = {
 		whisper = true,
-		zone = true
+		zone = true,
 	}
 }
 
