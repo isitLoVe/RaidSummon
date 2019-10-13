@@ -7,12 +7,18 @@ local options = {
     handler = RaidSummon,
     type = "group",
     args = {
+        headeroptions = {
+            type = "header",
+            name = L["OptionHeaderOptionsName"],
+			order = 1,
+        },
         whisper = {
             type = "toggle",
             name = L["OptionWhisperName"],
             desc = L["OptionWhisperDesc"],
             get = "GetOptionWhisper",
             set = "SetOptionWhisper",
+			order = 2,
         },
         zone = {
             type = "toggle",
@@ -20,6 +26,47 @@ local options = {
             desc = L["OptionZoneDesc"],
             get = "GetOptionZone",
             set = "SetOptionZone",
+			order = 3,
+        },
+        toggle = {
+            type = "execute",
+            name = L["OptionToggleName"],
+            desc = L["OptionToggleDesc"],
+			func = "ExecuteToggle",
+			order = 4,
+        },
+        list = {
+            type = "execute",
+            name = L["OptionListName"],
+            desc = L["OptionListDesc"],
+			func = "ExecuteList",
+			order = 5,
+        },
+        clear = {
+            type = "execute",
+            name = L["OptionClearName"],
+            desc = L["OptionClearDesc"],
+			func = "ExecuteClear",
+			order = 6,
+        },
+        help = {
+            type = "execute",
+            name = L["OptionHelpName"],
+            desc = L["OptionHelpDesc"],
+			func = "ExecuteHelp",
+			guiHidden = true,
+        },
+        config = {
+            type = "execute",
+            name = L["OptionConfigName"],
+            desc = L["OptionConfigDesc"],
+			func = "ExecuteConfig",
+			guiHidden = true,
+        },
+        headerprofile = {
+            type = "header",
+            name = L["OptionHeaderProfileName"],
+			order = -1,
         },
     },
 }
@@ -52,10 +99,11 @@ function RaidSummon:OnInitialize()
 	self.db = LibStub("AceDB-3.0"):New("RaidSummonOptionsDB", defaults, true)
 
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("RaidSummon", options)
+	options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+	--self:RegisterModuleOptions("Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db), "Profiles")
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RaidSummon", "RaidSummon")
 	self:RegisterChatCommand("rs", "ChatCommand")
 	self:RegisterChatCommand("raidsummon", "ChatCommand")
-
 	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 	
 	--load version in RaidSummon Frame
@@ -101,9 +149,9 @@ function RaidSummon:CHAT_MSG_ADDON(eventName,...)
 end
 
 --GUI
-function RaidSummon:NameListButton_PreClick(self, button)
+function RaidSummon:NameListButton_PreClick(source, button)
 
-	local buttonname = self:GetName()
+	local buttonname = source:GetName()
 	local name = _G[buttonname.."TextName"]:GetText()
 	local buttonName = GetMouseButtonClicked()
 	local targetname, targetrealm = UnitName("target")
@@ -121,13 +169,13 @@ function RaidSummon:NameListButton_PreClick(self, button)
 			--set target when not in combat (securetemplate)
 			if not InCombatLockdown() then
 				if RaidSummon_RaidMembersDB then
-					self:SetAttribute("type1", "target")
-					self:SetAttribute("unit", raidIndex)
+					source:SetAttribute("type1", "target")
+					source:SetAttribute("unit", raidIndex)
 				end
-				self:SetAttribute("type2", "spell")
-				self:SetAttribute("spell", "698") --698 - Ritual of Summoning
+				source:SetAttribute("type2", "spell")
+				source:SetAttribute("spell", "698") --698 - Ritual of Summoning
 			else
-				print("RS Error - in combat")
+				print(L["Lockdown"])
 			end
 		end
 	end
@@ -135,27 +183,36 @@ function RaidSummon:NameListButton_PreClick(self, button)
 	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
 		
 		if RaidSummon_RaidMembersDB then
-		
-			if self.db.profile.zone and self.db.profile.whisper then
+
+			if GetZoneText() == "" then
+				zonetext = nil
+			else
+				zonetext = GetZoneText()
+			end
 			
-				if GetSubZoneText() == "" then
-					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText(), "RAID")
-					SendChatMessage("RS - Summoning you to "..GetZoneText(), "WHISPER", nil, targetname)
-				else
-					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-					SendChatMessage("RS - Summoning you to "..GetZoneText() .. " - " .. GetSubZoneText(), "WHISPER", nil, targetname)
-				end
-			elseif self.db.profile.zone and not self.db.profile.whisper then
-				if GetSubZoneText() == "" then
-					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText(), "RAID")
-				else
-					SendChatMessage("RS - Summoning ".. targetname .. " to "..GetZoneText() .. " - " .. GetSubZoneText(), "RAID")
-				end
+			if GetSubZoneText() == "" then
+				subzonetext = nil
+			else
+				subzonetext = GetSubZoneText()
+			end
+			
+			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
+				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
+			elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
+				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
+				SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
+			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and subzonetext then
+				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and not subzonetext then
+				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
 			elseif not self.db.profile.zone and self.db.profile.whisper then
-				SendChatMessage("RS - Summoning ".. targetname, "RAID")
-				SendChatMessage("RS - Summoning you", "WHISPER", nil, targetname)
+				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+				SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
 			elseif not self.db.profile.zone and not self.db.profile.whisper then
-				SendChatMessage("RS - Summoning ".. targetname, "RAID")
+				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+			else
+				print(L["SummonAnnounceError"])
 			end
 			for i, v in ipairs (RaidSummonSyncDB) do
 				if v == targetname then
@@ -180,10 +237,9 @@ function RaidSummon:UpdateList()
 
 	local RaidSummon_BrowseDB = {}
 
-	--only Update and show if Player is Warlock localization
-	 if (UnitClass("player") == "Warlock") then
+	--only Update and show if Player is Warlock
+	 if (UnitClass("player") == L["PlayerClassWarlock"]) then
 
-	 --classic fix
 		if IsInRaid() then 
 		
 			--get raid member data
@@ -221,35 +277,14 @@ function RaidSummon:UpdateList()
 		for i=1,10 do
 			if RaidSummon_BrowseDB[i] then
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
-
-				if RaidSummon_BrowseDB[i].rfileName == "DRUID" then
-					local c = RaidSummon_GetClassColour("DRUID")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "HUNTER" then
-					local c = RaidSummon_GetClassColour("HUNTER")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "MAGE" then
-					local c = RaidSummon_GetClassColour("MAGE")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "PALADIN" then
-					local c = RaidSummon_GetClassColour("PALADIN")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "PRIEST" then
-					local c = RaidSummon_GetClassColour("PRIEST")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "ROGUE" then
-					local c = RaidSummon_GetClassColour("ROGUE")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "SHAMAN" then
-					local c = RaidSummon_GetClassColour("SHAMAN")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "WARLOCK" then
-					local c = RaidSummon_GetClassColour("WARLOCK")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				elseif RaidSummon_BrowseDB[i].rfileName == "WARRIOR" then
-					local c = RaidSummon_GetClassColour("WARRIOR")
-					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(c.r, c.g, c.b, 1)
-				end				
+				
+				--Shamans are pink (like paladins) in Classic, we need to fix that, thanks to Molimo-Lucifron for testing
+				if RaidSummon_BrowseDB[i].rfileName == "SHAMAN" then
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(0.00, 0.44, 0.87, 1)
+				else
+					local r,g,b,img = GetClassColor(RaidSummon_BrowseDB[i].rfileName)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(r, g, b, 1)
+				end
 				
 				if not InCombatLockdown() then
 					_G["RaidSummon_NameList"..i]:Show()
@@ -280,60 +315,6 @@ function RaidSummon:UpdateList()
 	end	
 end
 
---Slash Handler
-function RaidSummon_SlashCommand( msg )
-
-	if msg == "help" then
-		print("RaidSummon usage:")
-		print("/rs or /raidsummon { help | show | zone | whisper }")
-		print(" - |cff9482c9help|r: prints out this help")
-		print(" - |cff9482c9show|r: shows the current summon list")
-		print(" - |cff9482c9clear|r: clears the summon list")
-		print(" - |cff9482c9zone|r: toggles zoneinfo in /ra and /w")
-		print(" - |cff9482c9whisper|r: toggles the usage of /w")
-		print("To drag the frame use shift + left mouse button")
-	elseif msg == "show" then
-		--show msg if list is empty
-		if next(RaidSummonSyncDB) == nil then
-			print("RaidSummon - list is empty")
-		end		
-		for i, v in ipairs(RaidSummonSyncDB) do
-			print("RaidSummon - raid members that need a summon:")
-			print(tostring(v))
-		end
-	elseif msg == "zone" then
-		if RaidSummonOptions["zone"] == true then
-			RaidSummonOptions["zone"] = false
-			print("RaidSummon - zoneinfo: |cffff0000disabled|r")
-		elseif RaidSummonOptions["zone"] == false then
-			RaidSummonOptions["zone"] = true
-			print("RaidSummon - zoneinfo: |cff00ff00enabled|r")
-		end
-	elseif msg == "whisper" then
-		if RaidSummonOptions["whisper"] == true then
-			RaidSummonOptions["whisper"] = false
-			print("RaidSummon - whisper: |cffff0000disabled|r")
-		elseif RaidSummonOptions["whisper"] == false then
-			RaidSummonOptions["whisper"] = true
-			print("RaidSummon - whisper: |cff00ff00enabled|r")
-		end
-	elseif msg == "clear" then
-		RaidSummonSyncDB = {}
-		RaidSummon:UpdateList()
-	elseif msg == "test" then
-		print(L["Language"])
-	else
-	
-		if RaidSummon_RequestFrame:IsVisible() then
-			RaidSummon_RequestFrame:Hide()
-		else
-			RaidSummon:UpdateList()
-			ShowUIPanel(RaidSummon_RequestFrame, 1)
-		end
-	
-	end
-	
-end
 
 --returns class color
 function RaidSummon_GetClassColour(class)
@@ -398,7 +379,7 @@ end
 
 function RaidSummon:ChatCommand(input)
     if not input or input:trim() == "" then
-        InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
+		self:ExecuteHelp()
     else
         LibStub("AceConfigCmd-3.0"):HandleCommand("rs", "RaidSummon", input)
     end
@@ -416,8 +397,55 @@ end
 --Set Option Functions
 function RaidSummon:SetOptionWhisper(info, value)
 	self.db.profile.whisper = value
+	if value == true then
+		print(L["OptionWhisperEnabled"])
+	else
+		print(L["OptionWhisperDisabled"])
+	end
 end
 
 function RaidSummon:SetOptionZone(info, value)
 	self.db.profile.zone = value
+	if value == true then
+		print(L["OptionZoneEnabled"])
+	else
+		print(L["OptionZoneDisabled"])
+	end
+end
+
+--Execute Option Functions
+function RaidSummon:ExecuteHelp()
+	print(L["OptionHelpPrint"])
+end
+
+function RaidSummon:ExecuteConfig()
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame) --BlizzBugSucks
+	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
+end
+
+function RaidSummon:ExecuteList()
+	--show msg if list is empty
+	if next(RaidSummonSyncDB) == nil then
+		print(L["OptionListEmpty"])
+	else
+		for i, v in ipairs(RaidSummonSyncDB) do
+			print(L["OptionList"])
+			print(tostring(v))
+		end
+	end
+end
+
+function RaidSummon:ExecuteClear()
+	RaidSummonSyncDB = {}
+	RaidSummon:UpdateList()
+	print(L["OptionClear"])
+end
+
+function RaidSummon:ExecuteToggle()
+	if RaidSummon_RequestFrame:IsVisible() then
+		RaidSummon_RequestFrame:Hide()
+	else
+		RaidSummon:UpdateList()
+		ShowUIPanel(RaidSummon_RequestFrame, 1)
+	end
 end
