@@ -7,48 +7,59 @@ local options = {
     handler = RaidSummon,
     type = "group",
     args = {
-        headeroptions = {
-            type = "header",
-            name = L["OptionHeaderOptionsName"],
-			order = 1,
+        options = {
+            type = "group",
+            name = L["OptionGroupOptionsName"],
+			order = 10,
+			inline = true,
+			args = {
+				whisper = {
+					type = "toggle",
+					name = L["OptionWhisperName"],
+					desc = L["OptionWhisperDesc"],
+					get = "GetOptionWhisper",
+					set = "SetOptionWhisper",
+					order = 11,
+				},
+				zone = {
+					type = "toggle",
+					name = L["OptionZoneName"],
+					desc = L["OptionZoneDesc"],
+					get = "GetOptionZone",
+					set = "SetOptionZone",
+					order = 12,
+				},
+			}
         },
-        whisper = {
-            type = "toggle",
-            name = L["OptionWhisperName"],
-            desc = L["OptionWhisperDesc"],
-            get = "GetOptionWhisper",
-            set = "SetOptionWhisper",
-			order = 2,
-        },
-        zone = {
-            type = "toggle",
-            name = L["OptionZoneName"],
-            desc = L["OptionZoneDesc"],
-            get = "GetOptionZone",
-            set = "SetOptionZone",
-			order = 3,
-        },
-        toggle = {
-            type = "execute",
-            name = L["OptionToggleName"],
-            desc = L["OptionToggleDesc"],
-			func = "ExecuteToggle",
-			order = 4,
-        },
-        list = {
-            type = "execute",
-            name = L["OptionListName"],
-            desc = L["OptionListDesc"],
-			func = "ExecuteList",
-			order = 5,
-        },
-        clear = {
-            type = "execute",
-            name = L["OptionClearName"],
-            desc = L["OptionClearDesc"],
-			func = "ExecuteClear",
-			order = 6,
-        },
+        commands = {
+            type = "group",
+            name = L["OptionGroupCommandsName"],
+			order = 20,
+			inline = true,
+			args = {
+				toggle = {
+					type = "execute",
+					name = L["OptionToggleName"],
+					desc = L["OptionToggleDesc"],
+					func = "ExecuteToggle",
+					order = 21,
+				},
+				list = {
+					type = "execute",
+					name = L["OptionListName"],
+					desc = L["OptionListDesc"],
+					func = "ExecuteList",
+					order = 22,
+				},
+				clear = {
+					type = "execute",
+					name = L["OptionClearName"],
+					desc = L["OptionClearDesc"],
+					func = "ExecuteClear",
+					order = 23,
+				},
+			},
+		},		
         help = {
             type = "execute",
             name = L["OptionHelpName"],
@@ -131,9 +142,18 @@ function RaidSummon:CHAT_MSG_ADDON(eventName,...)
 	if eventName == "CHAT_MSG_ADDON" then
 		local prefix, text, channel, sender = ...
 		if prefix == MSG_PREFIX_ADD then
+			--only add player once
 			if not RaidSummon:hasValue(RaidSummonSyncDB, text) then
-				table.insert(RaidSummonSyncDB, text)
-				RaidSummon:UpdateList()
+				--check if player is in the raid
+				RaidSummon:getRaidMembers()
+				if RaidSummon_RaidMembersDB then
+					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummon_RaidMembersDB) do
+						if text == RaidMembersDBvalue.rName then
+							table.insert(RaidSummonSyncDB, text)
+							RaidSummon:UpdateList()
+						end
+					end
+				end
 			end
 		elseif prefix == MSG_PREFIX_REMOVE then
 			if RaidSummon:hasValue(RaidSummonSyncDB, text) then
@@ -313,18 +333,6 @@ function RaidSummon:UpdateList()
 			RaidSummon:UpdateListCombatCheck()
 		end
 	end	
-end
-
-
---returns class color
-function RaidSummon_GetClassColour(class)
-	if (class) then
-		local color = RAID_CLASS_COLORS[class]
-		if (color) then
-			return color
-		end
-	end
-	return {r = 0.5, g = 0.5, b = 1}
 end
 
 --collects raid member information to RaidSummon_RaidMembersDB
