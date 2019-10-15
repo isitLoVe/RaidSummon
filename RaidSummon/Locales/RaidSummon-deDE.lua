@@ -1,5 +1,5 @@
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("RaidSummon", "deDE", true)
+local L = AceLocale:NewLocale("RaidSummon", "deDE")
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
@@ -46,7 +46,7 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9list|r: Zeigt die Liste der Schlachtzugsmitglieder an, die eine Beschwörung angefordert haben.
  - |cff9482c9toggle|r: Zeigt die Beschörungsliste an oder versteckt diese.
  - |cff9482c9whisper|r: Schaltet die Flüsterfunktion beim Beschwören ein.
- - |cff9482c9zone|r: Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit)ein.
+ - |cff9482c9zone|r: Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein.
 Um das Fenster zu verschieben Umschalttaste + linke Maustaste verwenden.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r Beschörungsliste ist leer"

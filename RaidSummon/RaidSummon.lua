@@ -451,10 +451,14 @@ function RaidSummon:ExecuteClear()
 end
 
 function RaidSummon:ExecuteToggle()
-	if RaidSummon_RequestFrame:IsVisible() then
-		RaidSummon_RequestFrame:Hide()
+	if not InCombatLockdown() then
+		if RaidSummon_RequestFrame:IsVisible() then
+			RaidSummon_RequestFrame:Hide()
+		else
+			RaidSummon:UpdateList()
+			ShowUIPanel(RaidSummon_RequestFrame, 1)
+		end
 	else
-		RaidSummon:UpdateList()
-		ShowUIPanel(RaidSummon_RequestFrame, 1)
+		print(L["Lockdown"])
 	end
 end
