@@ -3,13 +3,13 @@ local L = LibStub("AceLocale-3.0"):GetLocale("RaidSummon", true)
 
 --set options
 local options = {
-    name = "RaidSummon",
-    handler = RaidSummon,
-    type = "group",
-    args = {
-        options = {
-            type = "group",
-            name = L["OptionGroupOptionsName"],
+	name = "RaidSummon",
+	handler = RaidSummon,
+	type = "group",
+	args = {
+		options = {
+			type = "group",
+			name = L["OptionGroupOptionsName"],
 			order = 10,
 			inline = true,
 			args = {
@@ -30,10 +30,10 @@ local options = {
 					order = 12,
 				},
 			}
-        },
-        commands = {
-            type = "group",
-            name = L["OptionGroupCommandsName"],
+		},
+		commands = {
+			type = "group",
+			name = L["OptionGroupCommandsName"],
 			order = 20,
 			inline = true,
 			args = {
@@ -59,27 +59,27 @@ local options = {
 					order = 23,
 				},
 			},
-		},		
-        help = {
-            type = "execute",
-            name = L["OptionHelpName"],
-            desc = L["OptionHelpDesc"],
+		},
+		help = {
+			type = "execute",
+			name = L["OptionHelpName"],
+			desc = L["OptionHelpDesc"],
 			func = "ExecuteHelp",
 			guiHidden = true,
-        },
-        config = {
-            type = "execute",
-            name = L["OptionConfigName"],
-            desc = L["OptionConfigDesc"],
+		},
+		config = {
+			type = "execute",
+			name = L["OptionConfigName"],
+			desc = L["OptionConfigDesc"],
 			func = "ExecuteConfig",
 			guiHidden = true,
-        },
-        headerprofile = {
-            type = "header",
-            name = L["OptionHeaderProfileName"],
+		},
+		headerprofile = {
+			type = "header",
+			name = L["OptionHeaderProfileName"],
 			order = -1,
-        },
-    },
+		},
+	},
 }
 
 --set default options
@@ -116,14 +116,14 @@ function RaidSummon:OnInitialize()
 	self:RegisterChatCommand("rs", "ChatCommand")
 	self:RegisterChatCommand("raidsummon", "ChatCommand")
 	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
-	
+
 	--load version in RaidSummon Frame
 	RaidSummon_RequestFrameHeader:SetText(L["FrameHeader"](GetAddOnMetadata("RaidSummon", "Version")))
 
 	MSG_PREFIX_ADD	= "RSAdd"
 	MSG_PREFIX_REMOVE	= "RSRemove"
 	RaidSummonSyncDB = {}
-	
+
 end
 
 --Handle CHAT_MSG Events here
@@ -177,7 +177,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 	local targetname, targetrealm = UnitName("target")
 
 	RaidSummon:getRaidMembers()
-	
+
 	if RaidSummon_RaidMembersDB then
 		for i, v in ipairs (RaidSummon_RaidMembersDB) do
 			if v.rName == name then
@@ -201,7 +201,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 	end
 
 	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
-		
+
 		if RaidSummon_RaidMembersDB then
 
 			if GetZoneText() == "" then
@@ -209,13 +209,13 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			else
 				zonetext = GetZoneText()
 			end
-			
+
 			if GetSubZoneText() == "" then
 				subzonetext = nil
 			else
 				subzonetext = GetSubZoneText()
 			end
-			
+
 			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
 				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
 				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
@@ -249,7 +249,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 		end
 	end
-			
+
 	RaidSummon:UpdateList()
 end
 
@@ -258,10 +258,11 @@ function RaidSummon:UpdateList()
 	local RaidSummon_BrowseDB = {}
 
 	--only Update and show if Player is Warlock
-	 if (UnitClass("player") == L["PlayerClassWarlock"]) then
+	local className, classFilename, classID = UnitClass("player")
+	 if classFilename == "WARLOCK" then
 
-		if IsInRaid() then 
-		
+		if IsInRaid() then
+
 			--get raid member data
 			RaidSummon:getRaidMembers()
 			if RaidSummon_RaidMembersDB then
@@ -269,8 +270,8 @@ function RaidSummon:UpdateList()
 				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummon_RaidMembersDB) do
 
 					--check raid data for RaidSummon data
-					for RaidSummonSyncDBindex, RaidSummonSyncDBvalue in ipairs (RaidSummonSyncDB) do 
-				
+					for RaidSummonSyncDBindex, RaidSummonSyncDBvalue in ipairs (RaidSummonSyncDB) do
+
 						--if player is found fill BrowseDB
 						if RaidSummonSyncDBvalue == RaidMembersDBvalue.rName then
 							RaidSummon_BrowseDB[RaidSummonSyncDBindex] = {}
@@ -278,7 +279,7 @@ function RaidSummon:UpdateList()
 							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rName = RaidMembersDBvalue.rName
 							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rClass = RaidMembersDBvalue.rClass
 							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rfileName = RaidMembersDBvalue.rfileName
-							
+
 							if RaidMembersDBvalue.rfileName == "WARLOCK" then
 								RaidSummon_BrowseDB[RaidSummonSyncDBindex].rVIP = true
 							else
@@ -293,11 +294,11 @@ function RaidSummon:UpdateList()
 			table.sort(RaidSummon_BrowseDB, function(a,b) return tostring(a.rVIP) > tostring(b.rVIP) end)
 
 		end
-		
+
 		for i=1,10 do
 			if RaidSummon_BrowseDB[i] then
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
-				
+
 				--Shamans are pink (like paladins) in Classic, we need to fix that, thanks to Molimo-Lucifron for testing
 				if RaidSummon_BrowseDB[i].rfileName == "SHAMAN" then
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(0.00, 0.44, 0.87, 1)
@@ -305,7 +306,7 @@ function RaidSummon:UpdateList()
 					local r,g,b,img = GetClassColor(RaidSummon_BrowseDB[i].rfileName)
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(r, g, b, 1)
 				end
-				
+
 				if not InCombatLockdown() then
 					_G["RaidSummon_NameList"..i]:Show()
 				else
@@ -319,9 +320,9 @@ function RaidSummon:UpdateList()
 				end
 			end
 		end
-		
+
 		if not InCombatLockdown() then
-		
+
 			if not RaidSummonSyncDB[1] then
 				if RaidSummon_RequestFrame:IsVisible() then
 					RaidSummon_RequestFrame:Hide()
@@ -332,13 +333,13 @@ function RaidSummon:UpdateList()
 		else
 			RaidSummon:UpdateListCombatCheck()
 		end
-	end	
+	end
 end
 
 --collects raid member information to RaidSummon_RaidMembersDB
 function RaidSummon:getRaidMembers()
 
-	if IsInRaid() then 
+	if IsInRaid() then
 
 		local members = GetNumGroupMembers()
 
@@ -353,12 +354,12 @@ function RaidSummon:getRaidMembers()
 				print("RaidSummon Error - raid member with index "..i.." not found")
 				rName = "unknown"..i
 			end
-			
+
 			RaidSummon_RaidMembersDB[i].rIndex = i
 			RaidSummon_RaidMembersDB[i].rName = rName
 			RaidSummon_RaidMembersDB[i].rClass = rClass
 			RaidSummon_RaidMembersDB[i].rfileName = rfileName
-			
+
 			end
 		end
 	end
@@ -386,11 +387,11 @@ function RaidSummon:UpdateListCombatCheck()
 end
 
 function RaidSummon:ChatCommand(input)
-    if not input or input:trim() == "" then
+	if not input or input:trim() == "" then
 		self:ExecuteHelp()
-    else
-        LibStub("AceConfigCmd-3.0"):HandleCommand("rs", "RaidSummon", input)
-    end
+	else
+		LibStub("AceConfigCmd-3.0"):HandleCommand("rs", "RaidSummon", input)
+	end
 end
 
 --Get Option Functions

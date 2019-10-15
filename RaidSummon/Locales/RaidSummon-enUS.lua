@@ -3,25 +3,23 @@ local L = AceLocale:NewLocale("RaidSummon", "enUS", true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
-L["Version"] = "Version"
 L["Language"] = "English"
 L["AddonEnabled"] = function(X,Y)
-	return 'RaidSummon version ' .. X .. ' by ' .. Y .. ' loaded'
+	return '|cff9482c9RaidSummon:|r version ' .. X .. ' by ' .. Y .. ' loaded'
 end
 L["AddonDisabled"] = "RaidSummon disabled"
 L["FrameHeader"] = function(X)
 	return 'RaidSummon v' .. X
 end
-L["Lockdown"] = "|cff9482c9RaidSummon:|r Combat detected, action aborted"
-L["PlayerClassWarlock"] = "Warlock"
+L["Lockdown"] = "|cff9482c9RaidSummon:|r You are in combat, action aborted"
 
 --Options
 L["OptionZoneName"] = "Zone"
-L["OptionZoneDesc"] = "Enable zone mentioning in announcements."
+L["OptionZoneDesc"] = "Enable zone (e.g. Orgrimmar) and subzone (e.g. Valley of Wisdom) mentioning in announcements."
 L["OptionWhisperName"] = "Whisper"
 L["OptionWhisperDesc"] = "Enable whispering to the summoned target."
 L["OptionHelpName"] = "Help"
-L["OptionHelpDesc"] = "Shows a list of supported options."
+L["OptionHelpDesc"] = "Shows a list of supported commands and options."
 L["OptionConfigName"] = "Config"
 L["OptionConfigDesc"] = "Opens the configuration menu."
 L["OptionGroupOptionsName"] = "Options"
@@ -41,7 +39,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { help | list | zone | whisper }
+/rs or /raidsummon { clear | config | help | list | toggle | whisper | zone }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
@@ -49,10 +47,10 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
-To drag the frame use SHIFT + LEFT mouse button
+You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
-L["OptionList"] = "|cff9482c9RaidSummon:|r Raid members that need a summon:"
+L["OptionList"] = "|cff9482c9RaidSummon:|r Raid members that requested a summon:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Cleared the summon list"
 
 --Summon Announce
