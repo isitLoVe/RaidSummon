@@ -93,6 +93,9 @@ local defaults = {
 function RaidSummon:OnEnable()
 	self:Print(L["AddonEnabled"](GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 	self:RegisterEvent("CHAT_MSG_ADDON")
+	self:RegisterEvent("GROUP_JOINED", "GroupEvent")
+	self:RegisterEvent("GROUP_LEFT", "GroupEvent")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("CHAT_MSG_RAID", "msgParser")
 	self:RegisterEvent("CHAT_MSG_RAID_LEADER", "msgParser")
 	self:RegisterEvent("CHAT_MSG_SAY", "msgParser")
@@ -137,6 +140,25 @@ function RaidSummon:msgParser(eventName,...)
 	end
 end
 
+--Clear the sync db and update the frame when joining or leaving a group/raid
+function RaidSummon:GroupEvent(eventName,...)
+	RaidSummonSyncDB = {}
+	RaidSummon:UpdateList()
+end
+
+--Hanlde raid changes and index changes
+function RaidSummon:GROUP_ROSTER_UPDATE(eventName,...)
+	RaidSummon:getRaidMembers()
+	if RaidSummonRaidMembersDB and RaidSummonSyncDB then
+		for RaidSummonSyncDBi, RaidSummonSyncDBv in ipairs (RaidSummonSyncDB) do
+			if not RaidSummon:hasValueSub(RaidSummonRaidMembersDB, RaidSummonSyncDBv, "rName") then
+				table.remove(RaidSummonSyncDB, RaidSummonSyncDBi)
+			end
+		end
+	end
+	RaidSummon:UpdateList()
+end
+
 --handle MSG_ADDON here
 function RaidSummon:CHAT_MSG_ADDON(eventName,...)
 	if eventName == "CHAT_MSG_ADDON" then
@@ -146,8 +168,8 @@ function RaidSummon:CHAT_MSG_ADDON(eventName,...)
 			if not RaidSummon:hasValue(RaidSummonSyncDB, text) then
 				--check if player is in the raid
 				RaidSummon:getRaidMembers()
-				if RaidSummon_RaidMembersDB then
-					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummon_RaidMembersDB) do
+				if RaidSummonRaidMembersDB then
+					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
 						if text == RaidMembersDBvalue.rName then
 							table.insert(RaidSummonSyncDB, text)
 							RaidSummon:UpdateList()
@@ -178,8 +200,8 @@ function RaidSummon:NameListButton_PreClick(source, button)
 
 	RaidSummon:getRaidMembers()
 
-	if RaidSummon_RaidMembersDB then
-		for i, v in ipairs (RaidSummon_RaidMembersDB) do
+	if RaidSummonRaidMembersDB then
+		for i, v in ipairs (RaidSummonRaidMembersDB) do
 			if v.rName == name then
 				raidIndex = "raid"..v.rIndex
 			end
@@ -188,7 +210,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 		if raidIndex then
 			--set target when not in combat (securetemplate)
 			if not InCombatLockdown() then
-				if RaidSummon_RaidMembersDB then
+				if RaidSummonRaidMembersDB then
 					source:SetAttribute("type1", "target")
 					source:SetAttribute("unit", raidIndex)
 				end
@@ -202,7 +224,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 
 	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
 
-		if RaidSummon_RaidMembersDB then
+		if RaidSummonRaidMembersDB then
 
 			if GetZoneText() == "" then
 				zonetext = nil
@@ -240,7 +262,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 				end
 			end
 		else
-			print("RaidSummon Error - no raid found")
+			print(L["noRaid"])
 		end
 	elseif buttonName == "LeftButton" and IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonSyncDB) do
@@ -255,35 +277,35 @@ end
 
 function RaidSummon:UpdateList()
 
-	local RaidSummon_BrowseDB = {}
+	local RaidSummonBrowseDB = {}
 
 	--only Update and show if Player is Warlock
 	local className, classFilename, classID = UnitClass("player")
-	 if classFilename == "WARLOCK" then
+	if classFilename == "WARLOCK" then
 
 		if IsInRaid() then
 
 			--get raid member data
 			RaidSummon:getRaidMembers()
-			if RaidSummon_RaidMembersDB then
+			if RaidSummonRaidMembersDB then
 
-				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummon_RaidMembersDB) do
+				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
 
 					--check raid data for RaidSummon data
 					for RaidSummonSyncDBindex, RaidSummonSyncDBvalue in ipairs (RaidSummonSyncDB) do
 
 						--if player is found fill BrowseDB
 						if RaidSummonSyncDBvalue == RaidMembersDBvalue.rName then
-							RaidSummon_BrowseDB[RaidSummonSyncDBindex] = {}
-							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rIndex = RaidMembersDBindex
-							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rName = RaidMembersDBvalue.rName
-							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rClass = RaidMembersDBvalue.rClass
-							RaidSummon_BrowseDB[RaidSummonSyncDBindex].rfileName = RaidMembersDBvalue.rfileName
+							RaidSummonBrowseDB[RaidSummonSyncDBindex] = {}
+							RaidSummonBrowseDB[RaidSummonSyncDBindex].rIndex = RaidMembersDBindex
+							RaidSummonBrowseDB[RaidSummonSyncDBindex].rName = RaidMembersDBvalue.rName
+							RaidSummonBrowseDB[RaidSummonSyncDBindex].rClass = RaidMembersDBvalue.rClass
+							RaidSummonBrowseDB[RaidSummonSyncDBindex].rfileName = RaidMembersDBvalue.rfileName
 
 							if RaidMembersDBvalue.rfileName == "WARLOCK" then
-								RaidSummon_BrowseDB[RaidSummonSyncDBindex].rVIP = true
+								RaidSummonBrowseDB[RaidSummonSyncDBindex].rVIP = true
 							else
-								RaidSummon_BrowseDB[RaidSummonSyncDBindex].rVIP = false
+								RaidSummonBrowseDB[RaidSummonSyncDBindex].rVIP = false
 							end
 						end
 					end
@@ -291,19 +313,19 @@ function RaidSummon:UpdateList()
 			end
 
 			--sort warlocks first
-			table.sort(RaidSummon_BrowseDB, function(a,b) return tostring(a.rVIP) > tostring(b.rVIP) end)
+			table.sort(RaidSummonBrowseDB, function(a,b) return tostring(a.rVIP) > tostring(b.rVIP) end)
 
 		end
 
 		for i=1,10 do
-			if RaidSummon_BrowseDB[i] then
-				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummon_BrowseDB[i].rName)
+			if RaidSummonBrowseDB[i] then
+				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummonBrowseDB[i].rName)
 
 				--Shamans are pink (like paladins) in Classic, we need to fix that, thanks to Molimo-Lucifron for testing
-				if RaidSummon_BrowseDB[i].rfileName == "SHAMAN" then
+				if RaidSummonBrowseDB[i].rfileName == "SHAMAN" then
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(0.00, 0.44, 0.87, 1)
 				else
-					local r,g,b,img = GetClassColor(RaidSummon_BrowseDB[i].rfileName)
+					local r,g,b,img = GetClassColor(RaidSummonBrowseDB[i].rfileName)
 					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(r, g, b, 1)
 				end
 
@@ -314,6 +336,7 @@ function RaidSummon:UpdateList()
 				end
 			else
 				if not InCombatLockdown() then
+					_G["RaidSummon_NameList"..i.."TextName"]:SetText("")
 					_G["RaidSummon_NameList"..i]:Hide()
 				else
 					RaidSummon:UpdateListCombatCheck()
@@ -336,7 +359,7 @@ function RaidSummon:UpdateList()
 	end
 end
 
---collects raid member information to RaidSummon_RaidMembersDB
+--collects raid member information to RaidSummonRaidMembersDB
 function RaidSummon:getRaidMembers()
 
 	if IsInRaid() then
@@ -344,22 +367,18 @@ function RaidSummon:getRaidMembers()
 		local members = GetNumGroupMembers()
 
 		if (members > 0) then
-		RaidSummon_RaidMembersDB = {}
+		RaidSummonRaidMembersDB = {}
 
-		for i = 1, members do
-			local rName, rRank, rSubgroup, rLevel, rClass, rfileName = GetRaidRosterInfo(i)
+			for i = 1, members do
+				local rName, rRank, rSubgroup, rLevel, rClass, rfileName = GetRaidRosterInfo(i)
 
-			RaidSummon_RaidMembersDB[i] = {}
-			if (not rName) then
-				print("RaidSummon Error - raid member with index "..i.." not found")
-				rName = "unknown"..i
-			end
-
-			RaidSummon_RaidMembersDB[i].rIndex = i
-			RaidSummon_RaidMembersDB[i].rName = rName
-			RaidSummon_RaidMembersDB[i].rClass = rClass
-			RaidSummon_RaidMembersDB[i].rfileName = rfileName
-
+				if rName and rClass and rfileName then
+					RaidSummonRaidMembersDB[i] = {}
+					RaidSummonRaidMembersDB[i].rIndex = i
+					RaidSummonRaidMembersDB[i].rName = rName
+					RaidSummonRaidMembersDB[i].rClass = rClass
+					RaidSummonRaidMembersDB[i].rfileName = rfileName
+				end
 			end
 		end
 	end
@@ -369,6 +388,17 @@ end
 function RaidSummon:hasValue (tab, val)
 	for i, v in ipairs (tab) do
 		if v == val then
+			return true
+		end
+	end
+	return false
+end
+
+--checks for a vlaue in a table with subtables
+function RaidSummon:hasValueSub (tab, val)
+	for i, v in ipairs (tab) do
+		print(v.rName)
+		if v.rName == val then
 			return true
 		end
 	end

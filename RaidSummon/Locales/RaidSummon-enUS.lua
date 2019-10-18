@@ -12,6 +12,7 @@ L["FrameHeader"] = function(X)
 	return 'RaidSummon v' .. X
 end
 L["Lockdown"] = "|cff9482c9RaidSummon:|r You are in combat, action aborted"
+L["noRaid"] = "|cff9482c9RaidSummon:|r No raid found."
 
 --Options
 L["OptionZoneName"] = "Zone"
