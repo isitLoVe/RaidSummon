@@ -491,3 +491,64 @@ function RaidSummon:ExecuteToggle()
 		print(L["Lockdown"])
 	end
 end
+
+--fill the frame with dummy data for testing
+--/script RaidSummon:DummyFill()
+function RaidSummon:DummyFill()
+	ShowUIPanel(RaidSummon_RequestFrame, 1)
+	
+	local RaidSummonDummy = {
+		{
+			name = "Nyx",
+			class = "WARLOCK"
+		},
+		{
+			name = "Zeus",
+			class = "SHAMAN"
+		},
+		{
+			name = "Eros",
+			class = "PALADIN"
+		},
+		{
+			name = "Hera",
+			class = "MAGE"
+		},
+		{
+			name = "Artemis",
+			class = "HUNTER"
+		},
+		{
+			name = "Athene",
+			class = "PALADIN"
+		},
+		{
+			name = "Demeter",
+			class = "DRUID"
+		},
+		{
+			name = "Aphrodite",
+			class = "PRIEST"
+		},
+		{
+			name = "Ares",
+			class = "ROGUE"
+		},
+		{
+			name = "Kronos",
+			class = "WARRIOR"
+		},
+	}
+	
+	
+	for i, v in ipairs(RaidSummonDummy) do
+		if v.class == "SHAMAN" then
+			r,g,b,img = 0.00, 0.44, 0.87, 1
+		else
+			r,g,b,img = GetClassColor(v.class)
+		end
+		_G["RaidSummon_NameList" .. i .. "TextName"]:SetText(v.name)
+		_G["RaidSummon_NameList" .. i .. "TextName"]:SetTextColor(r, g, b, 1)
+		_G["RaidSummon_NameList".. i]:Show()
+	end
+end
