@@ -397,7 +397,6 @@ end
 --checks for a vlaue in a table with subtables
 function RaidSummon:hasValueSub (tab, val)
 	for i, v in ipairs (tab) do
-		print(v.rName)
 		if v.rName == val then
 			return true
 		end
