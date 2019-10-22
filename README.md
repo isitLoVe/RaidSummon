@@ -14,6 +14,7 @@ CTRL+left click to remove a member from the list (synced - name will be removed 
 Finally summon the member with right click and send a message to the raid / whisper (member will be removed from the list - synced)  
 Drag the frame by holding SHIFT+left click  
 ![RaidSummon Frame](https://raw.githubusercontent.com/isitLoVe/RaidSummon/master/pics/RaidSummon_Frame.PNG)
+![RaidSummon Whisper](https://raw.githubusercontent.com/isitLoVe/RaidSummon/master/pics/RaidSummon_Whisper.PNG)
 
 ## Configuration
 Open the configuration menu with /rs config or /raidsummon config or via the addon menu  
