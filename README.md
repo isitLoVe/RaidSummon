@@ -4,7 +4,7 @@
 Version 3.0.0 is the first public release for WoW Classic
 
 ## Download
-[twitchurl]
+https://www.curseforge.com/wow/addons/raidsummon
 
 ## Usage
 Raidmembers can type a special keyword in the raidchat (123, summon, sum or port)  
