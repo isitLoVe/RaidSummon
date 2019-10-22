@@ -13,11 +13,11 @@ The name can be left clicked to target the raidmember
 CTRL+left click to remove a member from the list (synced - name will be removed from all addon users)  
 Finally summon the member with right click and send a message to the raid / whisper (member will be removed from the list - synced)  
 Drag the frame by holding SHIFT+left click  
-[picsummonlist]
+![RaidSummon Frame](https://raw.githubusercontent.com/isitLoVe/RaidSummon/master/pics/RaidSummon_Frame.PNG)
 
 ## Configuration
 Open the configuration menu with /rs config or /raidsummon config or via the addon menu  
-[piccli and optionsmenu]
+![RaidSummon Help](https://raw.githubusercontent.com/isitLoVe/RaidSummon/master/pics/RaidSummon_Help.PNG)
 
 ## Combat Lockdown
 Due to Blizzard restrictations it is not possible to update the summon frame during combat, however after leaving combat it may take up to 10 seconds for the name to be displayed.
