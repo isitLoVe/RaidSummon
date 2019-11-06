@@ -2,7 +2,7 @@
 --https://github.com/Hubbotu/RaidSummon_RUS
 
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("RaidSummon", "ruRU")
+local L = AceLocale:NewLocale("RaidSummon", "ruRU", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"

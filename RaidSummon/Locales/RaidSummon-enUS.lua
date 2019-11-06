@@ -1,5 +1,5 @@
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("RaidSummon", "enUS", true)
+local L = AceLocale:NewLocale("RaidSummon", "enUS", true, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
@@ -13,6 +13,12 @@ L["FrameHeader"] = function(X)
 end
 L["Lockdown"] = "|cff9482c9RaidSummon:|r You are in combat, action aborted"
 L["noRaid"] = "|cff9482c9RaidSummon:|r No raid found."
+L["MemberRemoved"] = function(X,Y)
+	return '|cff9482c9RaidSummon:|r Removing player ' .. X .. ' from the summoning frame as requested by ' .. Y
+end
+L["MemberAdded"] = function(X,Y)
+	return '|cff9482c9RaidSummon:|r Adding player ' .. X .. ' to the summoning frame as requested by ' .. Y
+end
 
 --Options
 L["OptionZoneName"] = "Zone"
@@ -32,6 +38,8 @@ L["OptionClearName"] = "Clear"
 L["OptionClearDesc"] = "Clears the summoning list."
 L["OptionToggleName"] = "Toggle"
 L["OptionToggleDesc"] = "Toggles the visiblity of the summoning frame."
+L["OptionAddName"] = "Add"
+L["OptionAddDesc"] = "Manually adds a raid member to the summoning frame."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -40,11 +48,12 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { clear | config | help | list | toggle | whisper | zone }
+/rs or /raidsummon { clear | config | help | list | add | toggle | whisper | zone }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
  - |cff9482c9list|r: Shows a list of raid members that requested a summon.
+ - |cff9482c9add|r: Manually adds a raid member to the summoning frame.
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
