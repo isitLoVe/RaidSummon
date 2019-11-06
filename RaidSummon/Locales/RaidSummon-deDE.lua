@@ -39,7 +39,7 @@ L["OptionClearDesc"] = "Löscht die Beschörungsliste."
 L["OptionToggleName"] = "Anzeige"
 L["OptionToggleDesc"] = "Zeigt die Beschörungsliste an oder versteckt diese."
 L["OptionAddName"] = "Hinzufügen"
-L["OptionAddDesc"] = "Fügt einen Spieler manuell zur Beschörungsliste hinzu."
+L["OptionAddDesc"] = "Fügt einen Spieler manuell zur Beschörungsliste hinzu (Groß- und Kleinschreibung beachten)."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00eingeschaltet|r"

@@ -39,7 +39,7 @@ L["OptionClearDesc"] = "Clears the summoning list."
 L["OptionToggleName"] = "Toggle"
 L["OptionToggleDesc"] = "Toggles the visiblity of the summoning frame."
 L["OptionAddName"] = "Add"
-L["OptionAddDesc"] = "Manually adds a raid member to the summoning frame."
+L["OptionAddDesc"] = "Manually adds a raid member to the summoning frame (case sensitive)."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"

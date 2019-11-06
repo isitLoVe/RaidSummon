@@ -1,4 +1,4 @@
-RaidSummon = LibStub("AceAddon-3.0"):NewAddon("RaidSummon", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
+RaidSummon = LibStub("AceAddon-3.0"):NewAddon("RaidSummon", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("RaidSummon", true)
 
 --set options
@@ -100,7 +100,6 @@ local defaults = {
 
 function RaidSummon:OnEnable()
 	self:Print(L["AddonEnabled"](GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
-	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("GROUP_JOINED", "GroupEvent")
 	self:RegisterEvent("GROUP_LEFT", "GroupEvent")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
@@ -126,7 +125,6 @@ function RaidSummon:OnInitialize()
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RaidSummon", "RaidSummon")
 	self:RegisterChatCommand("rs", "ChatCommand")
 	self:RegisterChatCommand("raidsummon", "ChatCommand")
-	print(string.format("RaidSummon version %s by %s", GetAddOnMetadata("RaidSummon", "Version"), GetAddOnMetadata("RaidSummon", "Author")))
 
 	--load version in RaidSummon Frame
 	RaidSummon_RequestFrameHeader:SetText(L["FrameHeader"](GetAddOnMetadata("RaidSummon", "Version")))
@@ -136,16 +134,27 @@ function RaidSummon:OnInitialize()
 	MSG_PREFIX_REMOVE = "RSRemove"
 	MSG_PREFIX_REMOVE_MANUAL = "RSRemoveManual"
 	RaidSummonSyncDB = {}
+	
+	--Ace3 Comm Channels max 16 chars
+	COMM_PREFIX_ADD = "RSADD"
+	COMM_PREFIX_ADD_MANUAL = "RSADDM"
+	COMM_PREFIX_REMOVE = "RSRM"
+	COMM_PREFIX_REMOVE_MANUAL = "RSRMM"
+	
+	--Ace3 Comm Registers
+	self:RegisterComm(COMM_PREFIX_ADD) --add via 123 etc
+	self:RegisterComm(COMM_PREFIX_ADD_MANUAL) --add via /rs add
+	self:RegisterComm(COMM_PREFIX_REMOVE) --remove via summoning / right click
+	self:RegisterComm(COMM_PREFIX_REMOVE_MANUAL) --remove via ctrl + click
 
 end
 
 --Handle CHAT_MSG Events here
 function RaidSummon:msgParser(eventName,...)
 	if eventName == "CHAT_MSG_SAY" or eventName == "CHAT_MSG_RAID" or eventName == "CHAT_MSG_RAID_LEADER" or eventName == "CHAT_MSG_YELL" or eventName == "CHAT_MSG_WHISPER" then
-		local msg, authorrealm = ...
-		local author, realm = strsplit("-", authorrealm, 2)
-		if string.find(msg, "^123") or string.find(msg, "^summon") or string.find(msg, "^sum") or string.find(msg, "^port") then
-			C_ChatInfo.SendAddonMessage(MSG_PREFIX_ADD, author, "RAID")
+		local text, playerName, languageName, channelName, playerName2   = ...
+		if string.find(text, "^123") or string.find(text, "^summon") or string.find(text, "^sum") or string.find(text, "^port") then
+			RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
 		end
 	end
 end
@@ -169,55 +178,57 @@ function RaidSummon:GROUP_ROSTER_UPDATE(eventName,...)
 	RaidSummon:UpdateList()
 end
 
---handle MSG_ADDON here
-function RaidSummon:CHAT_MSG_ADDON(eventName,...)
-	if eventName == "CHAT_MSG_ADDON" then
-		local prefix, text, channel, senderrealm = ...
-		local sender, realm = strsplit("-", senderrealm, 2)
-		if prefix == MSG_PREFIX_ADD then
+--ACE3 Comm
+function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
+	if (prefix) then
+		if prefix == COMM_PREFIX_ADD then
+			--print("COMM_PREFIX_ADD "..message)
 			--only add player once
-			if not RaidSummon:hasValue(RaidSummonSyncDB, text) then
+			if not RaidSummon:hasValue(RaidSummonSyncDB, message) then
 				--check if player is in the raid
 				RaidSummon:getRaidMembers()
 				if RaidSummonRaidMembersDB then
 					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
-						if text == RaidMembersDBvalue.rName then
-							table.insert(RaidSummonSyncDB, text)
+						if message == RaidMembersDBvalue.rName then
+							table.insert(RaidSummonSyncDB, message)
 							RaidSummon:UpdateList()
 						end
 					end
 				end
 			end
-		elseif prefix == MSG_PREFIX_ADD_MANUAL then
+		elseif prefix == COMM_PREFIX_ADD_MANUAL then
+			--print("COMM_PREFIX_ADD_MANUAL "..message)
 			--only add player once
-			if not RaidSummon:hasValue(RaidSummonSyncDB, text) then
+			if not RaidSummon:hasValue(RaidSummonSyncDB, message) then
 				--check if player is in the raid
 				RaidSummon:getRaidMembers()
 				if RaidSummonRaidMembersDB then
 					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
-						if text == RaidMembersDBvalue.rName then
-							table.insert(RaidSummonSyncDB, text)
-							print(L["MemberAdded"](text,sender))
+						if message == RaidMembersDBvalue.rName then
+							table.insert(RaidSummonSyncDB, message)
+							print(L["MemberAdded"](message,sender))
 							RaidSummon:UpdateList()
 						end
 					end
 				end
 			end
-		elseif prefix == MSG_PREFIX_REMOVE then
-			if RaidSummon:hasValue(RaidSummonSyncDB, text) then
+		elseif prefix == COMM_PREFIX_REMOVE then
+			--print("COMM_PREFIX_REMOVE "..message)
+			if RaidSummon:hasValue(RaidSummonSyncDB, message) then
 				for i, v in ipairs (RaidSummonSyncDB) do
-					if v == text then
+					if v == message then
 						table.remove(RaidSummonSyncDB, i)
 						RaidSummon:UpdateList()
 					end
 				end
 			end
-		elseif prefix == MSG_PREFIX_REMOVE_MANUAL then
-			if RaidSummon:hasValue(RaidSummonSyncDB, text) then
+		elseif prefix == COMM_PREFIX_REMOVE_MANUAL then
+			--print("COMM_PREFIX_REMOVE_MANUAL "..message)
+			if RaidSummon:hasValue(RaidSummonSyncDB, message) then
 				for i, v in ipairs (RaidSummonSyncDB) do
-					if v == text then
+					if v == message then
 						table.remove(RaidSummonSyncDB, i)
-						print(L["MemberRemoved"](text,sender))
+						print(L["MemberRemoved"](message,sender))
 						RaidSummon:UpdateList()
 					end
 				end
@@ -294,7 +305,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 			for i, v in ipairs (RaidSummonSyncDB) do
 				if v == targetname then
-					C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE, targetname, "RAID")
+					RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE, targetname, "RAID")
 				end
 			end
 		else
@@ -303,7 +314,7 @@ function RaidSummon:NameListButton_PreClick(source, button)
 	elseif buttonName == "LeftButton" and IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonSyncDB) do
 			if v == name then
-				C_ChatInfo.SendAddonMessage(MSG_PREFIX_REMOVE_MANUAL, name, "RAID")
+				RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE_MANUAL, name, "RAID")
 			end
 		end
 	end
@@ -529,7 +540,9 @@ function RaidSummon:ExecuteToggle()
 end
 
 function RaidSummon:SetOptionAdd(info, input)
-	C_ChatInfo.SendAddonMessage(MSG_PREFIX_ADD_MANUAL, input, "RAID")
+	if (input) then
+		RaidSummon:SendCommMessage(COMM_PREFIX_ADD_MANUAL, input, "RAID")
+	end
 end
 
 --fill the frame with dummy data for testing
