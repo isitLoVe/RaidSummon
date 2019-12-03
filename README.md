@@ -21,7 +21,7 @@ Open the configuration menu with /rs config or /raidsummon config or via the add
 ![RaidSummon Help](https://raw.githubusercontent.com/isitLoVe/RaidSummon/master/pics/RaidSummon_Help.PNG)
 
 ## Combat Lockdown
-Due to Blizzard restrictations it is not possible to update the summon frame during combat, however after leaving combat it may take up to 10 seconds for the name to be displayed.
+Due to Blizzard restrictions it is not possible to update the summon frame during combat, however after leaving combat it may take up to 10 seconds for the name to be displayed.
 
 ## Bugs
 Please report any bugs to my GitHub site at https://github.com/isitLoVe/RaidSummon/issues
