@@ -272,6 +272,13 @@ function RaidSummon:NameListButton_PreClick(source, button)
 	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
 
 		if RaidSummonRaidMembersDB then
+		
+			--Summoning does only work when the player has a target
+			--check if the clicked name is the current target
+			if targetname ~= name then
+				print(L["TargetMissmatch"](targetname, name))
+				return
+			end
 
 			if GetZoneText() == "" then
 				zonetext = nil

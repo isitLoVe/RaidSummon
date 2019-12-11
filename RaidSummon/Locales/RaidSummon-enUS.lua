@@ -82,3 +82,6 @@ L["SummonAnnounceR"] = function(T)
 end
 L["SummonAnnounceW"] = "RaidSummon: Summoning you"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Announce error"
+L["TargetMissmatch"] = function(X,Y)
+	return '|cff9482c9RaidSummon:|r Summoning aborted. Your target ' .. X .. ' does not match the name you clicked ' .. Y
+end
