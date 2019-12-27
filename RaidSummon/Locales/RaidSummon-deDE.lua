@@ -19,6 +19,7 @@ end
 L["MemberAdded"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Füge Schlachtzugsmitglieder ' .. X .. ' zu der Beschörungsliste hinzu, wie von ' .. Y .. ' angefordert'
 end
+L["AddAllMessage"] = "|cff9482c9RaidSummon:|r Füge alle Schlachtzugsmitglieder hinzu"
 
 --Options
 L["OptionZoneName"] = "Gebiet"
@@ -42,6 +43,8 @@ L["OptionAddName"] = "Hinzufügen"
 L["OptionAddDesc"] = "Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu (Groß- und Kleinschreibung beachten)."
 L["OptionRemoveName"] = "Entfernen"
 L["OptionRemoveDesc"] = "Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste (Groß- und Kleinschreibung beachten)."
+L["OptionAddAllName"] = "Alle Hinzufügen"
+L["OptionAddAllDesc"] = "Fügt alle Schlachtzugsmitglieder zur Beschörungsliste hinzu, die sich nicht im aktuellen Gebiet befinden."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00eingeschaltet|r"
@@ -50,12 +53,13 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cff00ff00einges
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cffff0000ausgeschaltet|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon Verwendung:|r
-/rs oder /raidsummon { clear | config | help | list | add | remove | toggle | whisper | zone }
+/rs oder /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone }
  - |cff9482c9clear|r: Löscht die Beschörungsliste.
  - |cff9482c9config|r: Öffnet das Konfigurationsmenü.
  - |cff9482c9help|r: Zeigt eine Liste der möglichen Kommandos und Optionen an.
  - |cff9482c9list|r: Zeigt die Liste der Schlachtzugsmitglieder an, die eine Beschwörung angefordert haben.
  - |cff9482c9add|r: Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu  (Groß- und Kleinschreibung beachten).
+ - |cff9482c9addall|r: Fügt alle Schlachtzugsmitglieder zur Beschörungsliste hinzu, die sich nicht im aktuellen Gebiet befinden.
  - |cff9482c9remove|r: Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste  (Groß- und Kleinschreibung beachten).
  - |cff9482c9toggle|r: Zeigt die Beschörungsliste an oder versteckt diese.
  - |cff9482c9whisper|r: Schaltet die Flüsterfunktion beim Beschwören ein.

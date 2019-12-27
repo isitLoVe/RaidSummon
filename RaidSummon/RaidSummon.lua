@@ -58,11 +58,11 @@ local options = {
 					func = "ExecuteClear",
 					order = 23,
 				},
-				massadd = {
+				addall = {
 					type = "execute",
-					name = L["OptionMassAddName"],
-					desc = L["OptionMassAddDesc"],
-					func = "ExecuteMassAdd",
+					name = L["OptionAddAllName"],
+					desc = L["OptionAddAllDesc"],
+					func = "ExecuteAddAll",
 					order = 24,
 				},
 				add = {
@@ -125,7 +125,10 @@ function RaidSummon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_WHISPER", "msgParser")
 	
 	--Right Click Hook
-	self:SecureHook("UnitPopup_ShowMenu")
+	local className, classFilename, classID = UnitClass("player")
+	if classFilename == "WARLOCK" then
+		self:SecureHook("UnitPopup_ShowMenu")
+	end
 
 end
 
@@ -159,14 +162,14 @@ function RaidSummon:OnInitialize()
 	COMM_PREFIX_ADD_MANUAL = "RSADDM"
 	COMM_PREFIX_REMOVE = "RSRM"
 	COMM_PREFIX_REMOVE_MANUAL = "RSRMM"
-	COMM_PREFIX_ADD_MASS = "RSADDMASS"
+	COMM_PREFIX_ADD_ALL = "RSADDALL"
 	
 	--Ace3 Comm Registers
 	self:RegisterComm(COMM_PREFIX_ADD) --add via 123 etc
 	self:RegisterComm(COMM_PREFIX_ADD_MANUAL) --add via /rs add
 	self:RegisterComm(COMM_PREFIX_REMOVE) --remove via summoning / right click
 	self:RegisterComm(COMM_PREFIX_REMOVE_MANUAL) --remove via ctrl + click
-	self:RegisterComm(COMM_PREFIX_ADD_MASS) --via mass add function
+	self:RegisterComm(COMM_PREFIX_ADD_ALL) --via AddAll function
 end
 
 --Handle CHAT_MSG Events here
@@ -253,14 +256,23 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 					end
 				end
 			end
-		elseif prefix == COMM_PREFIX_ADD_MASS then
-			--print("COMM_PREFIX_ADD_MASS "..message)
+		elseif prefix == COMM_PREFIX_ADD_ALL then
+			--print("COMM_PREFIX_ADD_ALL "..message)
 			if IsInRaid() then
 				local members = GetNumGroupMembers()
 				if (members > 0) then
+				
+				if GetZoneText() == "" then
+					zonetext = nil
+				else
+					zonetext = GetZoneText()
+				end
+
 					for i = 1, members do
-						local rName, rRank, rSubgroup, rLevel, rClass, rfileName = GetRaidRosterInfo(i)
-						if rName then
+						local rName, rRank, rSubgroup, rLevel, rClass, rfileName, rZone = GetRaidRosterInfo(i)
+						
+						--only add the player if not in the current zone
+						if rName and zonetext ~= rZone then
 							if not RaidSummon:hasValue(RaidSummonSyncDB, rName) then
 								--check if player is in the raid
 								RaidSummon:getRaidMembers()
@@ -275,6 +287,7 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 						end
 					end
 					RaidSummon:UpdateList()
+					print(L["AddAllMessage"])
 				end
 			end
 		end
@@ -602,8 +615,8 @@ function RaidSummon:SetOptionRemove(info, input)
 	end
 end
 
-function RaidSummon:ExecuteMassAdd()
-	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_MASS, COMM_PREFIX_ADD_MASS, "RAID")
+function RaidSummon:ExecuteAddAll()
+	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_ALL, COMM_PREFIX_ADD_ALL, "RAID")
 end
 
 --fill the frame with dummy data for testing

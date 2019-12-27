@@ -19,6 +19,7 @@ end
 L["MemberAdded"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Adding player ' .. X .. ' to the summoning frame as requested by ' .. Y
 end
+L["AddAllMessage"] = "|cff9482c9RaidSummon:|r Adding all players"
 
 --Options
 L["OptionZoneName"] = "Zone"
@@ -42,8 +43,8 @@ L["OptionAddName"] = "Add"
 L["OptionAddDesc"] = "Adds a player to the summoning frame (case sensitive)."
 L["OptionRemoveName"] = "Remove"
 L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
-L["OptionMassAddName"] = "MassAdd"
-L["OptionMassAddDesc"] = "Add all players to the summoning frame."
+L["OptionAddAllName"] = "Add All"
+L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -52,12 +53,13 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { clear | config | help | list | add | remove | toggle | whisper | zone }
+/rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
  - |cff9482c9list|r: Shows a list of players that requested a summon.
  - |cff9482c9add|r: Adds a player to the summoning frame (case sensitive).
+ - |cff9482c9addall|r: Add all players not in the current zone to the summoning frame.
  - |cff9482c9remove|r: Removes a player from the summoning frame (case sensitive).
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
