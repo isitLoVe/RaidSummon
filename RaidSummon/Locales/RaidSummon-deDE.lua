@@ -50,7 +50,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cff00ff00einges
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cffff0000ausgeschaltet|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon Verwendung:|r
-/rs oder /raidsummon { clear | config | help | list | add | toggle | whisper | zone }
+/rs oder /raidsummon { clear | config | help | list | add | remove | toggle | whisper | zone }
  - |cff9482c9clear|r: Löscht die Beschörungsliste.
  - |cff9482c9config|r: Öffnet das Konfigurationsmenü.
  - |cff9482c9help|r: Zeigt eine Liste der möglichen Kommandos und Optionen an.

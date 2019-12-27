@@ -50,7 +50,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { clear | config | help | list | add | toggle | whisper | zone }
+/rs or /raidsummon { clear | config | help | list | add | remove | toggle | whisper | zone }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
