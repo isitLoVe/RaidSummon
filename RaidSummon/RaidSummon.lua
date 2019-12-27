@@ -58,13 +58,20 @@ local options = {
 					func = "ExecuteClear",
 					order = 23,
 				},
+				massadd = {
+					type = "execute",
+					name = L["OptionMassAddName"],
+					desc = L["OptionMassAddDesc"],
+					func = "ExecuteMassAdd",
+					order = 24,
+				},
 				add = {
 					type = "input",
 					name = L["OptionAddName"],
 					desc = L["OptionAddDesc"],
 					set = "SetOptionAdd",
 					multiline = false,
-					order = 24,
+					order = 25,
 				},
 				remove = {
 					type = "input",
@@ -72,7 +79,7 @@ local options = {
 					desc = L["OptionRemoveDesc"],
 					set = "SetOptionRemove",
 					multiline = false,
-					order = 25,
+					order = 26,
 				},
 			},
 		},
@@ -152,12 +159,14 @@ function RaidSummon:OnInitialize()
 	COMM_PREFIX_ADD_MANUAL = "RSADDM"
 	COMM_PREFIX_REMOVE = "RSRM"
 	COMM_PREFIX_REMOVE_MANUAL = "RSRMM"
+	COMM_PREFIX_ADD_MASS = "RSADDMASS"
 	
 	--Ace3 Comm Registers
 	self:RegisterComm(COMM_PREFIX_ADD) --add via 123 etc
 	self:RegisterComm(COMM_PREFIX_ADD_MANUAL) --add via /rs add
 	self:RegisterComm(COMM_PREFIX_REMOVE) --remove via summoning / right click
 	self:RegisterComm(COMM_PREFIX_REMOVE_MANUAL) --remove via ctrl + click
+	self:RegisterComm(COMM_PREFIX_ADD_MASS) --via mass add function
 end
 
 --Handle CHAT_MSG Events here
@@ -242,6 +251,30 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 						print(L["MemberRemoved"](message,sender))
 						RaidSummon:UpdateList()
 					end
+				end
+			end
+		elseif prefix == COMM_PREFIX_ADD_MASS then
+			--print("COMM_PREFIX_ADD_MASS "..message)
+			if IsInRaid() then
+				local members = GetNumGroupMembers()
+				if (members > 0) then
+					for i = 1, members do
+						local rName, rRank, rSubgroup, rLevel, rClass, rfileName = GetRaidRosterInfo(i)
+						if rName then
+							if not RaidSummon:hasValue(RaidSummonSyncDB, rName) then
+								--check if player is in the raid
+								RaidSummon:getRaidMembers()
+								if RaidSummonRaidMembersDB then
+									for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
+										if rName == RaidMembersDBvalue.rName then
+											table.insert(RaidSummonSyncDB, rName)
+										end
+									end
+								end
+							end
+						end
+					end
+					RaidSummon:UpdateList()
 				end
 			end
 		end
@@ -567,6 +600,10 @@ function RaidSummon:SetOptionRemove(info, input)
 	if (input) then
 		RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE_MANUAL, input, "RAID")
 	end
+end
+
+function RaidSummon:ExecuteMassAdd()
+	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_MASS, COMM_PREFIX_ADD_MASS, "RAID")
 end
 
 --fill the frame with dummy data for testing

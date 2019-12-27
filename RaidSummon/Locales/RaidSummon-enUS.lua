@@ -42,6 +42,8 @@ L["OptionAddName"] = "Add"
 L["OptionAddDesc"] = "Adds a player to the summoning frame (case sensitive)."
 L["OptionRemoveName"] = "Remove"
 L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
+L["OptionMassAddName"] = "MassAdd"
+L["OptionMassAddDesc"] = "Add all players to the summoning frame."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
