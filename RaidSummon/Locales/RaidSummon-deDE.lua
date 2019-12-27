@@ -14,10 +14,10 @@ end
 L["Lockdown"] = "|cff9482c9RaidSummon:|r Du befindest dich im Kampf, Aktion abgebrochen"
 L["noRaid"] = "|cff9482c9RaidSummon:|r Keine Schlachtzuggruppe gefunden."
 L["MemberRemoved"] = function(X,Y)
-	return '|cff9482c9RaidSummon:|r Entferne Spieler ' .. X .. ' von der Beschörungsliste, wie von ' .. Y .. ' angefordert'
+	return '|cff9482c9RaidSummon:|r Entferne Schlachtzugsmitglieder ' .. X .. ' von der Beschörungsliste, wie von ' .. Y .. ' angefordert'
 end
 L["MemberAdded"] = function(X,Y)
-	return '|cff9482c9RaidSummon:|r Füge Spieler ' .. X .. ' zu der Beschörungsliste hinzu, wie von ' .. Y .. ' angefordert'
+	return '|cff9482c9RaidSummon:|r Füge Schlachtzugsmitglieder ' .. X .. ' zu der Beschörungsliste hinzu, wie von ' .. Y .. ' angefordert'
 end
 
 --Options
@@ -39,7 +39,9 @@ L["OptionClearDesc"] = "Löscht die Beschörungsliste."
 L["OptionToggleName"] = "Anzeige"
 L["OptionToggleDesc"] = "Zeigt die Beschörungsliste an oder versteckt diese."
 L["OptionAddName"] = "Hinzufügen"
-L["OptionAddDesc"] = "Fügt einen Spieler manuell zur Beschörungsliste hinzu (Groß- und Kleinschreibung beachten)."
+L["OptionAddDesc"] = "Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu (Groß- und Kleinschreibung beachten)."
+L["OptionRemoveName"] = "Entfernen"
+L["OptionRemoveDesc"] = "Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste (Groß- und Kleinschreibung beachten)."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00eingeschaltet|r"
@@ -53,7 +55,8 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9config|r: Öffnet das Konfigurationsmenü.
  - |cff9482c9help|r: Zeigt eine Liste der möglichen Kommandos und Optionen an.
  - |cff9482c9list|r: Zeigt die Liste der Schlachtzugsmitglieder an, die eine Beschwörung angefordert haben.
- - |cff9482c9add|r: Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu.
+ - |cff9482c9add|r: Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu  (Groß- und Kleinschreibung beachten).
+ - |cff9482c9remove|r: Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste  (Groß- und Kleinschreibung beachten).
  - |cff9482c9toggle|r: Zeigt die Beschörungsliste an oder versteckt diese.
  - |cff9482c9whisper|r: Schaltet die Flüsterfunktion beim Beschwören ein.
  - |cff9482c9zone|r: Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein.

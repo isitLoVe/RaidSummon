@@ -1,4 +1,4 @@
-RaidSummon = LibStub("AceAddon-3.0"):NewAddon("RaidSummon", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceComm-3.0")
+RaidSummon = LibStub("AceAddon-3.0"):NewAddon("RaidSummon", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0", "AceHook-3.0", "AceComm-3.0")
 local L = LibStub("AceLocale-3.0"):GetLocale("RaidSummon", true)
 
 --set options
@@ -66,6 +66,14 @@ local options = {
 					multiline = false,
 					order = 24,
 				},
+				remove = {
+					type = "input",
+					name = L["OptionRemoveName"],
+					desc = L["OptionRemoveDesc"],
+					set = "SetOptionRemove",
+					multiline = false,
+					order = 25,
+				},
 			},
 		},
 		help = {
@@ -108,6 +116,10 @@ function RaidSummon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SAY", "msgParser")
 	self:RegisterEvent("CHAT_MSG_YELL", "msgParser")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "msgParser")
+	
+	--Right Click Hook
+	self:SecureHook("UnitPopup_ShowMenu")
+
 end
 
 function RaidSummon:OnDisable()
@@ -146,7 +158,6 @@ function RaidSummon:OnInitialize()
 	self:RegisterComm(COMM_PREFIX_ADD_MANUAL) --add via /rs add
 	self:RegisterComm(COMM_PREFIX_REMOVE) --remove via summoning / right click
 	self:RegisterComm(COMM_PREFIX_REMOVE_MANUAL) --remove via ctrl + click
-
 end
 
 --Handle CHAT_MSG Events here
@@ -552,6 +563,12 @@ function RaidSummon:SetOptionAdd(info, input)
 	end
 end
 
+function RaidSummon:SetOptionRemove(info, input)
+	if (input) then
+		RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE_MANUAL, input, "RAID")
+	end
+end
+
 --fill the frame with dummy data for testing
 --/script RaidSummon:DummyFill()
 function RaidSummon:DummyFill()
@@ -610,5 +627,62 @@ function RaidSummon:DummyFill()
 		_G["RaidSummon_NameList" .. i .. "TextName"]:SetText(v.name)
 		_G["RaidSummon_NameList" .. i .. "TextName"]:SetTextColor(r, g, b, 1)
 		_G["RaidSummon_NameList".. i]:Show()
+	end
+end
+
+--Hook Functions
+function RaidSummon:UnitPopup_ShowMenu(dropdownMenu, which, unit, name, userData)
+	if (UIDROPDOWNMENU_MENU_LEVEL > 1) then
+		return
+	end
+	
+	--which from BlizzUI UnitPopup.lua UnitPopupMenus
+	if (which == "SELF" or which == "PARTY" or which == "RAID_PLAYER") then
+		
+		--Seperator
+		UIDropDownMenu_AddSeparator(UIDROPDOWNMENU_MENU_LEVEL)
+
+		--Title
+		local infotitle = UIDropDownMenu_CreateInfo()
+		infotitle.text = L["RaidSummon"]
+		infotitle.notCheckable = true
+		infotitle.isTitle = true
+		UIDropDownMenu_AddButton(infotitle)
+
+		--AddButton
+		local addbutton = UIDropDownMenu_CreateInfo()
+		addbutton.text = L["OptionAddName"]
+		addbutton.owner = which
+		addbutton.notCheckable = true
+		addbutton.func = RaidSummon.RightClick
+		addbutton.colorCode = "|cff9482c9"
+		addbutton.value = "RaidSummonAddButton"
+
+		UIDropDownMenu_AddButton(addbutton)
+		
+		--RemoveButton
+		local removebutton = UIDropDownMenu_CreateInfo()
+		removebutton.text = L["OptionRemoveName"]
+		removebutton.owner = which
+		removebutton.notCheckable = true
+		removebutton.func = RaidSummon.RightClick
+		removebutton.colorCode = "|cff9482c9"
+		removebutton.value = "RaidSummonRemoveButton"
+
+		UIDropDownMenu_AddButton(removebutton)
+	end
+end
+
+function RaidSummon:RightClick()
+	if self.value == "RaidSummonAddButton" then
+		local dropdownMenu = _G["UIDROPDOWNMENU_INIT_MENU"]
+		if (dropdownMenu.name ~= "") then
+			RaidSummon:SetOptionAdd(_, dropdownMenu.name)
+		end
+	elseif self.value == "RaidSummonRemoveButton" then
+		local dropdownMenu = _G["UIDROPDOWNMENU_INIT_MENU"]
+		if (dropdownMenu.name ~= "") then
+			RaidSummon:SetOptionRemove(_, dropdownMenu.name)
+		end
 	end
 end

@@ -33,13 +33,15 @@ L["OptionGroupOptionsName"] = "Options"
 L["OptionGroupCommandsName"] = "Commands"
 L["OptionHeaderProfileName"] = "ACE3 profiles"
 L["OptionListName"] = "List"
-L["OptionListDesc"] = "Shows a list of raid members that requested a summon."
+L["OptionListDesc"] = "Shows a list of players that requested a summon."
 L["OptionClearName"] = "Clear"
 L["OptionClearDesc"] = "Clears the summoning list."
 L["OptionToggleName"] = "Toggle"
 L["OptionToggleDesc"] = "Toggles the visiblity of the summoning frame."
 L["OptionAddName"] = "Add"
-L["OptionAddDesc"] = "Manually adds a raid member to the summoning frame (case sensitive)."
+L["OptionAddDesc"] = "Adds a player to the summoning frame (case sensitive)."
+L["OptionRemoveName"] = "Remove"
+L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -52,8 +54,9 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
- - |cff9482c9list|r: Shows a list of raid members that requested a summon.
- - |cff9482c9add|r: Manually adds a raid member to the summoning frame.
+ - |cff9482c9list|r: Shows a list of players that requested a summon.
+ - |cff9482c9add|r: Adds a player to the summoning frame (case sensitive).
+ - |cff9482c9remove|r: Removes a player from the summoning frame (case sensitive).
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
