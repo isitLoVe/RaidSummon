@@ -47,11 +47,11 @@ L["OptionAddAllName"] = "Add All"
 L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
 L["OptionGroupKeywordsName"] = "Summoning keywords"
 L["OptionKWListName"] = "List keywords"
-L["OptionKWListDesc"] = "Lists all active summoning keywords"
+L["OptionKWListDesc"] = "Lists all summoning keywords."
 L["OptionKWAddName"] = "Add keyword"
-L["OptionKWAddDesc"] = "Adds a summoning keyword"
+L["OptionKWAddDesc"] = "Adds a summoning keyword to the list."
 L["OptionKWRemoveName"] = "Remove keyword"
-L["OptionKWRemoveDesc"] = "Removes a summoning keyword"
+L["OptionKWRemoveDesc"] = "Removes a summoning keyword from the list."
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -60,7 +60,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone }
+/rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
@@ -71,6 +71,9 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
+ - |cff9482c9kwlist|r: Lists all summoning keywords.
+ - |cff9482c9kwadd|r: Adds a summoning keyword to the list.
+ - |cff9482c9kwremove|r: Removes a summoning keyword from the list.
 You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
@@ -101,7 +104,7 @@ L["TargetMissmatch"] = function(X,Y)
 end
 L["OptionKWList"] = "|cff9482c9RaidSummon:|r Summoning keyword list:"
 L["OptionKWAddDuplicate"] = function(V)
-	return '|cff9482c9RaidSummon:|r Keyword duplicate ' .. V
+	return '|cff9482c9RaidSummon:|r Keyword duplicate: ' .. V
 end
 L["OptionKWAddAdded"] = function(V)
 	return '|cff9482c9RaidSummon:|r Keyword added: ' .. V
