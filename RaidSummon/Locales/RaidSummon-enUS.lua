@@ -45,6 +45,13 @@ L["OptionRemoveName"] = "Remove"
 L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
 L["OptionAddAllName"] = "Add All"
 L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
+L["OptionGroupKeywordsName"] = "Summoning keywords"
+L["OptionKWListName"] = "List keywords"
+L["OptionKWListDesc"] = "Lists all active summoning keywords"
+L["OptionKWAddName"] = "Add keyword"
+L["OptionKWAddDesc"] = "Adds a summoning keyword"
+L["OptionKWRemoveName"] = "Remove keyword"
+L["OptionKWRemoveDesc"] = "Removes a summoning keyword"
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -91,4 +98,17 @@ L["SummonAnnounceW"] = "RaidSummon: Summoning you"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Announce error"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Summoning aborted. Your target ' .. X .. ' does not match the name you clicked ' .. Y
+end
+L["OptionKWList"] = "|cff9482c9RaidSummon:|r Summoning keyword list:"
+L["OptionKWAddDuplicate"] = function(V)
+	return '|cff9482c9RaidSummon:|r Keyword duplicate ' .. V
+end
+L["OptionKWAddAdded"] = function(V)
+	return '|cff9482c9RaidSummon:|r Keyword added: ' .. V
+end
+L["OptionKWRemoveRemoved"] = function(V)
+	return '|cff9482c9RaidSummon:|r Keyword removed: ' .. V
+end
+L["OptionKWRemoveNF"] = function(V)
+	return '|cff9482c9RaidSummon:|r Keyword not found: ' .. V
 end
