@@ -83,6 +83,36 @@ local options = {
 				},
 			},
 		},
+		keywords = {
+			type = "group",
+			name = L["OptionGroupKeywordsName"],
+			order = 30,
+			inline = true,
+			args = {
+				kwlist = {
+					type = "execute",
+					name = L["OptionKWListName"],
+					desc = L["OptionKWListDesc"],
+					func = "ExecuteKWList",
+					order = 31,
+				},
+				kwadd = {
+					type = "input",
+					name = L["OptionKWAddName"],
+					desc = L["OptionKWAddDesc"],
+					set = "SetKWAdd",
+					multiline = false,
+					order = 32,
+				},
+				kwremove = {
+					type = "input",
+					name = L["OptionKWRemoveName"],
+					desc = L["OptionKWRemoveDesc"],
+					set = "SetKWRemove",
+					order = 33,
+				},
+			},
+		},
 		help = {
 			type = "execute",
 			name = L["OptionHelpName"],
@@ -97,11 +127,6 @@ local options = {
 			func = "ExecuteConfig",
 			guiHidden = true,
 		},
-		headerprofile = {
-			type = "header",
-			name = L["OptionHeaderProfileName"],
-			order = -1,
-		},
 	},
 }
 
@@ -110,6 +135,11 @@ local defaults = {
 	profile = {
 		whisper = true,
 		zone = true,
+		keywords = { 
+			["^123$"] = true,
+			["^sum"] = true,
+			["^port"] = true
+		}
 	}
 }
 
@@ -141,10 +171,19 @@ function RaidSummon:OnInitialize()
 
 	self.db = LibStub("AceDB-3.0"):New("RaidSummonOptionsDB", defaults, true)
 
-	LibStub("AceConfig-3.0"):RegisterOptionsTable("RaidSummon", options)
-	options.args.profile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
-	--self:RegisterModuleOptions("Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db), "Profiles")
-	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RaidSummon", "RaidSummon")
+	--frame needed to open it via /rs config
+	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(L["RaidSummon"], options)
+	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L["RaidSummon"], L["RaidSummon"])
+
+	--Commands
+	--LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RaidSummonCommands", options.args.commands)
+	--LibStub("AceConfigDialog-3.0"):AddToBlizOptions("RaidSummonCommands", options.args.commands.name, "RaidSummon")
+	
+	--Profile
+	optionsProfile = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(L["RaidSummon"] .. "-Profiles", optionsProfile)
+	LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L["RaidSummon"]  .."-Profiles", "Profiles", "RaidSummon")
+
 	self:RegisterChatCommand("rs", "ChatCommand")
 	self:RegisterChatCommand("raidsummon", "ChatCommand")
 
@@ -176,8 +215,12 @@ end
 function RaidSummon:msgParser(eventName,...)
 	if eventName == "CHAT_MSG_SAY" or eventName == "CHAT_MSG_RAID" or eventName == "CHAT_MSG_RAID_LEADER" or eventName == "CHAT_MSG_YELL" or eventName == "CHAT_MSG_WHISPER" then
 		local text, playerName, languageName, channelName, playerName2   = ...
-		if string.find(text, "^123") or string.find(text, "^summon") or string.find(text, "^sum") or string.find(text, "^port") then
-			RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
+		
+		for k, v in pairs(self.db.profile.keywords) do
+			if string.find(text, k) then
+				print("rs found ".. k)
+				RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
+			end		
 		end
 	end
 end
@@ -505,6 +548,16 @@ function RaidSummon:hasValue (tab, val)
 	return false
 end
 
+--checks for a key in a table with key names and values
+function RaidSummon:hasKey (tab, val)
+	for k, v in pairs (tab) do
+		if k == val then
+			return true
+		end
+	end
+	return false
+end
+
 --checks for a vlaue in a table with subtables
 function RaidSummon:hasValueSub (tab, val)
 	for i, v in ipairs (tab) do
@@ -534,7 +587,7 @@ function RaidSummon:ChatCommand(input)
 	end
 end
 
---Get Option Functions
+--Option Functions
 function RaidSummon:GetOptionWhisper(info)
 	return self.db.profile.whisper
 end
@@ -543,7 +596,6 @@ function RaidSummon:GetOptionZone(info)
 	return self.db.profile.zone
 end
 
---Set Option Functions
 function RaidSummon:SetOptionWhisper(info, value)
 	self.db.profile.whisper = value
 	if value == true then
@@ -562,7 +614,6 @@ function RaidSummon:SetOptionZone(info, value)
 	end
 end
 
---Execute Option Functions
 function RaidSummon:ExecuteHelp()
 	print(L["OptionHelpPrint"])
 end
@@ -603,6 +654,7 @@ function RaidSummon:ExecuteToggle()
 	end
 end
 
+--Add / Remove Options Functions
 function RaidSummon:SetOptionAdd(info, input)
 	if (input) then
 		RaidSummon:SendCommMessage(COMM_PREFIX_ADD_MANUAL, input, "RAID")
@@ -617,6 +669,36 @@ end
 
 function RaidSummon:ExecuteAddAll()
 	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_ALL, COMM_PREFIX_ADD_ALL, "RAID")
+end
+
+--Keyword Options Functions
+function RaidSummon:ExecuteKWList()
+	print(L["OptionKWList"])
+	for k, v in pairs(self.db.profile.keywords) do
+		print(k)
+	end
+end
+
+function RaidSummon:SetKWAdd(info, input)
+	if (input) then
+		if (RaidSummon:hasKey(self.db.profile.keywords, input)) then
+			print(L["OptionKWAddDuplicate"](input))
+		else
+			print(L["OptionKWAddAdded"](input))
+			self.db.profile.keywords[input] = true
+		end
+	end
+end
+
+function RaidSummon:SetKWRemove(info, input)
+	if (input) then
+		if (RaidSummon:hasKey(self.db.profile.keywords, input)) then
+			print(L["OptionKWRemoveRemoved"](input))
+			self.db.profile.keywords[input] = nil
+		else
+			print(L["OptionKWRemoveNF"](input))
+		end
+	end
 end
 
 --fill the frame with dummy data for testing
