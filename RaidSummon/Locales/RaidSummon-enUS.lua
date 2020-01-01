@@ -47,11 +47,20 @@ L["OptionAddAllName"] = "Add All"
 L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
 L["OptionGroupKeywordsName"] = "Summoning keywords"
 L["OptionKWListName"] = "List keywords"
-L["OptionKWListDesc"] = "Lists all summoning keywords."
+L["OptionKWListDesc"] = "Lists all active summoning keywords."
 L["OptionKWAddName"] = "Add keyword"
-L["OptionKWAddDesc"] = "Adds a summoning keyword to the list."
+L["OptionKWAddDesc"] = "Adds a summoning keyword."
 L["OptionKWRemoveName"] = "Remove keyword"
-L["OptionKWRemoveDesc"] = "Removes a summoning keyword from the list."
+L["OptionKWRemoveDesc"] = "Removes a summoning keyword."
+L["OptionKWDescription"] =  [[|cffff0000Keywords are regular expressions, use carefully!|r
+
+Keywords are matched via say/yell/raid/party/whisper chat. Only the sender of the chat message will be added to the summoning list. To reset keywords you can use the ACE3 profile manager and reset your profile.
+
+Basic examples:
+|cff9482c9^summon|r - Will match "summon" as the first word of a chat message
+|cff9482c9summon|r - Will match "summon" at any position of a chat message even inside words like asdfsummonasdf
+|cff9482c9^summon$|r - Will only match if a single word "summon" is received
+]]
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -71,9 +80,9 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
- - |cff9482c9kwlist|r: Lists all summoning keywords.
- - |cff9482c9kwadd|r: Adds a summoning keyword to the list.
- - |cff9482c9kwremove|r: Removes a summoning keyword from the list.
+ - |cff9482c9kwlist|r: Lists all active summoning keywords.
+ - |cff9482c9kwadd|r: Adds a summoning keyword.
+ - |cff9482c9kwremove|r: Removes a summoning keyword.
 You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
@@ -104,7 +113,7 @@ L["TargetMissmatch"] = function(X,Y)
 end
 L["OptionKWList"] = "|cff9482c9RaidSummon:|r Summoning keyword list:"
 L["OptionKWAddDuplicate"] = function(V)
-	return '|cff9482c9RaidSummon:|r Keyword duplicate: ' .. V
+	return '|cff9482c9RaidSummon:|r Keyword duplicate ' .. V
 end
 L["OptionKWAddAdded"] = function(V)
 	return '|cff9482c9RaidSummon:|r Keyword added: ' .. V

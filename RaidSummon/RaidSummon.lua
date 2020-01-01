@@ -89,12 +89,17 @@ local options = {
 			order = 30,
 			inline = true,
 			args = {
+				kwdescription = {
+					type = "description",
+					name = L["OptionKWDescription"],
+					order = 31,
+				},
 				kwlist = {
 					type = "execute",
 					name = L["OptionKWListName"],
 					desc = L["OptionKWListDesc"],
 					func = "ExecuteKWList",
-					order = 31,
+					order = 32,
 				},
 				kwadd = {
 					type = "input",
@@ -102,14 +107,14 @@ local options = {
 					desc = L["OptionKWAddDesc"],
 					set = "SetKWAdd",
 					multiline = false,
-					order = 32,
+					order = 33,
 				},
 				kwremove = {
 					type = "input",
 					name = L["OptionKWRemoveName"],
 					desc = L["OptionKWRemoveDesc"],
 					set = "SetKWRemove",
-					order = 33,
+					order = 34,
 				},
 			},
 		},
