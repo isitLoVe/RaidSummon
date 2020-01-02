@@ -138,36 +138,6 @@ local options = {
 				},
 			},
 		},
-		keywords = {
-			type = "group",
-			name = L["OptionGroupKeywordsName"],
-			order = 30,
-			inline = true,
-			args = {
-				kwlist = {
-					type = "execute",
-					name = L["OptionKWListName"],
-					desc = L["OptionKWListDesc"],
-					func = "ExecuteKWList",
-					order = 31,
-				},
-				kwadd = {
-					type = "input",
-					name = L["OptionKWAddName"],
-					desc = L["OptionKWAddDesc"],
-					set = "SetKWAdd",
-					multiline = false,
-					order = 32,
-				},
-				kwremove = {
-					type = "input",
-					name = L["OptionKWRemoveName"],
-					desc = L["OptionKWRemoveDesc"],
-					set = "SetKWRemove",
-					order = 33,
-				},
-			},
-		},
 		help = {
 			type = "execute",
 			name = L["OptionHelpName"],
@@ -788,6 +758,7 @@ function RaidSummon:ValuesKWRemoveSel(info)
 		return kwlist
 	end
 end
+
 
 --fill the frame with dummy data for testing
 --/script RaidSummon:DummyFill()
