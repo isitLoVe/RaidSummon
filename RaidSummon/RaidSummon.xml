@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<Button name="RaidSummon_NameListButton" inherits="SecureActionButtonTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="75" y="16"/>
+			<AbsDimension x="100" y="16"/>
 		</Size>
 		<Scripts>
 			<OnLoad>
@@ -18,7 +18,7 @@
 		</Scripts>
 		<NormalText name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT">
 			<Size>
-				<AbsDimension x="75" y="10"/>
+				<AbsDimension x="100" y="10"/>
 			</Size>
 			<Anchors>
 				<Anchor point="LEFT">
@@ -30,7 +30,7 @@
 		</NormalText>
 		<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD">
 			<Size>
-				<AbsDimension x="75" y="16"/>
+				<AbsDimension x="100" y="16"/>
 			</Size>
 			<Anchors>
 				<Anchor point="TOP">
@@ -69,7 +69,7 @@
 	
 	<Frame name="RaidSummon_RequestFrame" frameStrata="DIALOG" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true" clampedToScreen="true">
 		<Size>
-			<AbsDimension x="100" y="180"/>
+			<AbsDimension x="120" y="180"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
