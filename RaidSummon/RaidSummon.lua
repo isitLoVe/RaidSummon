@@ -79,7 +79,17 @@ local options = {
 					desc = L["OptionRemoveDesc"],
 					set = "SetOptionRemove",
 					multiline = false,
+					guiHidden = true,
 					order = 26,
+				},
+				removesel = {
+					type = "select",
+					name = L["OptionRemoveName"],
+					desc = L["OptionRemoveDesc"],
+					set = "SetOptionRemove",
+					values = "ValuesRemoveSel",
+					style = "dropdown",
+					order = 27,
 				},
 			},
 		},
@@ -115,6 +125,16 @@ local options = {
 					desc = L["OptionKWRemoveDesc"],
 					set = "SetKWRemove",
 					order = 34,
+					guiHidden = true,
+				},
+				kwremovesel = {
+					type = "select",
+					name = L["OptionKWRemoveName"],
+					desc = L["OptionKWRemoveDesc"],
+					values = "ValuesKWRemoveSel",
+					style = "dropdown",
+					set = "SetKWRemove",
+					order = 35,
 				},
 			},
 		},
@@ -154,6 +174,7 @@ function RaidSummon:OnEnable()
 	self:RegisterEvent("GROUP_LEFT", "GroupEvent")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("CHAT_MSG_RAID", "msgParser")
+	self:RegisterEvent("CHAT_MSG_PARTY", "msgParser")
 	self:RegisterEvent("CHAT_MSG_RAID_LEADER", "msgParser")
 	self:RegisterEvent("CHAT_MSG_SAY", "msgParser")
 	self:RegisterEvent("CHAT_MSG_YELL", "msgParser")
@@ -218,12 +239,11 @@ end
 
 --Handle CHAT_MSG Events here
 function RaidSummon:msgParser(eventName,...)
-	if eventName == "CHAT_MSG_SAY" or eventName == "CHAT_MSG_RAID" or eventName == "CHAT_MSG_RAID_LEADER" or eventName == "CHAT_MSG_YELL" or eventName == "CHAT_MSG_WHISPER" then
+	if eventName == "CHAT_MSG_SAY" or eventName == "CHAT_MSG_RAID" or eventName == "CHAT_MSG_PARTY" or eventName == "CHAT_MSG_RAID_LEADER" or eventName == "CHAT_MSG_YELL" or eventName == "CHAT_MSG_WHISPER" then
 		local text, playerName, languageName, channelName, playerName2   = ...
 		
 		for k, v in pairs(self.db.profile.keywords) do
 			if string.find(text, k) then
-				print("rs found ".. k)
 				RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
 			end		
 		end
@@ -672,15 +692,33 @@ function RaidSummon:SetOptionRemove(info, input)
 	end
 end
 
+function RaidSummon:ValuesRemoveSel(info)
+	local playerlist = {}
+	if next(RaidSummonSyncDB) == nil then
+		playerlist[L["OptionListEmptySel"]] = L["OptionListEmptySel"]
+		return playerlist
+	else
+		for i, v in ipairs(RaidSummonSyncDB) do
+			playerlist[v] = v
+		end
+		return playerlist
+	end
+end
+
+
 function RaidSummon:ExecuteAddAll()
 	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_ALL, COMM_PREFIX_ADD_ALL, "RAID")
 end
 
 --Keyword Options Functions
 function RaidSummon:ExecuteKWList()
-	print(L["OptionKWList"])
-	for k, v in pairs(self.db.profile.keywords) do
-		print(k)
+	if next(self.db.profile.keywords) == nil then
+		print(L["OptionListEmpty"])
+	else
+		print(L["OptionKWList"])
+		for k, v in pairs(self.db.profile.keywords) do
+			print(k)
+		end
 	end
 end
 
@@ -700,11 +738,27 @@ function RaidSummon:SetKWRemove(info, input)
 		if (RaidSummon:hasKey(self.db.profile.keywords, input)) then
 			print(L["OptionKWRemoveRemoved"](input))
 			self.db.profile.keywords[input] = nil
+		elseif input == L["OptionListEmptySel"] then
+			return
 		else
 			print(L["OptionKWRemoveNF"](input))
 		end
+	end	
+end
+
+function RaidSummon:ValuesKWRemoveSel(info)
+	local kwlist = {}
+	if next(self.db.profile.keywords) == nil then
+		kwlist[L["OptionListEmptySel"]] = L["OptionListEmptySel"]
+		return kwlist
+	else
+		for k, v in pairs(self.db.profile.keywords) do
+			kwlist[k] = k
+		end
+		return kwlist
 	end
 end
+
 
 --fill the frame with dummy data for testing
 --/script RaidSummon:DummyFill()

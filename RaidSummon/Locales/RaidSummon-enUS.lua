@@ -39,9 +39,9 @@ L["OptionClearName"] = "Clear"
 L["OptionClearDesc"] = "Clears the summoning list."
 L["OptionToggleName"] = "Toggle"
 L["OptionToggleDesc"] = "Toggles the visiblity of the summoning frame."
-L["OptionAddName"] = "Add"
+L["OptionAddName"] = "Add Player"
 L["OptionAddDesc"] = "Adds a player to the summoning frame (case sensitive)."
-L["OptionRemoveName"] = "Remove"
+L["OptionRemoveName"] = "Remove Player"
 L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
 L["OptionAddAllName"] = "Add All"
 L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
@@ -86,6 +86,7 @@ L["OptionHelpPrint"] = [[
 You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
+L["OptionListEmptySel"] = "List is empty"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Raid members that requested a summon:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Cleared the summon list"
 
@@ -113,7 +114,7 @@ L["TargetMissmatch"] = function(X,Y)
 end
 L["OptionKWList"] = "|cff9482c9RaidSummon:|r Summoning keyword list:"
 L["OptionKWAddDuplicate"] = function(V)
-	return '|cff9482c9RaidSummon:|r Keyword duplicate ' .. V
+	return '|cff9482c9RaidSummon:|r Keyword duplicate: ' .. V
 end
 L["OptionKWAddAdded"] = function(V)
 	return '|cff9482c9RaidSummon:|r Keyword added: ' .. V
