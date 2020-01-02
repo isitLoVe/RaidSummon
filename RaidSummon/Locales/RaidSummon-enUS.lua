@@ -39,19 +39,28 @@ L["OptionClearName"] = "Clear"
 L["OptionClearDesc"] = "Clears the summoning list."
 L["OptionToggleName"] = "Toggle"
 L["OptionToggleDesc"] = "Toggles the visiblity of the summoning frame."
-L["OptionAddName"] = "Add"
+L["OptionAddName"] = "Add Player"
 L["OptionAddDesc"] = "Adds a player to the summoning frame (case sensitive)."
-L["OptionRemoveName"] = "Remove"
+L["OptionRemoveName"] = "Remove Player"
 L["OptionRemoveDesc"] = "Removes a player from the summoning frame (case sensitive)."
 L["OptionAddAllName"] = "Add All"
 L["OptionAddAllDesc"] = "Add all players not in the current zone to the summoning frame."
 L["OptionGroupKeywordsName"] = "Summoning keywords"
 L["OptionKWListName"] = "List keywords"
-L["OptionKWListDesc"] = "Lists all active summoning keywords"
+L["OptionKWListDesc"] = "Lists all active summoning keywords."
 L["OptionKWAddName"] = "Add keyword"
-L["OptionKWAddDesc"] = "Adds a summoning keyword"
+L["OptionKWAddDesc"] = "Adds a summoning keyword."
 L["OptionKWRemoveName"] = "Remove keyword"
-L["OptionKWRemoveDesc"] = "Removes a summoning keyword"
+L["OptionKWRemoveDesc"] = "Removes a summoning keyword."
+L["OptionKWDescription"] =  [[|cffff0000Keywords are regular expressions, use carefully!|r
+
+Keywords are matched via say/yell/raid/party/whisper chat. Only the sender of the chat message will be added to the summoning list. To reset keywords you can use the ACE3 profile manager and reset your profile.
+
+Basic examples:
+|cff9482c9^summon|r - Will match "summon" as the first word of a chat message
+|cff9482c9summon|r - Will match "summon" at any position of a chat message even inside words like asdfsummonasdf
+|cff9482c9^summon$|r - Will only match if a single word "summon" is received
+]]
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
@@ -60,7 +69,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
-/rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone }
+/rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }
  - |cff9482c9clear|r: Clears the summoning list.
  - |cff9482c9config|r: Opens the configuration menu.
  - |cff9482c9help|r: Shows a list of supported options.
@@ -71,9 +80,13 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
+ - |cff9482c9kwlist|r: Lists all active summoning keywords.
+ - |cff9482c9kwadd|r: Adds a summoning keyword.
+ - |cff9482c9kwremove|r: Removes a summoning keyword.
 You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
+L["OptionListEmptySel"] = "List is empty"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Raid members that requested a summon:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Cleared the summon list"
 
@@ -101,7 +114,7 @@ L["TargetMissmatch"] = function(X,Y)
 end
 L["OptionKWList"] = "|cff9482c9RaidSummon:|r Summoning keyword list:"
 L["OptionKWAddDuplicate"] = function(V)
-	return '|cff9482c9RaidSummon:|r Keyword duplicate ' .. V
+	return '|cff9482c9RaidSummon:|r Keyword duplicate: ' .. V
 end
 L["OptionKWAddAdded"] = function(V)
 	return '|cff9482c9RaidSummon:|r Keyword added: ' .. V

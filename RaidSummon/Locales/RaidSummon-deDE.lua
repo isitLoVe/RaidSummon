@@ -39,12 +39,28 @@ L["OptionClearName"] = "Löschen"
 L["OptionClearDesc"] = "Löscht die Beschörungsliste."
 L["OptionToggleName"] = "Anzeige"
 L["OptionToggleDesc"] = "Zeigt die Beschörungsliste an oder versteckt diese."
-L["OptionAddName"] = "Hinzufügen"
+L["OptionAddName"] = "Spieler Hinzufügen"
 L["OptionAddDesc"] = "Fügt ein Schlachtzugsmitglieder zur Beschörungsliste hinzu (Groß- und Kleinschreibung beachten)."
-L["OptionRemoveName"] = "Entfernen"
+L["OptionRemoveName"] = "Spieler Entfernen"
 L["OptionRemoveDesc"] = "Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste (Groß- und Kleinschreibung beachten)."
 L["OptionAddAllName"] = "Alle Hinzufügen"
 L["OptionAddAllDesc"] = "Fügt alle Schlachtzugsmitglieder zur Beschörungsliste hinzu, die sich nicht im aktuellen Gebiet befinden."
+L["OptionGroupKeywordsName"] = "Schlüsselwörter"
+L["OptionKWListName"] = "Schlüsselwort-Liste"
+L["OptionKWListDesc"] = "Gibt eine Liste aller Schlüsselwörter aus."
+L["OptionKWAddName"] = "Schlüsselwort hinzufügen"
+L["OptionKWAddDesc"] = "Fügt ein Schlüsselwort zur Liste hinzu."
+L["OptionKWRemoveName"] = "Schlüsselwort entfernen"
+L["OptionKWRemoveDesc"] = "Entfernt ein Schlüsselwort aus der Liste."
+L["OptionKWDescription"] =  [[|cffff0000ACHTUNG: Schlüsselwörter sind Reguläre Ausdrücke!|r
+
+Schlüsselwörter werden in den Kanälen sprechen/rufen/Schlachtzug/Gruppe/flüstern erkannt. Nur der Absender der Nachricht wird zur Beschörungsliste hinzugefügt. Die Schlüsselwörter können über den ACE3 Profilmanager zurückgesetzt werden.
+
+Einfache Beispiele:
+|cff9482c9^port|r - Erkennt das Wort "port" nur am Anfang einer Nachricht
+|cff9482c9port|r - Erkennt das Wort port an jeder Position in einer Nachricht. Sogar wenn es in einem Wort verwendet wird "asdfportasdf"
+|cff9482c9^port$|r - Erkennt das Wort "port" wenn es das einzige Wort einer Nachricht ist
+]]
 
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00eingeschaltet|r"
@@ -53,7 +69,7 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cff00ff00einges
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cffff0000ausgeschaltet|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon Verwendung:|r
-/rs oder /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone }
+/rs oder /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }
  - |cff9482c9clear|r: Löscht die Beschörungsliste.
  - |cff9482c9config|r: Öffnet das Konfigurationsmenü.
  - |cff9482c9help|r: Zeigt eine Liste der möglichen Kommandos und Optionen an.
@@ -64,9 +80,13 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9toggle|r: Zeigt die Beschörungsliste an oder versteckt diese.
  - |cff9482c9whisper|r: Schaltet die Flüsterfunktion beim Beschwören ein.
  - |cff9482c9zone|r: Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein.
+ - |cff9482c9kwlist|r: Gibt eine Liste aller Schlüsselwörter aus.
+ - |cff9482c9kwadd|r: Fügt ein Schlüsselwort zur Liste hinzu.
+ - |cff9482c9kwremove|r: Entfernt ein Schlüsselwort aus der Liste.
 Um das Fenster zu verschieben Umschalttaste + linke Maustaste verwenden.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r Beschörungsliste ist leer"
+L["OptionListEmptySel"] = "Liste ist leer"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Schlachtzugsmitglieder die eine Beschwörung angefordert haben:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Beschörungsliste gelöscht"
 
@@ -91,4 +111,17 @@ L["SummonAnnounceW"] = "RaidSummon: Beschwöre dich"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Fehler bei der Ankündigung"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Beschwören abgebrochen. Dein Target ' .. X .. ' stimmt nicht mit dem Namen überein, der angeklickt wurde ' .. Y
+end
+L["OptionKWList"] = "|cff9482c9RaidSummon:|r Schlüsselwort-Liste:"
+L["OptionKWAddDuplicate"] = function(V)
+	return '|cff9482c9RaidSummon:|r Schlüsselwort Duplikat: ' .. V
+end
+L["OptionKWAddAdded"] = function(V)
+	return '|cff9482c9RaidSummon:|r Schlüsselwort hinzugefügt: ' .. V
+end
+L["OptionKWRemoveRemoved"] = function(V)
+	return '|cff9482c9RaidSummon:|r Schlüsselwort entfernt: ' .. V
+end
+L["OptionKWRemoveNF"] = function(V)
+	return '|cff9482c9RaidSummon:|r Schlüsselwort nicht gefunden: ' .. V
 end
