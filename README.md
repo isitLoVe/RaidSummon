@@ -1,8 +1,5 @@
 # RaidSummon
 
-## Update for Classic
-Version 3.0.0 is the first public release for WoW Classic
-
 ## Download
 https://www.curseforge.com/wow/addons/raidsummon
 
