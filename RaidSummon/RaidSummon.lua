@@ -160,8 +160,7 @@ local defaults = {
 	profile = {
 		whisper = true,
 		zone = true,
-		keywords = { "^123$", "^sum", "^port" },
-		keywordsnotdef = false
+		keywordsinit = false
 	}
 }
 
@@ -193,7 +192,11 @@ end
 function RaidSummon:OnInitialize()
 
 	self.db = LibStub("AceDB-3.0"):New("RaidSummonOptionsDB", defaults, true)
-
+	self.db.RegisterCallback(self, "OnNewProfile", "RefreshConfig")
+	self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+	self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+	self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+	
 	--frame needed to open it via /rs config
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(L["RaidSummon"], options)
 	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L["RaidSummon"], L["RaidSummon"])
@@ -232,6 +235,12 @@ function RaidSummon:OnInitialize()
 	self:RegisterComm(COMM_PREFIX_REMOVE) --remove via summoning / right click
 	self:RegisterComm(COMM_PREFIX_REMOVE_MANUAL) --remove via ctrl + click
 	self:RegisterComm(COMM_PREFIX_ADD_ALL) --via AddAll function
+	
+	--check if keywords have been initialized
+	if (not self.db.profile.keywordsinit) then
+		self.db.profile.keywords = { "^123$", "^sum", "^port" }
+		self.db.profile.keywordsinit = true
+	end
 end
 
 --Handle CHAT_MSG Events here
@@ -266,7 +275,7 @@ function RaidSummon:GROUP_ROSTER_UPDATE(eventName,...)
 	RaidSummon:UpdateList()
 end
 
---ACE3 Comm
+--Ace3 Comm
 function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 	if (prefix) then
 		if prefix == COMM_PREFIX_ADD then
@@ -701,17 +710,17 @@ end
 
 function RaidSummon:ValuesRemoveSel(info)
 	local playerlist = {}
-	if next(RaidSummonSyncDB) == nil then
-		playerlist[L["OptionListEmptySel"]] = L["OptionListEmptySel"]
-		return playerlist
-	else
-		for i, v in ipairs(RaidSummonSyncDB) do
-			playerlist[v] = v
+	if RaidSummonSyncDB then
+		if next(RaidSummonSyncDB) == nil then
+			return playerlist
+		else
+			for i, v in ipairs(RaidSummonSyncDB) do
+				playerlist[v] = v
+			end
+			return playerlist
 		end
-		return playerlist
 	end
 end
-
 
 function RaidSummon:ExecuteAddAll()
 	RaidSummon:SendCommMessage(COMM_PREFIX_ADD_ALL, COMM_PREFIX_ADD_ALL, "RAID")
@@ -746,8 +755,6 @@ function RaidSummon:SetKWRemove(info, input)
 			print(L["OptionKWRemoveRemoved"](input))
 			local index = RaidSummon:getIndexbyValue(self.db.profile.keywords, input)
 			table.remove(self.db.profile.keywords, index)
-		elseif input == L["OptionListEmptySel"] then
-			return
 		else
 			print(L["OptionKWRemoveNF"](input))
 		end
@@ -756,29 +763,26 @@ end
 
 function RaidSummon:ValuesKWRemoveSel(info)
 	local kwlist = {}
-	if next(self.db.profile.keywords) == nil then
-		table.insert(kwlist,L["OptionListEmptySel"])
-		return kwlist
-	else
-		for i, v in ipairs(self.db.profile.keywords) do
-			table.insert(kwlist,v)
+	if self.db.profile.keywords then
+		if next(self.db.profile.keywords) == nil then
+			return kwlist
+		else
+			for i, v in ipairs(self.db.profile.keywords) do
+				table.insert(kwlist,v)
+			end
+			return kwlist
 		end
-		return kwlist
 	end
 end
 
 function RaidSummon:SetKWRemoveSel(info, input)
 	--input is the index of a the profile keywords table
-
-	print(input)
 	if (input) then
-		if (RaidSummon:hasValue(self.db.profile.keywords, input)) then
-			print(L["OptionKWRemoveRemoved"](input))
-			table.remove(self.db.profile.keywords, input)
-		elseif input == L["OptionListEmptySel"] then
+		if not self.db.profile.keywords then
 			return
 		else
-			print(L["OptionKWRemoveNF"](input))
+			print(L["OptionKWRemoveRemoved"](self.db.profile.keywords[input]))
+			table.remove(self.db.profile.keywords, input)
 		end
 	end	
 end
@@ -899,5 +903,12 @@ function RaidSummon:RightClick()
 		if (dropdownMenu.name ~= "") then
 			RaidSummon:SetOptionRemove(_, dropdownMenu.name)
 		end
+	end
+end
+
+function RaidSummon:RefreshConfig()
+	if (not self.db.profile.keywordsinit) then
+		self.db.profile.keywords = { "^123$", "^sum", "^port" }
+		self.db.profile.keywordsinit = true
 	end
 end

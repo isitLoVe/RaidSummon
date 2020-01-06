@@ -32,7 +32,7 @@ L["OptionConfigName"] = "Config"
 L["OptionConfigDesc"] = "Opens the configuration menu."
 L["OptionGroupOptionsName"] = "Options"
 L["OptionGroupCommandsName"] = "Commands"
-L["OptionHeaderProfileName"] = "ACE3 profiles"
+L["OptionHeaderProfileName"] = "Ace3 profiles"
 L["OptionListName"] = "List"
 L["OptionListDesc"] = "Shows a list of players that requested a summon."
 L["OptionClearName"] = "Clear"
@@ -54,7 +54,7 @@ L["OptionKWRemoveName"] = "Remove keyword"
 L["OptionKWRemoveDesc"] = "Removes a summoning keyword."
 L["OptionKWDescription"] =  [[|cffff0000Keywords are regular expressions, use carefully!|r
 
-Keywords are matched via say/yell/raid/party/whisper chat. Only the sender of the chat message will be added to the summoning list. To reset keywords you can use the ACE3 profile manager and reset your profile.
+Keywords are matched via say/yell/raid/party/whisper chat. Only the sender of the chat message will be added to the summoning list. To reset keywords you can use the Ace3 profile manager and reset your profile.
 
 Basic examples:
 |cff9482c9^summon|r - Will match "summon" as the first word of a chat message
@@ -86,7 +86,6 @@ L["OptionHelpPrint"] = [[
 You can drag the frame with SHIFT + LEFT mouse button.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r List is empty"
-L["OptionListEmptySel"] = "List is empty"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Raid members that requested a summon:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Cleared the summon list"
 

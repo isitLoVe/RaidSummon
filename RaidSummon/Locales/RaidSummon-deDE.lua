@@ -32,7 +32,7 @@ L["OptionConfigName"] = "Konfiguration"
 L["OptionConfigDesc"] = "Öffnet das Konfigurationsmenü."
 L["OptionGroupOptionsName"] = "Optionen"
 L["OptionGroupCommandsName"] = "Kommandos"
-L["OptionHeaderProfileName"] = "ACE3 Profile"
+L["OptionHeaderProfileName"] = "Ace3 Profile"
 L["OptionListName"] = "Liste"
 L["OptionListDesc"] = "Zeigt die Liste der Schlachtzugsmitglieder an, die eine Beschwörung angefordert haben."
 L["OptionClearName"] = "Löschen"
@@ -54,7 +54,7 @@ L["OptionKWRemoveName"] = "Schlüsselwort entfernen"
 L["OptionKWRemoveDesc"] = "Entfernt ein Schlüsselwort aus der Liste."
 L["OptionKWDescription"] =  [[|cffff0000ACHTUNG: Schlüsselwörter sind Reguläre Ausdrücke!|r
 
-Schlüsselwörter werden in den Kanälen sprechen/rufen/Schlachtzug/Gruppe/flüstern erkannt. Nur der Absender der Nachricht wird zur Beschörungsliste hinzugefügt. Die Schlüsselwörter können über den ACE3 Profilmanager zurückgesetzt werden.
+Schlüsselwörter werden in den Kanälen sprechen/rufen/Schlachtzug/Gruppe/flüstern erkannt. Nur der Absender der Nachricht wird zur Beschörungsliste hinzugefügt. Die Schlüsselwörter können über den Ace3 Profilmanager zurückgesetzt werden.
 
 Einfache Beispiele:
 |cff9482c9^port|r - Erkennt das Wort "port" nur am Anfang einer Nachricht
@@ -86,7 +86,6 @@ L["OptionHelpPrint"] = [[
 Um das Fenster zu verschieben Umschalttaste + linke Maustaste verwenden.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r Beschörungsliste ist leer"
-L["OptionListEmptySel"] = "Liste ist leer"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Schlachtzugsmitglieder die eine Beschwörung angefordert haben:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Beschörungsliste gelöscht"
 
