@@ -19,6 +19,8 @@ L["OptionZoneName"] = "Локация"
 L["OptionZoneDesc"] = "Включите объявление локаций (например, Оргриммар) и мест (например, Долина Мудрости)."
 L["OptionWhisperName"] = "Шепот"
 L["OptionWhisperDesc"] = "Разрешить шептать выбранной цели."
+L["OptionRaidName"] = "набег"
+L["OptionRaidDesc"] = "Разрешить набег выбранной цели."
 L["OptionHelpName"] = "Помощь"
 L["OptionHelpDesc"] = "Показывает список поддерживаемых команд и опций."
 L["OptionConfigName"] = "Конфигурация"
@@ -36,6 +38,8 @@ L["OptionToggleDesc"] = "Переключает видимость окна пр
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Настройки шепота |cff00ff00включено|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Настройки шепота |cffff0000отключено|r"
+L["OptionRaidEnabled"] = "|cff9482c9RaidSummon:|r Настройки набег |cff00ff00включено|r"
+L["OptionRaidDisabled"] = "|cff9482c9RaidSummon:|r Настройки набег |cffff0000отключено|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Настройки локации |cff00ff00включено|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Настройки локации |cffff0000отключено|r"
 L["OptionHelpPrint"] = [[

@@ -26,6 +26,8 @@ L["OptionZoneName"] = "Gebiet"
 L["OptionZoneDesc"] = "Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit)ein."
 L["OptionWhisperName"] = "Flüstern"
 L["OptionWhisperDesc"] = "Schaltet die Flüsterfunktion beim Beschwören ein."
+L["OptionRaidName"] = "Überfall"
+L["OptionRaidDesc"] = "Schaltet die Überfallfunktion beim Beschwören ein."
 L["OptionHelpName"] = "Hilfe"
 L["OptionHelpDesc"] = "Zeigt eine Liste der möglichen Kommandos und Optionen an."
 L["OptionConfigName"] = "Konfiguration"
@@ -65,6 +67,8 @@ Einfache Beispiele:
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00eingeschaltet|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cffff0000ausgeschaltet|r"
+L["OptionRaidEnabled"] = "|cff9482c9RaidSummon:|r Option Überfall |cff00ff00eingeschaltet|r"
+L["OptionRaidDisabled"] = "|cff9482c9RaidSummon:|r Option Überfall |cffff0000ausgeschaltet|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cff00ff00eingeschaltet|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cffff0000ausgeschaltet|r"
 L["OptionHelpPrint"] = [[

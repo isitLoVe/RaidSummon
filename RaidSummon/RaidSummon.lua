@@ -21,13 +21,21 @@ local options = {
 					set = "SetOptionWhisper",
 					order = 11,
 				},
+				raid = {
+					type = "toggle",
+					name = L["OptionRaidName"],
+					desc = L["OptionRaidDesc"],
+					get = "GetOptionRaid",
+					set = "SetOptionRaid",
+					order = 12,
+				},
 				zone = {
 					type = "toggle",
 					name = L["OptionZoneName"],
 					desc = L["OptionZoneDesc"],
 					get = "GetOptionZone",
 					set = "SetOptionZone",
-					order = 12,
+					order = 13,
 				},
 			}
 		},
@@ -159,6 +167,7 @@ local options = {
 local defaults = {
 	profile = {
 		whisper = true,
+		raid = false,
 		zone = true,
 		keywordsinit = false
 	}
@@ -423,21 +432,27 @@ function RaidSummon:NameListButton_PreClick(source, button)
 				subzonetext = GetSubZoneText()
 			end
 
-			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
-				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
-			elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
-				SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
-			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
-			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
-			elseif not self.db.profile.zone and self.db.profile.whisper then
-				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
-				SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
-			elseif not self.db.profile.zone and not self.db.profile.whisper then
-				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+			if self.db.profile.zone and zonetext and subzonetext then
+				if self.db.profile.raid then
+					SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+				end
+				if self.db.profile.whisper then
+					SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
+				end
+			elseif self.db.profile.zone and zonetext and not subzonetext then
+				if self.db.profile.raid then
+					SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
+				end
+				if self.db.profile.whisper then
+					SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
+				end
+			elseif not self.db.profile.zone then
+				if self.db.profile.raid then
+					SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+				end
+				if self.db.profile.whisper then
+					SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
+				end
 			else
 				print(L["SummonAnnounceError"])
 			end
@@ -633,6 +648,10 @@ function RaidSummon:GetOptionWhisper(info)
 	return self.db.profile.whisper
 end
 
+function RaidSummon:GetOptionRaid(info)
+	return self.db.profile.raid
+end
+
 function RaidSummon:GetOptionZone(info)
 	return self.db.profile.zone
 end
@@ -643,6 +662,15 @@ function RaidSummon:SetOptionWhisper(info, value)
 		print(L["OptionWhisperEnabled"])
 	else
 		print(L["OptionWhisperDisabled"])
+	end
+end
+
+function RaidSummon:SetOptionRaid(info, value)
+	self.db.profile.raid = value
+	if value == true then
+		print(L["OptionRaidEnabled"])
+	else
+		print(L["OptionRaidDisabled"])
 	end
 end
 

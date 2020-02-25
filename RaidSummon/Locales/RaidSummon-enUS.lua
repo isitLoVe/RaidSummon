@@ -26,6 +26,8 @@ L["OptionZoneName"] = "Zone"
 L["OptionZoneDesc"] = "Enable zone (e.g. Orgrimmar) and subzone (e.g. Valley of Wisdom) mentioning in announcements."
 L["OptionWhisperName"] = "Whisper"
 L["OptionWhisperDesc"] = "Enable whispering to the summoned target."
+L["OptionRaidName"] = "Raid"
+L["OptionRaidDesc"] = "Enable raid message with the summoning target."
 L["OptionHelpName"] = "Help"
 L["OptionHelpDesc"] = "Shows a list of supported commands and options."
 L["OptionConfigName"] = "Config"
@@ -65,6 +67,8 @@ Basic examples:
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option whisper |cffff0000disabled|r"
+L["OptionRaidEnabled"] = "|cff9482c9RaidSummon:|r Option raid |cff00ff00enabled|r"
+L["OptionRaidDisabled"] = "|cff9482c9RaidSummon:|r Option raid |cffff0000disabled|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
@@ -79,6 +83,7 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9remove|r: Removes a player from the summoning frame (case sensitive).
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
+ - |cff9482c9raid|r: Enable raid message with the summoning target.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
  - |cff9482c9kwlist|r: Lists all active summoning keywords.
  - |cff9482c9kwadd|r: Adds a summoning keyword.
