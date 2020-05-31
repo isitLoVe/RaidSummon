@@ -69,19 +69,19 @@ L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disable
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
 /rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }
- - | cff9482c9clear | r: efface la liste d'invocation.
- - | cff9482c9config | r: ouvre le menu de configuration.
- - | cff9482c9help | r: affiche une liste des options prises en charge.
- - | cff9482c9list | r: affiche une liste des joueurs qui ont demandé une invocation.
- - | cff9482c9add | r: ajoute un lecteur au cadre d'invocation (sensible à la casse).
- - | cff9482c9addall | r: ajoute tous les joueurs ne se trouvant pas dans la zone actuelle au cadre d'invocation.
- - | cff9482c9remove | r: supprime un joueur du cadre d'invocation (sensible à la casse).
- - | cff9482c9toggle | r: bascule la visibilité de la trame d'invocation.
- - | cff9482c9whisper | r: permet de chuchoter à la cible invoquée.
- - | cff9482c9zone | r: active la mention de zone dans les annonces.
- - | cff9482c9kwlist | r: répertorie tous les mots clés d'invocation actifs.
- - | cff9482c9kwadd | r: ajoute un mot-clé d'invocation.
- - | cff9482c9kwremove | r: supprime un mot-clé d'invocation.
+ - |cff9482c9clear|r: efface la liste d'invocation.
+ - |cff9482c9config|r: ouvre le menu de configuration.
+ - |cff9482c9help|r: affiche une liste des options prises en charge.
+ - |cff9482c9list|r: affiche une liste des joueurs qui ont demandé une invocation.
+ - |cff9482c9add|r: ajoute un lecteur au cadre d'invocation (sensible à la casse).
+ - |cff9482c9addall|r: ajoute tous les joueurs ne se trouvant pas dans la zone actuelle au cadre d'invocation.
+ - |cff9482c9remove|r: supprime un joueur du cadre d'invocation (sensible à la casse).
+ - |cff9482c9toggle|r: bascule la visibilité de la trame d'invocation.
+ - |cff9482c9whisper|r: permet de chuchoter à la cible invoquée.
+ - |cff9482c9zone|r: active la mention de zone dans les annonces.
+ - |cff9482c9kwlist|r: répertorie tous les mots clés d'invocation actifs.
+ - |cff9482c9kwadd|r: ajoute un mot-clé d'invocation.
+ - |cff9482c9kwremove|r: supprime un mot-clé d'invocation.
 Vous pouvez faire glisser le cadre avec le bouton SHIFT + GAUCHE de la souris.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r La liste est vide"
