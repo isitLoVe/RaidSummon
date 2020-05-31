@@ -1,6 +1,6 @@
 --## Contribition Fr translation by : Ladygaga-sulfuron-EU
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("RaidSummon", "frFR", true, true)
+local L = AceLocale:NewLocale("RaidSummon", "frFR", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
