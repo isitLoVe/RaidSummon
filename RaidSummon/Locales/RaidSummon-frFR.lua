@@ -1,3 +1,4 @@
+## Author: |cff02bf02lLadygaga-sulfuron-EU|r
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("RaidSummon", "frFR", true, true)
 if not L then return end
@@ -5,7 +6,7 @@ if not L then return end
 L["RaidSummon"] = "RaidSummon"
 L["Language"] = "French"
 L["AddonEnabled"] = function(X,Y)
-	return '|cff9482c9RaidSummon:|r version ' .. X .. ' by ' .. Y .. ' chargé'
+	return '|cff9482c9RaidSummon:|r version ' .. X .. ' par ' .. Y .. ' chargé'
 end
 L["AddonDisabled"] = "RaidSummon désactivé"
 L["FrameHeader"] = function(X)
@@ -29,7 +30,7 @@ L["OptionWhisperDesc"] = "Activez l'avertissment en /w sur la cible invoquée"
 L["OptionHelpName"] = "Aide"
 L["OptionHelpDesc"] = "Affiche la liste des commandes et options prises en charge."
 L["OptionConfigName"] = "Configuration"
-L["OptionConfigDesc"] = "Ouvrir le menue de configuration."
+L["OptionConfigDesc"] = "Ouvrir le menu de configuration."
 L["OptionGroupOptionsName"] = "Options"
 L["OptionGroupCommandsName"] = "Commandes"
 L["OptionHeaderProfileName"] = "Ace3 profiles"
@@ -37,8 +38,8 @@ L["OptionListName"] = "Liste"
 L["OptionListDesc"] = "affiche la liste des joueurs qui ont demandé une invocation."
 L["OptionClearName"] = "Efface"
 L["OptionClearDesc"] = "Efface la liste des invocations."
-L["OptionToggleName"] = "Basculer"
-L["OptionToggleDesc"] = "Bascule la visibilité du cadre d'invocation."
+L["OptionToggleName"] = "Voir liste"
+L["OptionToggleDesc"] = "Liste des demandes d'invocation visible."
 L["OptionAddName"] = "Ajouter un Joueur"
 L["OptionAddDesc"] = "Ajoute un joueur à la liste d'invocation (sensible à la casse)."
 L["OptionRemoveName"] = "Enlever Joueur"
@@ -50,14 +51,14 @@ L["OptionKWListName"] = "Liste des mots clés"
 L["OptionKWListDesc"] = "Liste des mots clés."
 L["OptionKWAddName"] = "Ajout Mot clé"
 L["OptionKWAddDesc"] = "Ajoute un mot-clé pour les invocations. "
-L["OptionKWRemoveName"] = "Enlève un mot clés"
+L["OptionKWRemoveName"] = "Supprime un mot clés"
 L["OptionKWRemoveDesc"] = "Supprime un mot clé d'invocation."
 L["OptionKWDescription"] =  [[|cffff0000Les mots clés sont des expressions régulières, à utiliser avec précaution!|r
 Les mots clés sont mis en correspondance via le chat say / yell / raid / party / whisper. Seul l'expéditeur du message de discussion sera ajouté à la liste d'invocation. Pour réinitialiser les mots clés, vous pouvez utiliser le gestionnaire de profils Ace3 et réinitialiser votre profil.
 Basic examples:
-|cff9482c9^tp|r - Will match "summon" as the first word of a chat message
-|cff9482c9tp|r - Will match "summon" à n'importe quelle position d'un message de discussion, même à l'intérieur de mots comme 
-|cff9482c9^tp$|r - correspondra que si un seul mot "tp" est reçu
+|cff9482c9^tp|r - fonctionnera quand "tp" sera le premier mot dans la fenetre de chat
+|cff9482c9tp|r - fonctionnera quand  "tp" sera à n'importe quelle position d'un message de discussion, même à l'intérieur de mots comme 
+|cff9482c9^tp$|r -fonctionnera quand seul le mot "tp" est reçu
 ]]
 
 --Slash Command Options
@@ -85,24 +86,24 @@ Vous pouvez faire glisser le cadre avec le bouton SHIFT + GAUCHE de la souris.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r La liste est vide"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Membres du raid qui ont demandé une assignation:"
-L["OptionClear"] = "|cff9482c9RaidSummon:|r Effacé la liste d'invocation"
+L["OptionClear"] = "|cff9482c9RaidSummon:|r Effacé de la liste d'invocation"
 
 --Summon Announce
 --W=Whisper/R=Raid Z=Zone S=Subzone T=Target Player
 L["SummonAnnounceRZS"] = function(T,Z,S)
-	return 'RaidSummon: Invocation ' .. T .. ' à ' .. Z .. ' - ' .. S
+	return 'RaidSummon: Invocation de ' .. T .. ' à ' .. Z .. ' - ' .. S
 end
 L["SummonAnnounceWZS"] = function(Z,S)
 	return 'RaidSummon: Invocation à ' .. Z .. ' - ' .. S
 end
 L["SummonAnnounceRZ"] = function(T,Z,S)
-	return 'RaidSummon: Invocation ' .. T .. ' à ' .. Z
+	return 'RaidSummon: Invocation de ' .. T .. ' à ' .. Z
 end
 L["SummonAnnounceWZ"] = function(Z,S)
 	return 'RaidSummon: Invocation en cours à ' .. Z
 end
 L["SummonAnnounceR"] = function(T)
-	return 'RaidSummon: Invocation ' .. T
+	return 'RaidSummon: Invocation de ' .. T
 end
 L["SummonAnnounceW"] = "RaidSummon: Invocation en cours"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Announce error"
