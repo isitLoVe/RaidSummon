@@ -1,4 +1,4 @@
-## Author: |cff02bf02lLadygaga-sulfuron-EU|r
+--## Contribition Fr translation by : Ladygaga-sulfuron-EU
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("RaidSummon", "frFR", true, true)
 if not L then return end
