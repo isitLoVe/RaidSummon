@@ -1,4 +1,4 @@
---## Contribition Fr translation by : Ladygaga-sulfuron-EU
+--## French translation Contribution by : Ladygaga-sulfuron-EU
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
 local L = AceLocale:NewLocale("RaidSummon", "frFR", false, true)
 if not L then return end
@@ -44,7 +44,7 @@ L["OptionAddName"] = "Ajouter un Joueur"
 L["OptionAddDesc"] = "Ajoute un joueur à la liste d'invocation (sensible à la casse)."
 L["OptionRemoveName"] = "Enlever Joueur"
 L["OptionRemoveDesc"] = "Enlever un joueur à la liste d'invocation (sensible à la casse)."
-L["OptionAddAllName"] = "Tout ajouter"
+L["OptionAddAllName"] = "Ajouter tous les joueurs hors zone"
 L["OptionAddAllDesc"] = "Ajoutez tous les joueurs ne se trouvant pas dans la zone actuelle au cadre d'invocation."
 L["OptionGroupKeywordsName"] = "Mots clés pour les invocations"
 L["OptionKWListName"] = "Liste des mots clés"
@@ -86,7 +86,7 @@ Vous pouvez faire glisser le cadre avec le bouton SHIFT + GAUCHE de la souris.
 ]]
 L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r La liste est vide"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Membres du raid qui ont demandé une assignation:"
-L["OptionClear"] = "|cff9482c9RaidSummon:|r Effacé de la liste d'invocation"
+L["OptionClear"] = "|cff9482c9RaidSummon:|r Liste d'invocation éffacée"
 
 --Summon Announce
 --W=Whisper/R=Raid Z=Zone S=Subzone T=Target Player
