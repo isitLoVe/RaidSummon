@@ -1,7 +1,7 @@
 ## Title: RaidSummon |cff7fff7f -Ace3-|r
 ## Notes: Helps Warlocks managing summoning
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
-## Version: 3.3.3
+## Version: 3.3.2
 ## Author: |cff02bf02Tyche-Lucifron|r
 ## Interface: 11304
 ## SavedVariables: RaidSummonOptionsDB
@@ -14,7 +14,6 @@ Embeds.xml
 Locales\RaidSummon-enUS.lua
 Locales\RaidSummon-deDE.lua
 Locales\RaidSummon-ruRU.lua
-Locales\RaidSummon-frFR.lua
 
 RaidSummon.lua
 RaidSummon.xml
