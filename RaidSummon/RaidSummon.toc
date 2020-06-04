@@ -15,6 +15,7 @@ Locales\RaidSummon-enUS.lua
 Locales\RaidSummon-deDE.lua
 Locales\RaidSummon-ruRU.lua
 Locales\RaidSummon-frFR.lua
+Locales\RaidSummon-ptBR.lua
 
 RaidSummon.lua
 RaidSummon.xml
