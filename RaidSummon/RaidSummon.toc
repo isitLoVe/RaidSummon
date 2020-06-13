@@ -3,7 +3,7 @@
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
 ## Version: 3.4.0
 ## Author: |cff02bf02Tyche-Lucifron|r
-## Interface: 11304
+## Interface: 11305
 ## SavedVariables: RaidSummonOptionsDB
 ## OptionalDeps:  Ace3
 
