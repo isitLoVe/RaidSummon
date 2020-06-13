@@ -26,6 +26,8 @@ L["OptionZoneName"] = "Zone"
 L["OptionZoneDesc"] = "Enable zone (e.g. Orgrimmar) and subzone (e.g. Valley of Wisdom) mentioning in announcements."
 L["OptionWhisperName"] = "Whisper"
 L["OptionWhisperDesc"] = "Enable whispering to the summoned target."
+L["OptionFlashwindowName"] = "Flash Window"
+L["OptionFlashwindowDesc"] = "Flashes the Windows when someone requests a summon."
 L["OptionHelpName"] = "Help"
 L["OptionHelpDesc"] = "Shows a list of supported commands and options."
 L["OptionConfigName"] = "Config"
@@ -67,6 +69,8 @@ L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00en
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option whisper |cffff0000disabled|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
+L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Option flash window |cff00ff00enabled|r"
+L["OptionFlashwindowDisabled"] = "|cff9482c9RaidSummon:|r Option flash window |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
 /rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }

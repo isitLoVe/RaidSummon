@@ -23,9 +23,11 @@ L["AddAllMessage"] = "|cff9482c9RaidSummon:|r Füge alle Schlachtzugsmitglieder 
 
 --Options
 L["OptionZoneName"] = "Gebiet"
-L["OptionZoneDesc"] = "Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit)ein."
+L["OptionZoneDesc"] = "Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein."
 L["OptionWhisperName"] = "Flüstern"
 L["OptionWhisperDesc"] = "Schaltet die Flüsterfunktion beim Beschwören ein."
+L["OptionFlashwindowName"] = "Fenster blinken"
+L["OptionFlashwindowDesc"] = "Lässt das Fenster in Windows blinken wenn eine Beschwörung angefordert wurde."
 L["OptionHelpName"] = "Hilfe"
 L["OptionHelpDesc"] = "Zeigt eine Liste der möglichen Kommandos und Optionen an."
 L["OptionConfigName"] = "Konfiguration"
@@ -67,6 +69,8 @@ L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cff00ff00
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option Flüstern |cffff0000ausgeschaltet|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cff00ff00eingeschaltet|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option Gebiet |cffff0000ausgeschaltet|r"
+L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Option Fenster blinken |cff00ff00eingeschaltet|r"
+L["OptionFlashwindowDisabled"] = "|cff9482c9RaidSummon:|r Option Fenster blinken |cffff0000ausgeschaltet|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon Verwendung:|r
 /rs oder /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }
