@@ -20,6 +20,9 @@ local gameLocale = GetLocale()
 if gameLocale == "enGB" then
 	gameLocale = "enUS"
 end
+if gameLocale == "esMX" then
+	gameLocale = "esES"
+end
 
 AceLocale.apps = AceLocale.apps or {}          -- array of ["AppName"]=localetableref
 AceLocale.appnames = AceLocale.appnames or {}  -- array of [localetableref]="AppName"
