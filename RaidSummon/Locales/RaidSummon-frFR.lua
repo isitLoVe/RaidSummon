@@ -1,5 +1,5 @@
 local AceLocale = LibStub:GetLibrary("AceLocale-3.0")
-local L = AceLocale:NewLocale("RaidSummon", "frFR", true, true)
+local L = AceLocale:NewLocale("RaidSummon", "frFR", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
@@ -33,12 +33,12 @@ L["OptionConfigDesc"] = "Ouvrir le menue de configuration."
 L["OptionGroupOptionsName"] = "Options"
 L["OptionGroupCommandsName"] = "Commandes"
 L["OptionHeaderProfileName"] = "Ace3 profiles"
-L["OptionListName"] = "Liste"
-L["OptionListDesc"] = "affiche la liste des joueurs qui ont demandé une invocation."
-L["OptionClearName"] = "Efface"
+L["OptionListName"] = "Renvoi la liste des demandes"
+L["OptionListDesc"] = "Affiche la liste des joueurs qui ont demandé une invocation."
+L["OptionClearName"] = "Vide la liste des demandes"
 L["OptionClearDesc"] = "Efface la liste des invocations."
-L["OptionToggleName"] = "Basculer"
-L["OptionToggleDesc"] = "Bascule la visibilité du cadre d'invocation."
+L["OptionToggleName"] = "Afficher / Masquer"
+L["OptionToggleDesc"] = "Affiche ou cache le cadre des demandes d'invocation."
 L["OptionAddName"] = "Ajouter un Joueur"
 L["OptionAddDesc"] = "Ajoute un joueur à la liste d'invocation (sensible à la casse)."
 L["OptionRemoveName"] = "Enlever Joueur"
@@ -55,9 +55,9 @@ L["OptionKWRemoveDesc"] = "Supprime un mot clé d'invocation."
 L["OptionKWDescription"] =  [[|cffff0000Les mots clés sont des expressions régulières, à utiliser avec précaution!|r
 Les mots clés sont mis en correspondance via le chat say / yell / raid / party / whisper. Seul l'expéditeur du message de discussion sera ajouté à la liste d'invocation. Pour réinitialiser les mots clés, vous pouvez utiliser le gestionnaire de profils Ace3 et réinitialiser votre profil.
 Basic examples:
-|cff9482c9^tp|r - Will match "summon" as the first word of a chat message
-|cff9482c9tp|r - Will match "summon" à n'importe quelle position d'un message de discussion, même à l'intérieur de mots comme
-|cff9482c9^tp$|r - correspondra que si un seul mot "tp" est reçu
+|cff9482c9^123|r - fonctionnera quand "123" est present dans le premier mot du message
+|cff9482c9123|r - fonctionnera quand  "123" sera présent à n'importe quelle position d'un message , y compris à l'intérieur du message
+|cff9482c9^123$|r - correspondra que si un seul mot "123" est reçu
 ]]
 
 --Slash Command Options
