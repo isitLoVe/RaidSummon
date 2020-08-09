@@ -13,21 +13,126 @@ local options = {
 			order = 10,
 			inline = true,
 			args = {
-				whisper = {
-					type = "toggle",
-					name = L["OptionWhisperName"],
-					desc = L["OptionWhisperDesc"],
-					get = "GetOptionWhisper",
-					set = "SetOptionWhisper",
+				whisperOptions = {
+					type = "group",
+					name = L["OptionGroupWhisperName"],
 					order = 11,
+					inline = true,
+					args = {
+						whisper = {
+							type = "toggle",
+							name = L["OptionWhisperName"],
+							desc = L["OptionWhisperDesc"],
+							get = "GetOptionWhisper",
+							set = "SetOptionWhisper",
+							order = 111,
+							width = "full"
+						},	
+						whisperText = {
+							type = "input",
+							name = L["OptionWhisperTextName"],
+							desc = L["OptionWhisperTextDesc"],
+							get = "GetOptionWhisperText",
+							set = "SetOptionWhisperText",
+							multiline = false,
+							order = 112,
+							width = "full"
+						}
+					}
 				},
-				raid = {
-					type = "toggle",
-					name = L["OptionRaidName"],
-					desc = L["OptionRaidDesc"],
-					get = "GetOptionRaid",
-					set = "SetOptionRaid",
+				raidOptions = {
+					type = "group",
+					name = L["OptionGroupRaidName"],
 					order = 12,
+					inline = true,
+					args = {
+						raid = {
+							type = "toggle",
+							name = L["OptionRaidName"],
+							desc = L["OptionRaidDesc"],
+							get = "GetOptionRaid",
+							set = "SetOptionRaid",
+							order = 121,
+							width = "full"
+						},
+						raidText = {
+							type = "input",
+							name = L["OptionRaidTextName"],
+							desc = L["OptionRaidTextDesc"],
+							get = "GetOptionRaidText",
+							set = "SetOptionRaidText",
+							multiline = false,
+							order = 122,
+							width = "full"
+						}
+					}
+				},
+				sayOptions = {
+					type = "group",
+					name = L["OptionGroupSayName"],
+					order = 13,
+					inline = true,
+					args = {
+						say = {
+							type = "toggle",
+							name = L["OptionSayName"],
+							desc = L["OptionSayDesc"],
+							get = "GetOptionSay",
+							set = "SetOptionSay",
+							order = 131,
+							width = "full"
+						},
+						sayText = {
+							type = "input",
+							name = L["OptionSayTextName"],
+							desc = L["OptionSayTextDesc"],
+							get = "GetOptionSayText",
+							set = "SetOptionSayText",
+							multiline = false,
+							order = 132,
+							width = "full"
+						}
+					}
+				},
+				tidBitOptions = {
+					type = "group",
+					name = L["OptionGroupTidbitsName"],
+					order = 14,
+					inline = true,
+					args = {
+						tbdesc = {
+							type = "description",
+							name = L["OptionTidbitsDescription"],
+							order = 141,
+						},
+						tbadd = {
+							type = "input",
+							name = L["OptionTidbitsAddName"],
+							desc = L["OptionTidbitsAddDesc"],
+							set = "SetTidbitsAdd",
+							multiline = false,
+							order = 142,
+							width = "full"
+						},
+						tbremove = {
+							type = "input",
+							name = L["OptionTidbitsRemoveName"],
+							desc = L["OptionTidbitsRemoveDesc"],
+							set = "SetTidbitsRemove",
+							order = 143,
+							guiHidden = true,
+						},
+						tbremovesel = {
+							type = "select",
+							name = L["OptionTidbitsRemoveName"],
+							desc = L["OptionTidbitsRemoveDesc"],
+							values = "ValuesRandomTidbitSel",
+							style = "dropdown",
+							set = "SetTidbitsRemoveSel",
+							order = 144,
+							width = "full"
+						}
+					}
 				},
 				zone = {
 					type = "toggle",
@@ -35,7 +140,7 @@ local options = {
 					desc = L["OptionZoneDesc"],
 					get = "GetOptionZone",
 					set = "SetOptionZone",
-					order = 13,
+					order = 15,
 				},
 				flashwindow = {
 					type = "toggle",
@@ -43,14 +148,14 @@ local options = {
 					desc = L["OptionFlashwindowDesc"],
 					get = "GetOptionFlashwindow",
 					set = "SetOptionFlashwindow",
-					order = 14,
+					order = 16,
 				}
 			}
 		},
 		commands = {
 			type = "group",
 			name = L["OptionGroupCommandsName"],
-			order = 20,
+			order = 30,
 			inline = true,
 			args = {
 				toggle = {
@@ -58,28 +163,28 @@ local options = {
 					name = L["OptionToggleName"],
 					desc = L["OptionToggleDesc"],
 					func = "ExecuteToggle",
-					order = 21,
+					order = 31,
 				},
 				list = {
 					type = "execute",
 					name = L["OptionListName"],
 					desc = L["OptionListDesc"],
 					func = "ExecuteList",
-					order = 22,
+					order = 32,
 				},
 				clear = {
 					type = "execute",
 					name = L["OptionClearName"],
 					desc = L["OptionClearDesc"],
 					func = "ExecuteClear",
-					order = 23,
+					order = 33,
 				},
 				addall = {
 					type = "execute",
 					name = L["OptionAddAllName"],
 					desc = L["OptionAddAllDesc"],
 					func = "ExecuteAddAll",
-					order = 24,
+					order = 34,
 				},
 				add = {
 					type = "input",
@@ -87,7 +192,7 @@ local options = {
 					desc = L["OptionAddDesc"],
 					set = "SetOptionAdd",
 					multiline = false,
-					order = 25,
+					order = 35,
 				},
 				remove = {
 					type = "input",
@@ -96,7 +201,7 @@ local options = {
 					set = "SetOptionRemove",
 					multiline = false,
 					guiHidden = true,
-					order = 26,
+					order = 36,
 				},
 				removesel = {
 					type = "select",
@@ -105,27 +210,27 @@ local options = {
 					set = "SetOptionRemove",
 					values = "ValuesRemoveSel",
 					style = "dropdown",
-					order = 27,
+					order = 37,
 				}
 			}
 		},
 		keywords = {
 			type = "group",
 			name = L["OptionGroupKeywordsName"],
-			order = 30,
+			order = 40,
 			inline = true,
 			args = {
 				kwdescription = {
 					type = "description",
 					name = L["OptionKWDescription"],
-					order = 31,
+					order = 41,
 				},
 				kwlist = {
 					type = "execute",
 					name = L["OptionKWListName"],
 					desc = L["OptionKWListDesc"],
 					func = "ExecuteKWList",
-					order = 32,
+					order = 42,
 				},
 				kwadd = {
 					type = "input",
@@ -133,14 +238,14 @@ local options = {
 					desc = L["OptionKWAddDesc"],
 					set = "SetKWAdd",
 					multiline = false,
-					order = 33,
+					order = 43,
 				},
 				kwremove = {
 					type = "input",
 					name = L["OptionKWRemoveName"],
 					desc = L["OptionKWRemoveDesc"],
 					set = "SetKWRemove",
-					order = 34,
+					order = 44,
 					guiHidden = true,
 				},
 				kwremovesel = {
@@ -150,7 +255,7 @@ local options = {
 					values = "ValuesKWRemoveSel",
 					style = "dropdown",
 					set = "SetKWRemoveSel",
-					order = 35,
+					order = 45,
 				}
 			}
 		},
@@ -175,9 +280,15 @@ local options = {
 local defaults = {
 	profile = {
 		whisper = true,
+		whisperText = nil,
+		raid = true,
+		raidText = nil,
+		say = false,
+		sayText = nil,
 		zone = true,
 		flashwindow = true,
-		keywordsinit = false
+		keywordsinit = false,
+		tidbitsinit = false
 	}
 }
 
@@ -257,6 +368,12 @@ function RaidSummon:OnInitialize()
 	if (not self.db.profile.keywordsinit) then
 		self.db.profile.keywords = { "^123$", "^sum", "^port" }
 		self.db.profile.keywordsinit = true
+	end
+
+	--check if tidbits have been initialized
+	if (not self.db.profile.tidbitsinit) then
+		self.db.profile.tidbits = {L["slightPinch"], L["notLiable"]}
+		self.db.profile.tidbitsinit = true
 	end
 end
 
@@ -398,6 +515,11 @@ function RaidSummon:NameListButton_PreClick(source, button)
 	local name = _G[buttonname.."TextName"]:GetText()
 	local buttonName = GetMouseButtonClicked()
 	local targetname, targetrealm = UnitName("target")
+	local rText = nil
+	local wText = nil
+	local sText = nil
+	local randomIndex = 1
+	local randomTidbit = ""
 
 	RaidSummon:getRaidMembers()
 
@@ -437,38 +559,96 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			if GetZoneText() == "" then
 				zonetext = nil
 			else
-				zonetext = GetZoneText()
+				if self.db.profile.zone then
+					zonetext = GetZoneText()
+				else
+					zonetext = nil
+				end
 			end
 
 			if GetSubZoneText() == "" then
 				subzonetext = nil
 			else
-				subzonetext = GetSubZoneText()
+				if self.db.profile.zone then
+					subzonetext = GetSubZoneText()
+				else
+					subzonetext = nil
+				end
 			end
 
-			if self.db.profile.zone and zonetext and subzonetext then
-				if self.db.profile.raid then
-					SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+			if not (next(self.db.profile.tidbits) == nil) then
+				math.randomseed(os.time())
+				randomIndex = math.random(1, RaidSummon:getTableLength(self.db.profile.tidbits))
+				randomTidbit = self.db.profile.tidbits[randomIndex]
+			end
+
+			if self.db.profile.raidText then
+				rText = self.db.profile.raidText
+				rText = rText:gsub(":t", targetname)
+				if zonetext and subzonetext then
+					rText = rText:gsub(":z", zonetext .. " - " .. subzonetext)
+				elseif zonetext then
+					rText = rText:gsub(":z", zonetext)
+				else
+					rText = rText:gsub(":z", L("locationUnknown"))
 				end
-				if self.db.profile.whisper then
-					SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
-				end
-			elseif self.db.profile.zone and zonetext and not subzonetext then
-				if self.db.profile.raid then
-					SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
-				end
-				if self.db.profile.whisper then
-					SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
-				end
-			elseif not self.db.profile.zone then
-				if self.db.profile.raid then
-					SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
-				end
-				if self.db.profile.whisper then
-					SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
-				end
+				rText = rText:gsub(":r", randomTidbit)
 			else
-				print(L["SummonAnnounceError"])
+				rText = nil
+			end
+
+			if self.db.profile.whisperText then
+				wText = self.db.profile.whisperText
+				wText = wText:gsub(":t", L["you"])
+				if zonetext and subzonetext then
+					wText = wText:gsub(":z", zonetext .. " - " .. subzonetext)
+				elseif zonetext then
+					wText = wText:gsub(":z", zonetext)
+				else
+					wText = wText:gsub(":z", L("locationUnknown"))
+				end
+				wText = wText:gsub(":r", randomTidbit)
+			else
+				wText = nil
+			end
+
+			if self.db.profile.sayText then
+				math.randomseed(os.time())
+				sText = self.db.profile.sayText
+				sText = sText:gsub(":t", targetname)
+				if zonetext and subzonetext then
+					sText = sText:gsub(":z", zonetext .. " - " .. subzonetext)
+				elseif zonetext then
+					sText = sText:gsub(":z", zonetext)
+				else
+					sText = sText:gsub(":z", L("locationUnknown"))
+				end
+				sText = sText:gsub(":r", randomTidbit)
+			else
+				sText = nil
+			end
+
+
+			if self.db.profile.raid then
+				if not rText then
+					SendChatMessage(L["SummonAnnounceR"](targetname, zonetext, subzonetext), "RAID")
+				else
+					SendChatMessage(rText, "RAID")
+				end
+			end
+			if self.db.profile.whisper then
+				if not wText then
+					SendChatMessage(L["SummonAnnounceW"](zonetext, subzonetext), "WHISPER", nil, targetname)
+				else
+					SendChatMessage(wText, "WHISPER", nil, targetname)
+				end
+			end
+			if self.db.profile.say then
+				if not sText then
+					SendChatMessage(L["SummonAnnounceS"](targetname, zonetext, subzonetext), "SAY")
+				else
+					SendChatMessage(sText, "SAY")
+				end
 			end
 
 			for i, v in ipairs (RaidSummonSyncDB) do
@@ -639,6 +819,13 @@ function RaidSummon:getIndexbyValue (tab, val)
 	return nil
 end
 
+--finds the number of entries in a table
+function RaidSummon:getTableLength (tab)
+	local count = 0
+	for _ in pairs(tab) do count =  count + 1 end
+	return count
+end
+
 --checks for combat every 10 seconds and calls RaidSummon:UpdateList
 function RaidSummon:UpdateListCombatCheck()
 	if InCombatLockdown() then
@@ -663,8 +850,24 @@ function RaidSummon:GetOptionWhisper(info)
 	return self.db.profile.whisper
 end
 
+function RaidSummon:GetOptionWhisperText(info)
+	return self.db.profile.whisperText
+end
+
 function RaidSummon:GetOptionRaid(info)
 	return self.db.profile.raid
+end
+
+function RaidSummon:GetOptionRaidText(info)
+	return self.db.profile.raidText
+end
+
+function RaidSummon:GetOptionSay(info)
+	return self.db.profile.say
+end
+
+function RaidSummon:GetOptionSayText(info)
+	return self.db.profile.sayText
 end
 
 function RaidSummon:GetOptionZone(info)
@@ -684,12 +887,87 @@ function RaidSummon:SetOptionWhisper(info, value)
 	end
 end
 
+function RaidSummon:SetOptionWhisperText(info, input)
+	if (input) then
+		self.db.profile.whisperText = input
+	else
+		self.db.profile.whisperText = nil
+	end
+end
+
 function RaidSummon:SetOptionRaid(info, value)
 	self.db.profile.raid = value
 	if value == true then
 		print(L["OptionRaidEnabled"])
 	else
 		print(L["OptionRaidDisabled"])
+	end
+end
+
+function RaidSummon:SetOptionRaidText(info, input)
+	if (input) then
+		self.db.profile.raidText = input
+	else
+		self.db.profile.raidText = nil
+	end
+end
+
+function RaidSummon:SetOptionSay(info, value)
+	self.db.profile.say = value
+	if value == true then
+		print(L["OptionSayEnabled"])
+	else
+		print(L["OptionSayDisabled"])
+	end
+end
+
+function RaidSummon:SetOptionSayText(info, input)
+	if (input) then
+		self.db.profile.sayText = input
+	else
+		self.db.profile.sayText = nil
+	end
+end
+
+function RaidSummon:ValuesRandomTidbitSel(info)
+	local tidBitList = {}
+	if self.db.profile.tidbits then
+		if next(self.db.profile.tidbits) == nil then
+			return tidBitList
+		else
+			for i, v in ipairs(self.db.profile.tidbits) do
+				table.insert(tidBitList,v)
+			end
+			return tidBitList
+		end
+	end
+end
+
+function RaidSummon:SetTidbitsAdd(info, input)
+	if (input) then
+		if not (RaidSummon:hasValue(self.db.profile.tidbits, input)) then
+			table.insert(self.db.profile.tidbits,input)
+		end
+	end
+end
+
+function RaidSummon:SetTidbitsRemove(info, input)
+	if (input) then
+		if (RaidSummon:hasValue(self.db.profile.tidbits, input)) then
+			local index = RaidSummon:getIndexbyValue(self.db.profile.tidbits, input)
+			table.remove(self.db.profile.tidbits, index)
+		end
+	end
+end
+
+function RaidSummon:SetTidbitsRemoveSel(info, input)
+	--input is the index of a the profile keywords table
+	if (input) then
+		if not self.db.profile.tidbits then
+			return
+		else
+			table.remove(self.db.profile.tidbits, input)
+		end
 	end
 end
 

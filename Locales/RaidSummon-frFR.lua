@@ -26,8 +26,20 @@ L["OptionZoneName"] = "Zone"
 L["OptionZoneDesc"] = "activer zone (ex Orgrimmar) et subzone (ex Valley of Wisdom) dans les mantions d'annonce."
 L["OptionWhisperName"] = "Chuchotement /w"
 L["OptionWhisperDesc"] = "Activez l'avertissment en /w sur la cible invoquée"
+L["OptionWhisperTextZSName"] = "Texte chuchoté (Zone + Sous-zone)"
+L["OptionWhisperTextZName"] = "Texte chuchoté (Zone)"
+L["OptionWhisperTextName"] = "Texte chuchoté"
+L["OptionWhisperTextZSDesc"] = "Texte de chuchotement personnalisé lorsque la zone et la sous-zone sont disponibles. Utilisez :t pour indiquer le nom de la cible. Utilisez :z pour indiquer la zone. Utilisez :s pour indiquer la sous-zone. S'il est vide, le texte chuchoté par défaut sera utilisé."
+L["OptionWhisperTextZDesc"] = "Texte de chuchotement personnalisé lorsque la zone est disponible (et que la sous-zone n'est pas disponible). Utilisez :t pour indiquer le nom de la cible. Utilisez :z pour indiquer la zone. S'il est vide, le texte chuchoté par défaut sera utilisé."
+L["OptionWhisperTextDesc"] = "Texte de chuchotement personnalisé lorsque ni zone ni sous-zone ne sont disponibles. Utilisez :t pour indiquer le nom de la cible. S'il est vide, le texte chuchoté par défaut sera utilisé."
 L["OptionRaidName"] = "Raid"
 L["OptionRaidDesc"] = "Activez le message de raid avec la cible d'invocation."
+L["OptionRaidTextZSName"] = "Texte de Raid (Zone + Sous-zone)"
+L["OptionRaidTextZName"] = "Texte de Raid (Zone)"
+L["OptionRaidTextName"] = "Texte de Raid"
+L["OptionRaidTextZSDesc"] = "Texte de raid personnalisé lorsque la zone et la sous-zone sont disponibles. Utilisez :t pour indiquer le nom de la cible. Utilisez :z pour indiquer la zone. Utilisez :s pour indiquer la sous-zone. S'il est vide, le texte chuchoté par défaut sera utilisé."
+L["OptionRaidTextZDesc"] = "Custom raid text when zone is available (and subzone is not available). Utilisez :t pour indiquer le nom de la cible. Utilisez :z pour indiquer la zone. S'il est vide, le texte chuchoté par défaut sera utilisé."
+L["OptionRaidTextDesc"] = "Custom raid text when neither zone nor subzone are available. Utilisez :t pour indiquer le nom de la cible. S'il est vide, le texte chuchoté par défaut sera utilisé."
 L["OptionFlashwindowName"] = "Fenêtre Flash"
 L["OptionFlashwindowDesc"] = "Clignote Windows lorsque quelqu'un demande une invocation."
 L["OptionHelpName"] = "Aide"
@@ -35,6 +47,8 @@ L["OptionHelpDesc"] = "Affiche la liste des commandes et options prises en charg
 L["OptionConfigName"] = "Configuration"
 L["OptionConfigDesc"] = "Ouvrir le menue de configuration."
 L["OptionGroupOptionsName"] = "Options"
+L["OptionGroupWhisperName"] = "Options de Texte Chuchoté"
+L["OptionGroupRaidName"] = "Options de Texte de Raid"
 L["OptionGroupCommandsName"] = "Commandes"
 L["OptionHeaderProfileName"] = "Ace3 profiles"
 L["OptionListName"] = "Liste"
@@ -97,6 +111,7 @@ L["OptionClear"] = "|cff9482c9RaidSummon:|r Effacé la liste d'invocation"
 
 --Summon Announce
 --W=Whisper/R=Raid Z=Zone S=Subzone T=Target Player
+L["you"] = "vous"
 L["SummonAnnounceRZS"] = function(T,Z,S)
 	return 'RaidSummon: Invocation ' .. T .. ' à ' .. Z .. ' - ' .. S
 end
