@@ -1,8 +1,8 @@
 ## Title: RaidSummon |cff7fff7f -Ace3-|r
 ## Notes: Helps Warlocks managing summoning
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
-## Version: 3.4.2
-## Author: |cff02bf02Kopernikus-Windseeker|r
+## Version: 3.4.1
+## Author: |cff02bf02Tyche-Lucifron|r
 ## Interface: 11305
 ## SavedVariables: RaidSummonOptionsDB
 ## OptionalDeps:  Ace3

@@ -120,6 +120,16 @@ L["OptionClear"] = "|cff9482c9RaidSummon:|r Cleared the summon list"
 L["slightPinch"] = "You may feel a slight pinch..."
 L["notLiable"] = "Not liable for lost limbs."
 
+--Filters
+L["filter"] = "Filter"
+L["filterCleared"] = "|cff9482c9RaidSummon:|r Filter cleared."
+L["filterSet"] = function(v)
+	return "|cff9482c9RaidSummon:|r Filter set to " .. v .. "."
+end
+L["filterTitle"] = function(v)
+	return "Filter: " .. v
+end
+
 --Summon Announce
 --W=Whisper/R=Raid Z=Zone S=Subzone T=Target Player
 L["you"] = "you"

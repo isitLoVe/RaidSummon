@@ -349,6 +349,7 @@ function RaidSummon:OnInitialize()
 	MSG_PREFIX_REMOVE = "RSRemove"
 	MSG_PREFIX_REMOVE_MANUAL = "RSRemoveManual"
 	RaidSummonSyncDB = {}
+	RaidSummonCurrentFilter = nil
 
 	--Ace3 Comm Channels max 16 chars
 	COMM_PREFIX_ADD = "RSADD"
@@ -384,7 +385,11 @@ function RaidSummon:msgParser(eventName,...)
 
 		for i, v in ipairs(self.db.profile.keywords) do
 			if string.find(text, v) then
-				RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
+				if string.find(v, "!") then
+					RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2 .. "|" .. string.match(text, ".*!([^%s]*).*"), "RAID")
+				else
+					RaidSummon:SendCommMessage(COMM_PREFIX_ADD, playerName2, "RAID")
+				end
 			end
 		end
 	end
@@ -401,7 +406,7 @@ function RaidSummon:GROUP_ROSTER_UPDATE(eventName,...)
 	RaidSummon:getRaidMembers()
 	if RaidSummonRaidMembersDB and RaidSummonSyncDB then
 		for RaidSummonSyncDBi, RaidSummonSyncDBv in ipairs (RaidSummonSyncDB) do
-			if not RaidSummon:hasValueSub(RaidSummonRaidMembersDB, RaidSummonSyncDBv, "rName") then
+			if not RaidSummon:hasValueSub(RaidSummonRaidMembersDB, RaidSummonSyncDBv[1], "rName") then
 				table.remove(RaidSummonSyncDB, RaidSummonSyncDBi)
 			end
 		end
@@ -412,16 +417,28 @@ end
 --Ace3 Comm
 function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 	if (prefix) then
+		local filter = nil
+		if string.find(message, "|") then
+			filter = string.match(message, ".*|(.*)")
+			message = string.match(message, "(.*)|.*")
+		end
 		if prefix == COMM_PREFIX_ADD then
 			--print("COMM_PREFIX_ADD "..message)
 			--only add player once
-			if not RaidSummon:hasValue(RaidSummonSyncDB, message) then
+			local b = false
+			for i, v in ipairs (RaidSummonSyncDB) do
+				if v[1] == message then
+					b = true
+					break
+				end
+			end
+			if not b then
 				--check if player is in the raid
 				RaidSummon:getRaidMembers()
 				if RaidSummonRaidMembersDB then
 					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
 						if message == RaidMembersDBvalue.rName then
-							table.insert(RaidSummonSyncDB, message)
+							table.insert(RaidSummonSyncDB, {message, filter})
 							RaidSummon:UpdateList()
 							if self.db.profile.flashwindow then
 								FlashClientIcon()
@@ -433,13 +450,20 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 		elseif prefix == COMM_PREFIX_ADD_MANUAL then
 			--print("COMM_PREFIX_ADD_MANUAL "..message)
 			--only add player once
-			if not RaidSummon:hasValue(RaidSummonSyncDB, message) then
+			local b = false
+			for i, v in ipairs (RaidSummonSyncDB) do
+				if v[1] == message then
+					b = true
+					break
+				end
+			end
+			if not b then
 				--check if player is in the raid
 				RaidSummon:getRaidMembers()
 				if RaidSummonRaidMembersDB then
 					for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
 						if message == RaidMembersDBvalue.rName then
-							table.insert(RaidSummonSyncDB, message)
+							table.insert(RaidSummonSyncDB, {message, nil})
 							print(L["MemberAdded"](message,sender))
 							RaidSummon:UpdateList()
 							if self.db.profile.flashwindow then
@@ -451,9 +475,16 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 			end
 		elseif prefix == COMM_PREFIX_REMOVE then
 			--print("COMM_PREFIX_REMOVE "..message)
-			if RaidSummon:hasValue(RaidSummonSyncDB, message) then
+			local b = false
+			for i, v in ipairs(RaidSummonSyncDB) do
+				if v[1] == message then
+					b = true
+					break
+				end
+			end
+			if b then
 				for i, v in ipairs (RaidSummonSyncDB) do
-					if v == message then
+					if v[1] == message then
 						table.remove(RaidSummonSyncDB, i)
 						RaidSummon:UpdateList()
 					end
@@ -461,9 +492,16 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 			end
 		elseif prefix == COMM_PREFIX_REMOVE_MANUAL then
 			--print("COMM_PREFIX_REMOVE_MANUAL "..message)
-			if RaidSummon:hasValue(RaidSummonSyncDB, message) then
+			local b = false
+			for i, v in ipairs (RaidSummonSyncDB) do
+				if v[1] == message then
+					b = true
+					break
+				end
+			end
+			if b then
 				for i, v in ipairs (RaidSummonSyncDB) do
-					if v == message then
+					if v[1] == message then
 						table.remove(RaidSummonSyncDB, i)
 						print(L["MemberRemoved"](message,sender))
 						RaidSummon:UpdateList()
@@ -493,7 +531,7 @@ function RaidSummon:OnCommReceived(prefix, message, distribution, sender)
 								if RaidSummonRaidMembersDB then
 									for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
 										if rName == RaidMembersDBvalue.rName then
-											table.insert(RaidSummonSyncDB, rName)
+											table.insert(RaidSummonSyncDB, {rName, nil})
 										end
 									end
 								end
@@ -577,7 +615,6 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 
 			if not (next(self.db.profile.tidbits) == nil) then
-				math.randomseed(os.time())
 				randomIndex = math.random(1, RaidSummon:getTableLength(self.db.profile.tidbits))
 				randomTidbit = self.db.profile.tidbits[randomIndex]
 			end
@@ -613,7 +650,6 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 
 			if self.db.profile.sayText then
-				math.randomseed(os.time())
 				sText = self.db.profile.sayText
 				sText = sText:gsub(":t", targetname)
 				if zonetext and subzonetext then
@@ -652,16 +688,17 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 
 			for i, v in ipairs (RaidSummonSyncDB) do
-				if v == targetname then
+				if v[1] == targetname then
 					RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE, targetname, "RAID")
 				end
 			end
 		else
 			print(L["noRaid"])
 		end
+	
 	elseif buttonName == "LeftButton" and IsControlKeyDown() then
 		for i, v in ipairs (RaidSummonSyncDB) do
-			if v == name then
+			if v[1] == name then
 				RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE_MANUAL, name, "RAID")
 			end
 		end
@@ -671,6 +708,18 @@ function RaidSummon:NameListButton_PreClick(source, button)
 end
 
 function RaidSummon:UpdateList()
+	local enableFilters = false
+	for i, v in ipairs (RaidSummonSyncDB) do
+		if not (v[2] == nil) then
+			enableFilters = true
+			break
+		end
+	end
+	_G["RaidSummon_FilterList"]:SetEnabled(enableFilters)
+	if not enableFilters then
+		RaidSummonCurrentFilter = nil
+		_G["RaidSummon_FilterListTextName"]:SetText(L["filterTitle"]("None"))
+	end
 
 	local RaidSummonBrowseDB = {}
 
@@ -684,24 +733,28 @@ function RaidSummon:UpdateList()
 			RaidSummon:getRaidMembers()
 			if RaidSummonRaidMembersDB then
 
-				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
+				browseDBIndex = 1
 
+				for RaidMembersDBindex, RaidMembersDBvalue in ipairs (RaidSummonRaidMembersDB) do
+					
 					--check raid data for RaidSummon data
 					for RaidSummonSyncDBindex, RaidSummonSyncDBvalue in ipairs (RaidSummonSyncDB) do
 
 						--if player is found fill BrowseDB
-						if RaidSummonSyncDBvalue == RaidMembersDBvalue.rName then
-							RaidSummonBrowseDB[RaidSummonSyncDBindex] = {}
-							RaidSummonBrowseDB[RaidSummonSyncDBindex].rIndex = RaidMembersDBindex
-							RaidSummonBrowseDB[RaidSummonSyncDBindex].rName = RaidMembersDBvalue.rName
-							RaidSummonBrowseDB[RaidSummonSyncDBindex].rClass = RaidMembersDBvalue.rClass
-							RaidSummonBrowseDB[RaidSummonSyncDBindex].rfileName = RaidMembersDBvalue.rfileName
+						if RaidSummonSyncDBvalue[1] == RaidMembersDBvalue.rName and ( (RaidSummonSyncDBvalue[2] == RaidSummonCurrentFilter) or RaidSummonCurrentFilter == nil) then
+							RaidSummonBrowseDB[browseDBIndex] = {}
+							RaidSummonBrowseDB[browseDBIndex].rIndex = RaidMembersDBindex
+							RaidSummonBrowseDB[browseDBIndex].rName = RaidMembersDBvalue.rName
+							RaidSummonBrowseDB[browseDBIndex].rClass = RaidMembersDBvalue.rClass
+							RaidSummonBrowseDB[browseDBIndex].rfileName = RaidMembersDBvalue.rfileName
 
 							if RaidMembersDBvalue.rfileName == "WARLOCK" then
-								RaidSummonBrowseDB[RaidSummonSyncDBindex].rVIP = true
+								RaidSummonBrowseDB[browseDBIndex].rVIP = true
 							else
-								RaidSummonBrowseDB[RaidSummonSyncDBindex].rVIP = false
+								RaidSummonBrowseDB[browseDBIndex].rVIP = false
 							end
+
+							browseDBIndex = browseDBIndex + 1
 						end
 					end
 				end
@@ -988,7 +1041,7 @@ function RaidSummon:SetOptionFlashwindow(info, value)
 		print(L["OptionFlashwindowDisabled"])
 	end
 end
-
+	
 function RaidSummon:ExecuteHelp()
 	print(L["OptionHelpPrint"])
 end
@@ -1005,7 +1058,7 @@ function RaidSummon:ExecuteList()
 	else
 		for i, v in ipairs(RaidSummonSyncDB) do
 			print(L["OptionList"])
-			print(tostring(v))
+			print(tostring(v[1]))
 		end
 	end
 end
@@ -1029,6 +1082,44 @@ function RaidSummon:ExecuteToggle()
 	end
 end
 
+function RaidSummon:FilterListInitialize()
+	if _G["RaidSummon_FilterListTextName"]:GetText() == nil then
+		_G["RaidSummon_FilterListTextName"]:SetText(L["filterTitle"]("None"))
+	end
+	local addedFilters = {nil}
+	UIDropDownMenu_AddButton({text="None", checked=(RaidSummonCurrentFilter==nil), func=function() RaidSummon:FilterListSetValue(nil) end})
+	if not (RaidSummonSyncDB == nil) then
+		if not (next(RaidSummonSyncDB) == nil) then
+			for i, v in ipairs(RaidSummonSyncDB) do
+				if not RaidSummon:hasValue(addedFilters, v[2]) then
+					if not (v[2] == nil) then
+						UIDropDownMenu_AddButton({text=v[2], checked=(RaidSummonCurrentFilter==v[2]), func=function() RaidSummon:FilterListSetValue(v[2]) end})
+						table.insert(addedFilters, {v[2], v[2]})
+					end
+				end
+			end
+		end
+	end
+end
+
+function RaidSummon:FilterListOnClick()
+	ToggleDropDownMenu(1, nil, RaidSummon_FilterListMenu, RaidSummon_FilterList, 0, 0)
+end
+
+function RaidSummon:FilterListSetValue(value)
+	if not (RaidSummonCurrentFilter == value) then
+		RaidSummonCurrentFilter = value
+		if value == nil then
+			print(L["filterCleared"])
+			_G["RaidSummon_FilterListTextName"]:SetText(L["filterTitle"]("None"))
+		else
+			print(L["filterSet"](value))
+			_G["RaidSummon_FilterListTextName"]:SetText(L["filterTitle"](RaidSummonCurrentFilter))
+		end
+	end
+	RaidSummon:UpdateList()
+end
+
 --Add / Remove Options Functions
 function RaidSummon:SetOptionAdd(info, input)
 	if (input) then
@@ -1049,7 +1140,7 @@ function RaidSummon:ValuesRemoveSel(info)
 			return playerlist
 		else
 			for i, v in ipairs(RaidSummonSyncDB) do
-				playerlist[v] = v
+				playerlist[v[1]] = v[1]
 			end
 			return playerlist
 		end

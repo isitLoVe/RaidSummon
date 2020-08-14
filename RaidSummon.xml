@@ -69,7 +69,7 @@
 	
 	<Frame name="RaidSummon_RequestFrame" frameStrata="DIALOG" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true" clampedToScreen="true">
 		<Size>
-			<AbsDimension x="120" y="180"/>
+			<AbsDimension x="120" y="200"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
@@ -102,12 +102,50 @@
 			</EdgeSize>
 		</Backdrop>
 		<Frames>
-			<Button name="RaidSummon_NameList1" inherits="RaidSummon_NameListButton" id="1" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
+			<Button name="RaidSummon_FilterList" id="1" inherits="UIPanelButtonTemplate" hidden="false">
+				<Size>
+					<AbsDimension x="100" y="16"/>
+				</Size>
+				<NormalText name="$parentText" inherits="GameFontNormalSmall" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="100" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="20" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors> 
+				</NormalText>
+				<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="100" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="5" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</HighlightTexture>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentTextName" inherits="GameFontNormalSmall" justifyH="CENTER">
+							<Size>
+								<AbsDimension x="180" y="10"/>
+							</Size>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -115,8 +153,34 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
+				<Scripts>
+					<OnClick>
+						RaidSummon:FilterListOnClick(self);
+					</OnClick>
+				</Scripts>
 			</Button>
-			<Button name="RaidSummon_NameList2" inherits="RaidSummon_NameListButton" id="2" hidden="true">
+			<Frame name="RaidSummon_FilterListMenu" inherits="UIDropDownMenuTemplate" id="2">
+				<Scripts>
+					<OnLoad>
+						UIDropDownMenu_Initialize(self, RaidSummon.FilterListInitialize, "MENU");
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<Button name="RaidSummon_NameList1" inherits="RaidSummon_NameListButton" id="3" hidden="true">
+				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
+					<TileSize>
+						<AbsValue val="16"/>
+					</TileSize>
+				</Backdrop>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="RaidSummon_FilterList" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="RaidSummon_NameList2" inherits="RaidSummon_NameListButton" id="4" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -130,7 +194,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList3" inherits="RaidSummon_NameListButton" id="3" hidden="true">
+			<Button name="RaidSummon_NameList3" inherits="RaidSummon_NameListButton" id="5" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -144,7 +208,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList4" inherits="RaidSummon_NameListButton" id="4" hidden="true">
+			<Button name="RaidSummon_NameList4" inherits="RaidSummon_NameListButton" id="6" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -158,7 +222,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList5" inherits="RaidSummon_NameListButton" id="5" hidden="true">
+			<Button name="RaidSummon_NameList5" inherits="RaidSummon_NameListButton" id="7" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -172,7 +236,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList6" inherits="RaidSummon_NameListButton" id="6" hidden="true">
+			<Button name="RaidSummon_NameList6" inherits="RaidSummon_NameListButton" id="8" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -186,7 +250,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList7" inherits="RaidSummon_NameListButton" id="7" hidden="true">
+			<Button name="RaidSummon_NameList7" inherits="RaidSummon_NameListButton" id="9" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -200,7 +264,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList8" inherits="RaidSummon_NameListButton" id="8" hidden="true">
+			<Button name="RaidSummon_NameList8" inherits="RaidSummon_NameListButton" id="10" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -214,7 +278,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList9" inherits="RaidSummon_NameListButton" id="9" hidden="true">
+			<Button name="RaidSummon_NameList9" inherits="RaidSummon_NameListButton" id="11" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -228,7 +292,7 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="RaidSummon_NameList10" inherits="RaidSummon_NameListButton" id="10" hidden="true">
+			<Button name="RaidSummon_NameList10" inherits="RaidSummon_NameListButton" id="12" hidden="true">
 				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
 					<TileSize>
 						<AbsValue val="16"/>
@@ -257,4 +321,5 @@
 			</OnDragStop>
 		</Scripts>
 	</Frame>
+
 </Ui>
