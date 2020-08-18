@@ -112,6 +112,7 @@ L["SummonAnnounceR"] = function(T)
 end
 L["SummonAnnounceW"] = "RaidSummon: Beschwöre dich"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Fehler bei der Ankündigung"
+L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r Nicht genug Mana!"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Beschwören abgebrochen. Dein Target ' .. X .. ' stimmt nicht mit dem Namen überein, der angeklickt wurde ' .. Y
 end

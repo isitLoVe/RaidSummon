@@ -426,6 +426,11 @@ function RaidSummon:NameListButton_PreClick(source, button)
 				return
 			end
 
+			if UnitPower("player") < 300 then
+				print(L["NotEnoughMana"])
+				return
+			end
+			
 			if GetZoneText() == "" then
 				zonetext = nil
 			else
