@@ -730,13 +730,13 @@ end
 
 --Add / Remove Options Functions
 function RaidSummon:SetOptionAdd(info, input)
-	if (input) then
+	if (input and input:trim() ~= "") then
 		RaidSummon:SendCommMessage(COMM_PREFIX_ADD_MANUAL, input, "RAID")
 	end
 end
 
 function RaidSummon:SetOptionRemove(info, input)
-	if (input) then
+	if (input and input:trim() ~= "") then
 		RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE_MANUAL, input, "RAID")
 	end
 end
