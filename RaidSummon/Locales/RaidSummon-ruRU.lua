@@ -55,6 +55,8 @@ L["OptionListEmpty"] = "|cff9482c9RaidSummon:|r Список пуст"
 L["OptionList"] = "|cff9482c9RaidSummon:|r Участники рейда, которые запросили призыв:"
 L["OptionClear"] = "|cff9482c9RaidSummon:|r Очистить список призыва"
 
+L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r недостаточно маны"
+
 --Summon Announce
 --W=Whisper/R=Raid Z=Zone S=Subzone T=Target Player
 L["SummonAnnounceRZS"] = function(T,Z,S)
