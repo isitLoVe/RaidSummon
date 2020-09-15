@@ -108,6 +108,7 @@ L["SummonAnnounceR"] = function(T)
 end
 L["SummonAnnounceW"] = "RaidSummon: Invocando você"
 L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Anunciar erro"
+L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r Não é suficiente Mana!"
 L["TargetMissmatch"] = function(X,Y)
     return '|cff9482c9RaidSummon:|r Invocação cancelada. Seu alvo ' .. X .. ' não corresponde ao nome em que você clicou ' .. Y
 end
