@@ -4,7 +4,7 @@
 https://www.curseforge.com/wow/addons/raidsummon
 
 ## Update on development
-Due to Corona and the AQ Opening i dont have enough time to play and develop the Addon as much as i want. But since the gates are now open on Lucifron, i will have more time to look at all the Github merge requests and localizations. Thank you for your support. More updates on the beta release types will come soon.
+Due to Corona and the AQ Opening i dont have enough time to play and develop the Addon as much as i want. Thank you for your support.
 
 ## Usage
 Raidmembers can type a special keyword in the raidchat (123, summon, sum or port)  
