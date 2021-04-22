@@ -67,6 +67,8 @@ Basic examples:
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option whisper |cffff0000disabled|r"
+L["OptionRaidmsgEnabled"] = "|cff9482c9RaidSummon:|r Option raid message |cff00ff00enabled|r"
+L["OptionRaidmsgDisabled"] = "|cff9482c9RaidSummon:|r Option raid message |cffff0000disabled|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Option flash window |cff00ff00enabled|r"

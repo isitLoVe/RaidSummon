@@ -21,13 +21,21 @@ local options = {
 					set = "SetOptionWhisper",
 					order = 11,
 				},
+				raidmsg = {
+					type = "toggle",
+					name = L["OptionRaidmsgName"],
+					desc = L["OptionRaidmsgDesc"],
+					get = "GetOptionRaidmsg",
+					set = "SetOptionRaidmsg",
+					order = 12,
+				},
 				zone = {
 					type = "toggle",
 					name = L["OptionZoneName"],
 					desc = L["OptionZoneDesc"],
 					get = "GetOptionZone",
 					set = "SetOptionZone",
-					order = 12,
+					order = 13,
 				},
 				flashwindow = {
 					type = "toggle",
@@ -35,7 +43,7 @@ local options = {
 					desc = L["OptionFlashwindowDesc"],
 					get = "GetOptionFlashwindow",
 					set = "SetOptionFlashwindow",
-					order = 13,
+					order = 14,
 				},
 			}
 		},
@@ -653,6 +661,10 @@ function RaidSummon:GetOptionWhisper(info)
 	return self.db.profile.whisper
 end
 
+function RaidSummon:GetOptionRaidmsg(info)
+	return self.db.profile.raidmsg
+end
+
 function RaidSummon:GetOptionZone(info)
 	return self.db.profile.zone
 end
@@ -667,6 +679,15 @@ function RaidSummon:SetOptionWhisper(info, value)
 		print(L["OptionWhisperEnabled"])
 	else
 		print(L["OptionWhisperDisabled"])
+	end
+end
+
+function RaidSummon:SetOptionRaidmsg(info, value)
+	self.db.profile.raidmsg = value
+	if value == true then
+		print(L["OptionRaidmsgEnabled"])
+	else
+		print(L["OptionRaidmsgDisabled"])
 	end
 end
 
