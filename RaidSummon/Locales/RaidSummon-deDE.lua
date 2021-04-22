@@ -26,6 +26,8 @@ L["OptionZoneName"] = "Gebiet"
 L["OptionZoneDesc"] = "Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein."
 L["OptionWhisperName"] = "Flüstern"
 L["OptionWhisperDesc"] = "Schaltet die Flüsterfunktion beim Beschwören ein."
+L["OptionRaidmsgName"] = "Schlachtzug Meldung"
+L["OptionRaidmsgDesc"] = "Schaltet die Ankündigung im Schlachtzug Chat ein."
 L["OptionFlashwindowName"] = "Fenster blinken"
 L["OptionFlashwindowDesc"] = "Lässt das Fenster in Windows blinken wenn eine Beschwörung angefordert wurde."
 L["OptionHelpName"] = "Hilfe"
@@ -85,6 +87,7 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9remove|r: Entfernt ein Schlachtzugsmitglieder von der Beschörungsliste  (Groß- und Kleinschreibung beachten).
  - |cff9482c9toggle|r: Zeigt die Beschörungsliste an oder versteckt diese.
  - |cff9482c9whisper|r: Schaltet die Flüsterfunktion beim Beschwören ein.
+ - |cff9482c9raidmsg|r: Schaltet die Ankündigung im Schlachtzug Chat ein.
  - |cff9482c9zone|r: Schaltet die Ankündigung von Gebieten (z.B. Orgrimmar) und Teilgebieten (z.B. Tal der Weisheit) ein.
  - |cff9482c9kwlist|r: Gibt eine Liste aller Schlüsselwörter aus.
  - |cff9482c9kwadd|r: Fügt ein Schlüsselwort zur Liste hinzu.
@@ -113,7 +116,6 @@ L["SummonAnnounceR"] = function(T)
 	return 'RaidSummon: Beschwöre ' .. T
 end
 L["SummonAnnounceW"] = "RaidSummon: Beschwöre dich"
-L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Fehler bei der Ankündigung"
 L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r Nicht genug Mana!"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Beschwören abgebrochen. Dein Target ' .. X .. ' stimmt nicht mit dem Namen überein, der angeklickt wurde ' .. Y

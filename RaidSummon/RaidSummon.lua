@@ -175,6 +175,7 @@ local options = {
 local defaults = {
 	profile = {
 		whisper = true,
+		raidmsg = true,
 		zone = true,
 		flashwindow = true,
 		keywordsinit = false
@@ -452,23 +453,21 @@ function RaidSummon:NameListButton_PreClick(source, button)
 			end
 
 			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
 				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
 			elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
 				SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
-			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
-			elseif self.db.profile.zone and not self.db.profile.whisper and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
 			elseif not self.db.profile.zone and self.db.profile.whisper then
-				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
 				SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
-			elseif not self.db.profile.zone and not self.db.profile.whisper then
-				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
-			else
-				print(L["SummonAnnounceError"])
 			end
+			
+			if self.db.profile.zone and self.db.profile.raidmsg and zonetext and subzonetext then
+				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+			elseif self.db.profile.zone and self.db.profile.raidmsg and zonetext and not subzonetext then
+				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
+			elseif not self.db.profile.zone and self.db.profile.raidmsg then
+				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+			end
+			
 			for i, v in ipairs (RaidSummonSyncDB) do
 				if v == targetname then
 					RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE, targetname, "RAID")
