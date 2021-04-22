@@ -26,6 +26,8 @@ L["OptionZoneName"] = "Zone"
 L["OptionZoneDesc"] = "Enable zone (e.g. Orgrimmar) and subzone (e.g. Valley of Wisdom) mentioning in announcements."
 L["OptionWhisperName"] = "Whisper"
 L["OptionWhisperDesc"] = "Enable whispering to the summoned target."
+L["OptionRaidmsgName"] = "Raid Message"
+L["OptionRaidmsgDesc"] = "Enable the announcment in raid chat."
 L["OptionFlashwindowName"] = "Flash Window"
 L["OptionFlashwindowDesc"] = "Flashes the Windows when someone requests a summon."
 L["OptionHelpName"] = "Help"
@@ -67,6 +69,8 @@ Basic examples:
 --Slash Command Options
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Option whisper |cff00ff00enabled|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Option whisper |cffff0000disabled|r"
+L["OptionRaidmsgEnabled"] = "|cff9482c9RaidSummon:|r Option raid message |cff00ff00enabled|r"
+L["OptionRaidmsgDisabled"] = "|cff9482c9RaidSummon:|r Option raid message |cffff0000disabled|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Option flash window |cff00ff00enabled|r"
@@ -83,6 +87,7 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9remove|r: Removes a player from the summoning frame (case sensitive).
  - |cff9482c9toggle|r: Toggles the visiblity of the summoning frame.
  - |cff9482c9whisper|r: Enable whispering to the summoned target.
+ - |cff9482c9raidmsg|r: Enable the announcment in raid chat.
  - |cff9482c9zone|r: Enable zone mentioning in announcements.
  - |cff9482c9kwlist|r: Lists all active summoning keywords.
  - |cff9482c9kwadd|r: Adds a summoning keyword.
@@ -111,7 +116,6 @@ L["SummonAnnounceR"] = function(T)
 	return 'RaidSummon: Summoning ' .. T
 end
 L["SummonAnnounceW"] = "RaidSummon: Summoning you"
-L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Announce error"
 L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r Not enough mana!"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Summoning aborted. Your target ' .. X .. ' does not match the name you clicked ' .. Y
