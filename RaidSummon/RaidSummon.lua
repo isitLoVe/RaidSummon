@@ -529,7 +529,7 @@ function RaidSummon:UpdateList()
 
 		end
 
-		for i=1,10 do
+		for i=1,40 do
 			if RaidSummonBrowseDB[i] then
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummonBrowseDB[i].rName)
 
@@ -568,7 +568,18 @@ function RaidSummon:UpdateList()
 		else
 			RaidSummon:UpdateListCombatCheck()
 		end
+        RaidSummon:updateWindowSize()
 	end
+end
+
+function RaidSummon:updateWindowSize()
+    local cnt = 0
+    for i=1,40 do
+        if _G["RaidSummon_NameList"..i.."TextName"]:GetText() then
+            cnt = cnt + 1
+        end
+    end
+    RaidSummon_RequestFrame:SetHeight(20+16*cnt)
 end
 
 --collects raid member information to RaidSummonRaidMembersDB
@@ -900,6 +911,8 @@ function RaidSummon:DummyFill()
 		_G["RaidSummon_NameList" .. i .. "TextName"]:SetTextColor(r, g, b, 1)
 		_G["RaidSummon_NameList".. i]:Show()
 	end
+    RaidSummon:updateWindowSize()
+
 end
 
 --Hook Functions
