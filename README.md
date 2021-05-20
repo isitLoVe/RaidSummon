@@ -28,4 +28,4 @@ Due to Blizzard restrictions it is not possible to update the summon frame durin
 Please report any bugs to my GitHub site at https://github.com/isitLoVe/RaidSummon/issues
 
 ## Support RaidSummon development
-[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=PV9TM2WB5F29C){:target="_blank" rel="noopener"}
+[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=PV9TM2WB5F29C)
