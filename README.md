@@ -3,8 +3,8 @@
 ## Download
 https://www.curseforge.com/wow/addons/raidsummon
 
-## Update on development
-Due to Corona and the AQ Opening i dont have enough time to play and develop the Addon as much as i want. Thank you for your support.
+## Burning Crusade Classic
+The first release for BCC is here (v4.0.1). Due to Blizzard changes i had to redesign the summoning frame, hope you like it. Also please check out my paypal at the bottom of the page.  
 
 ## Usage
 Raidmembers can type a special keyword in the raidchat (123, summon, sum or port)  
@@ -28,4 +28,4 @@ Due to Blizzard restrictions it is not possible to update the summon frame durin
 Please report any bugs to my GitHub site at https://github.com/isitLoVe/RaidSummon/issues
 
 ## Support RaidSummon development
-[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VMUGZ4VH2CYRY)
+[![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=PV9TM2WB5F29C)
