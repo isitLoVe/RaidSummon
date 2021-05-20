@@ -6,7 +6,6 @@
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp");
-				self:SetBackdropColor(0.8, 0.8, 0.8, 0.0);
 			</OnLoad>
 			<PreClick>
 				RaidSummon:NameListButton_PreClick(self, button);
@@ -44,9 +43,9 @@
 		</Frames>
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="$parentTextName" inherits="GameFontNormalSmall" justifyH="LEFT">
+				<FontString name="$parentTextName" inherits="GameFontNormal" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="180" y="10"/>
+						<AbsDimension x="100" y="10"/>
 					</Size>
 					<Anchors>
 						<Anchor point="LEFT">
@@ -60,16 +59,12 @@
 		</Layers>
 	</Button>
 
-	<Font name="RaidSummon_GameFontHeader" font="Fonts\FRIZQT__.TTF" virtual="true">
-		<FontHeight>
-			<AbsValue val="8"/>
-		</FontHeight>
-		<Color r="0.5" g="0.5" b="0.5"/>
-	</Font>
-	
-	<Frame name="RaidSummon_RequestFrame" frameStrata="DIALOG" toplevel="true" parent="UIParent" movable="true" enableMouse="true" hidden="true" clampedToScreen="true">
+	<Frame name="RaidSummon_RequestFrame" toplevel="true" parent="UIParent" inherits="ButtonFrameTemplate" movable="true" enableMouse="true" hidden="true" clampedToScreen="true">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global"/>
+		</KeyValues>		
 		<Size>
-			<AbsDimension x="120" y="180"/>
+			<AbsDimension x="120" y="255"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
@@ -77,51 +72,34 @@
 					<AbsDimension x="0" y="0"/>
 				</Offset>
 			</Anchor>
-		</Anchors>
-		<Layers>
-			<Layer level="OVERLAY">
-				<FontString name="$parentHeader" inherits="RaidSummon_GameFontHeader" text="RaidSummonLoc_Header">
+		</Anchors>		<Layers>
+			<Layer level="OVERLAY" textureSubLevel="-1">
+				<Texture file="Interface\AddOns\RaidSummon\Textures\Spell_Shadow_Twilight">
+					<Size x="60" y="60"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
-							<Offset>
-								<AbsDimension x="8" y="-7"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="-6" y="7"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parent_Header" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOP" x="15" y="-6"/>
 					</Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
-		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">			<BackgroundInsets>
-				<AbsInset bottom="4" left="4" right="4" top="4"></AbsInset>
-			</BackgroundInsets>
-			<TileSize>
-				<AbsValue val="32"></AbsValue>
-			</TileSize>
-			<EdgeSize>
-				<AbsValue val="16"></AbsValue>
-			</EdgeSize>
-		</Backdrop>
 		<Frames>
 			<Button name="RaidSummon_NameList1" inherits="RaidSummon_NameListButton" id="1" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="10" y="-15"/>
+							<AbsDimension x="10" y="-65"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList2" inherits="RaidSummon_NameListButton" id="2" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList1" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -131,11 +109,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList3" inherits="RaidSummon_NameListButton" id="3" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList2" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -145,11 +118,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList4" inherits="RaidSummon_NameListButton" id="4" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList3" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -159,11 +127,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList5" inherits="RaidSummon_NameListButton" id="5" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList4" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -173,11 +136,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList6" inherits="RaidSummon_NameListButton" id="6" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList5" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -187,11 +145,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList7" inherits="RaidSummon_NameListButton" id="7" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList6" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -201,11 +154,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList8" inherits="RaidSummon_NameListButton" id="8" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList7" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -215,11 +163,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList9" inherits="RaidSummon_NameListButton" id="9" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList8" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -229,11 +172,6 @@
 				</Anchors>
 			</Button>
 			<Button name="RaidSummon_NameList10" inherits="RaidSummon_NameListButton" id="10" hidden="true">
-				<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" tile="true">
-					<TileSize>
-						<AbsValue val="16"/>
-					</TileSize>
-				</Backdrop>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="RaidSummon_NameList9" relativePoint="BOTTOMLEFT">
 						<Offset>
@@ -242,11 +180,25 @@
 					</Anchor>
 				</Anchors>
 			</Button>
+			<Button name="RaidSummon_OptionsButton" inherits="UIPanelButtonTemplate" text="Options">
+				<Size>
+					<AbsDimension x="100" y="22"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="0" y="5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						RaidSummon_OptionsButton_OnClick();
+					</OnClick>
+				</Scripts>
+			</Button>			
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				self:RegisterForDrag("LeftButton")
-			</OnLoad>
 			<OnDragStart>
 					if IsShiftKeyDown() then
 						self:StartMoving();
