@@ -77,14 +77,14 @@
 				<Texture file="Interface\AddOns\RaidSummon\Textures\Spell_Shadow_Twilight">
 					<Size x="60" y="60"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="-5" y="5"/>
+						<Anchor point="TOPLEFT" x="-6" y="7"/>
 					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="ARTWORK">
-				<FontString name="$parent_Header" inherits="GameFontNormal" text="a">
+				<FontString name="$parent_Header" inherits="GameFontNormalSmall">
 					<Anchors>
-						<Anchor point="TOP" x="15" y="-5"/>
+						<Anchor point="TOP" x="15" y="-6"/>
 					</Anchors>
 				</FontString>
 			</Layer>
