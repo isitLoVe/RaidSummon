@@ -2,9 +2,9 @@
 ## Notes: Helps Warlocks managing summoning
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
 ## Notes-esES: Ayuda a los Brujos a invocar
-## Version: 4.0.2
+## Version: 4.0.3
 ## Author: |cff02bf02Tyche-Lucifron|r
-## Interface: 20502
+## Interface: 20504
 ## SavedVariables: RaidSummonOptionsDB
 ## OptionalDeps:  Ace3
 
