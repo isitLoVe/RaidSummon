@@ -26,8 +26,6 @@ L["OptionZoneName"] = "Zona"
 L["OptionZoneDesc"] = "Activar mención de zona (ej. Orgrimmar) y subzona (ej. Valle de la Sabiduría) en los anuncios."
 L["OptionWhisperName"] = "Susurro"
 L["OptionWhisperDesc"] = "Activar susurros al objetivo invocado."
-L["OptionRaidmsgName"] = "Mensaje de banda"
-L["OptionRaidmsgDesc"] = "Activa los anuncios en el chat de banda."
 L["OptionFlashwindowName"] = "Iluminar Ventana"
 L["OptionFlashwindowDesc"] = "La ventana se ilumina cuando alguien solicita invocación."
 L["OptionHelpName"] = "Ayuda"
@@ -69,8 +67,6 @@ Ejemplos básicos:
 --Opciones de comando rápido
 L["OptionWhisperEnabled"] = "|cff9482c9RaidSummon:|r Opción de susurro |cff00ff00enabled|r"
 L["OptionWhisperDisabled"] = "|cff9482c9RaidSummon:|r Opción de susurro |cffff0000disabled|r"
-L["OptionRaidmsgEnabled"] = "|cff9482c9RaidSummon:|r Opción de anuncio de banda |cff00ff00enabled|r"
-L["OptionRaidmsgDisabled"] = "|cff9482c9RaidSummon:|r Opción de anuncio de banda |cffff0000disabled|r"
 L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Opción de zona |cff00ff00enabled|r"
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Opción de zona |cffff0000disabled|r"
 L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Opción de iluminar la ventana |cff00ff00activada|r"
@@ -87,7 +83,6 @@ L["OptionHelpPrint"] = [[
  - |cff9482c9remove|r: Elimina un jugador de la lista de invocación (sensible a signos).
  - |cff9482c9toggle|r: Habilita la visibilidad de la lista de invocación.
  - |cff9482c9whisper|r: Activa susurros al objetivo invocado.
- - |cff9482c9raidmsg|r: Activa los anuncios en el chat de banda.
  - |cff9482c9zone|r: Activa la mención de zona en los anuncios.
  - |cff9482c9kwlist|r: Listado de todas las palabras clave para invocaciones.
  - |cff9482c9kwadd|r: Añade una palabra clave para invocaciones.
@@ -116,7 +111,7 @@ L["SummonAnnounceR"] = function(T)
 	return '{rt3}Invocando a ' .. T .. '{rt3}'
 end
 L["SummonAnnounceW"] = "{rt3}Comenzando invocación{rt3}"
-L["NotEnoughMana"] = "|cff9482c9RaidSummon:|r ¡No hay suficiente maná!"
+L["SummonAnnounceError"] = "|cff9482c9RaidSummon:|r Se ha interrumpido"
 L["TargetMissmatch"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Invocación abortada. Tu objetivo ' .. X .. ' no coincide con el nombre que has pinchado ' .. Y
 end
