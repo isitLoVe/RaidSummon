@@ -232,9 +232,8 @@ function RaidSummon:OnInitialize()
 	self:RegisterChatCommand("raidsummon", "ChatCommand")
 
 	--load version in RaidSummon Frame
-	RaidSummon_RequestFrame_Header:SetText(GetAddOnMetadata("RaidSummon", "Version"))
-	RaidSummon_OptionsButton:SetText(L["OptionGroupOptionsName"])
-	
+	RaidSummon_RequestFrameHeader:SetText(L["FrameHeader"](GetAddOnMetadata("RaidSummon", "Version")))
+
 	MSG_PREFIX_ADD = "RSAdd"
 	MSG_PREFIX_ADD_MANUAL = "RSAddManual"
 	MSG_PREFIX_REMOVE = "RSRemove"
@@ -260,9 +259,6 @@ function RaidSummon:OnInitialize()
 		self.db.profile.keywords = { "^123$", "^sum", "^port" }
 		self.db.profile.keywordsinit = true
 	end
-	
-	--Enable Frame Drag
-	RaidSummon_RequestFrame:RegisterForDrag("LeftButton");
 end
 
 --Handle CHAT_MSG Events here
@@ -537,8 +533,13 @@ function RaidSummon:UpdateList()
 			if RaidSummonBrowseDB[i] then
 				_G["RaidSummon_NameList"..i.."TextName"]:SetText(RaidSummonBrowseDB[i].rName)
 
-				local r,g,b,img = GetClassColor(RaidSummonBrowseDB[i].rfileName)
-				_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(r, g, b, 1)
+				--Shamans are pink (like paladins) in Classic, we need to fix that, thanks to Molimo-Lucifron for testing
+				if RaidSummonBrowseDB[i].rfileName == "SHAMAN" then
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(0.00, 0.44, 0.87, 1)
+				else
+					local r,g,b,img = GetClassColor(RaidSummonBrowseDB[i].rfileName)
+					_G["RaidSummon_NameList"..i.."TextName"]:SetTextColor(r, g, b, 1)
+				end
 
 				if not InCombatLockdown() then
 					_G["RaidSummon_NameList"..i]:Show()
@@ -855,6 +856,10 @@ function RaidSummon:DummyFill()
 			class = "SHAMAN"
 		},
 		{
+			name = "Eros",
+			class = "PALADIN"
+		},
+		{
 			name = "Hera",
 			class = "MAGE"
 		},
@@ -882,24 +887,19 @@ function RaidSummon:DummyFill()
 			name = "Kronos",
 			class = "WARRIOR"
 		},
-		{
-			name = "Reallylongcharactername",
-			class = "WARRIOR"
-		},
 	}
 
 
 	for i, v in ipairs(RaidSummonDummy) do
-		r,g,b,img = GetClassColor(v.class)
+		if v.class == "SHAMAN" then
+			r,g,b,img = 0.00, 0.44, 0.87, 1
+		else
+			r,g,b,img = GetClassColor(v.class)
+		end
 		_G["RaidSummon_NameList" .. i .. "TextName"]:SetText(v.name)
 		_G["RaidSummon_NameList" .. i .. "TextName"]:SetTextColor(r, g, b, 1)
 		_G["RaidSummon_NameList".. i]:Show()
 	end
-end
-
-function RaidSummon_OptionsButton_OnClick()
-	InterfaceOptionsFrame_OpenToCategory(RaidSummon.optionsFrame)
-	InterfaceOptionsFrame_OpenToCategory(RaidSummon.optionsFrame)
 end
 
 --Hook Functions
