@@ -3,11 +3,8 @@
 ## Download
 https://www.curseforge.com/wow/addons/raidsummon
 
-# Classic Season of Discovery
-Guess im in for the fun, stay tuned for updates and donate ;)
-
-## Burning Crusade Classic
-The first release for BCC is here (v4.0.1). Due to Blizzard changes i had to redesign the summoning frame, hope you like it. Also please check out my paypal at the bottom of the page.  
+## Classic Season of Discovery
+Guess im in for the fun, stay tuned for updates and donate ;)  
 
 ## Usage
 Raidmembers can type a special keyword in the raidchat (123, summon, sum or port)  
@@ -31,4 +28,6 @@ Due to Blizzard restrictions it is not possible to update the summon frame durin
 Please report any bugs to my GitHub site at https://github.com/isitLoVe/RaidSummon/issues
 
 ## Support RaidSummon development
+If you want new features or are able to code a nicer interface (FrameXML) feel free to do a pull request.  
+I am not a full time dev, so all time I use to code i cannot play the game.  
 [![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=EV2ARKPS8G2DW)
