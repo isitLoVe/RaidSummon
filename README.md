@@ -28,6 +28,6 @@ Due to Blizzard restrictions it is not possible to update the summon frame durin
 Please report any bugs to my GitHub site at https://github.com/isitLoVe/RaidSummon/issues
 
 ## Support RaidSummon development
-If you want new features or are able to code a nicer interface (FrameXML) feel free to do a pull request.  
-I am not a full time dev, so all time I use to code i cannot play the game.  
+If you want new features or are able to code a nicer interface, (FrameXML) feel free to send a pull request via Github.  
+I am not a full time developer. It is either play the game or try to add new features to the addon (guess the priority :D).  
 [![paypal](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate?hosted_button_id=EV2ARKPS8G2DW)
