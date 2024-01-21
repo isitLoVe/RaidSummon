@@ -426,6 +426,10 @@ function RaidSummon:NameListButton_PreClick(source, button)
 
 	if buttonName == "RightButton" and targetname ~= nil and not InCombatLockdown() then
 
+		if targetrealm ~= "" then
+			targetname = targetname.."-"..targetrealm
+		end
+
 		if RaidSummonRaidMembersDB then
 
 			--Summoning does only work when the player has a target
