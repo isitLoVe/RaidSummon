@@ -3,6 +3,7 @@ local L = AceLocale:NewLocale("RaidSummon", "deDE", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
+L["RaidSummonTitle"] = "|cff9482c9RaidSummon|r"
 L["Language"] = "Deutsch"
 L["AddonEnabled"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r Version ' .. X .. ' von ' .. Y .. ' geladen'

@@ -3,6 +3,7 @@ local L = AceLocale:NewLocale("RaidSummon", "esES", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
+L["RaidSummonTitle"] = "|cff9482c9RaidSummon|r"
 L["Language"] = "Español"
 L["AddonEnabled"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r versión ' .. X .. ' por ' .. Y .. ' cargado. Traducido por |cffADFF2FThorien-Mandokir|r.'

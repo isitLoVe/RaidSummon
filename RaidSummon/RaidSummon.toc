@@ -2,9 +2,9 @@
 ## Notes: Helps Warlocks managing summoning
 ## Notes-deDE: Hilft Hexenmeister beim Beschwören
 ## Notes-esES: Ayuda a los Brujos a invocar
-## Version: 5.0.0
+## Version: 5.1.0
 ## Author: |cff9482c9Tyche-Wild Growth|r
-## Interface: 11500
+## Interface: 11504
 ## SavedVariables: RaidSummonOptionsDB
 ## OptionalDeps:  Ace3
 
