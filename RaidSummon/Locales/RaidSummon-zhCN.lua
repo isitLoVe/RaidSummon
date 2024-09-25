@@ -3,6 +3,7 @@ local L = AceLocale:NewLocale("RaidSummon", "zhCN", false, true)
 if not L then return end
 
 L["RaidSummon"] = "RaidSummon"
+L["RaidSummonTitle"] = "|cff9482c9RaidSummon|r"
 L["Language"] = "简体中文"
 L["AddonEnabled"] = function(X,Y)
 	return '|cff9482c9RaidSummon:|r version ' .. X .. ' by ' .. Y .. ' loaded'
