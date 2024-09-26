@@ -28,9 +28,11 @@ L["OptionZoneDesc"] = "Enable zone (e.g. Orgrimmar) and subzone (e.g. Valley of 
 L["OptionWhisperName"] = "Whisper"
 L["OptionWhisperDesc"] = "Enable whispering to the summoned target."
 L["OptionRaidmsgName"] = "Raid Message"
-L["OptionRaidmsgDesc"] = "Enable the announcment in raid chat."
+L["OptionRaidmsgDesc"] = "Enable the announcement in raid chat."
 L["OptionFlashwindowName"] = "Flash Window"
 L["OptionFlashwindowDesc"] = "Flashes the Windows when someone requests a summon."
+L["OptionSummoningStoneName"] = "Summoning Stone"
+L["OptionSummoningStoneDesc"] = "Enable announcement when interacting with a Summoning Stone."
 L["OptionHelpName"] = "Help"
 L["OptionHelpDesc"] = "Shows a list of supported commands and options."
 L["OptionConfigName"] = "Config"
@@ -76,6 +78,8 @@ L["OptionZoneEnabled"] = "|cff9482c9RaidSummon:|r Option zone |cff00ff00enabled|
 L["OptionZoneDisabled"] = "|cff9482c9RaidSummon:|r Option zone |cffff0000disabled|r"
 L["OptionFlashwindowEnabled"] = "|cff9482c9RaidSummon:|r Option flash window |cff00ff00enabled|r"
 L["OptionFlashwindowDisabled"] = "|cff9482c9RaidSummon:|r Option flash window |cffff0000disabled|r"
+L["OptionSummoningStoneEnabled"] = "|cff9482c9RaidSummon:|r Option Summoning Stone |cff00ff00enabled|r"
+L["OptionSummoningStoneDisabled"] = "|cff9482c9RaidSummon:|r Option Summoning Stone |cffff0000disabled|r"
 L["OptionHelpPrint"] = [[
 |cff9482c9RaidSummon usage:|r
 /rs or /raidsummon { clear | config | help | list | add | addall | remove | toggle | whisper | zone | kwlist | kwadd | kwremove }

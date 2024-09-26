@@ -45,6 +45,14 @@ local options = {
 					set = "SetOptionFlashwindow",
 					order = 14,
 				},
+				summoningstone = {
+					type = "toggle",
+					name = L["OptionSummoningStoneName"],
+					desc = L["OptionSummoningStoneDesc"],
+					get = "GetOptionSummoningStone",
+					set = "SetOptionSummoningStone",
+					order = 15,
+				},
 			}
 		},
 		commands = {
@@ -178,7 +186,8 @@ local defaults = {
 		raidmsg = true,
 		zone = true,
 		flashwindow = true,
-		keywordsinit = false
+		keywordsinit = false,
+		summoningstone = true
 	}
 }
 
@@ -193,6 +202,7 @@ function RaidSummon:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SAY", "msgParser")
 	self:RegisterEvent("CHAT_MSG_YELL", "msgParser")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "msgParser")
+	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START")
 
 	--Blizzard Menu
 	local className, classFilename, classID = UnitClass("player")
@@ -224,7 +234,7 @@ function RaidSummon:OnInitialize()
 
 	--frame needed to open it via /rs config
 	LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable(L["RaidSummon"], options)
-	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L["RaidSummon"], L["RaidSummon"])
+	self.optionsFrame, self.categoryID = LibStub("AceConfigDialog-3.0"):AddToBlizOptions(L["RaidSummon"], L["RaidSummon"])
 
 	--Commands
 	--LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("RaidSummonCommands", options.args.commands)
@@ -298,6 +308,56 @@ function RaidSummon:GROUP_ROSTER_UPDATE(eventName,...)
 		end
 	end
 	RaidSummon:UpdateList()
+end
+
+--Handle Summoning Stone
+function RaidSummon:UNIT_SPELLCAST_CHANNEL_START(eventName,...)
+
+	local unitTarget, castGUID, spellID = ...
+
+	if spellID and spellID == 23598 and unitTarget and unitTarget == "player"  then
+		if self.db.profile.summoningstone then
+			local targetname, targetrealm = UnitName("target")
+			
+			if targetrealm ~= nil and targetrealm ~= "" then
+				targetname = targetname .. "-" .. targetrealm
+			end
+			
+			if GetZoneText() == "" then
+				zonetext = nil
+			else
+				zonetext = GetZoneText()
+			end
+
+			if GetSubZoneText() == "" then
+				subzonetext = nil
+			else
+				subzonetext = GetSubZoneText()
+			end
+
+			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
+				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
+			elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
+				SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
+			elseif not self.db.profile.zone and self.db.profile.whisper then
+				SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
+			end
+				
+			if self.db.profile.zone and self.db.profile.raidmsg and zonetext and subzonetext then
+				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
+			elseif self.db.profile.zone and self.db.profile.raidmsg and zonetext and not subzonetext then
+				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
+			elseif not self.db.profile.zone and self.db.profile.raidmsg then
+				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
+			end
+				
+			for i, v in ipairs (RaidSummonSyncDB) do
+				if v == targetname then
+					RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE, targetname, "RAID")
+				end
+			end
+		end
+	end
 end
 
 --Ace3 Comm
@@ -683,6 +743,10 @@ function RaidSummon:GetOptionFlashwindow(info)
 	return self.db.profile.flashwindow
 end
 
+function RaidSummon:GetOptionSummoningStone(info)
+	return self.db.profile.summoningstone
+end
+
 function RaidSummon:SetOptionWhisper(info, value)
 	self.db.profile.whisper = value
 	if value == true then
@@ -719,13 +783,21 @@ function RaidSummon:SetOptionFlashwindow(info, value)
 	end
 end
 
+function RaidSummon:SetOptionSummoningStone(info, value)
+	self.db.profile.summoningstone = value
+	if value == true then
+		print(L["OptionSummoningStoneEnabled"])
+	else
+		print(L["OptionSummoningStoneDisabled"])
+	end
+end
+
 function RaidSummon:ExecuteHelp()
 	print(L["OptionHelpPrint"])
 end
 
 function RaidSummon:ExecuteConfig()
-	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame) --BlizzBugSucks
-	InterfaceOptionsFrame_OpenToCategory(self.optionsFrame)
+	Settings.OpenToCategory(self.categoryID)
 end
 
 function RaidSummon:ExecuteList()
