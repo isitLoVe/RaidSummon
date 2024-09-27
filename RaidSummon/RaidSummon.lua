@@ -214,6 +214,15 @@ function RaidSummon:OnEnable()
 		-- RemoveButton
 		rootDescription:CreateButton(L["OptionRemoveName"], function() RaidSummon:SetOptionRemove(_, contextData.name) end)
 	end)
+	Menu.ModifyMenu("MENU_UNIT_SELF", function(ownerRegion, rootDescription, contextData)
+		-- Append a new section to the end of the menu.
+		rootDescription:CreateDivider()
+		rootDescription:CreateTitle(L["RaidSummonTitle"])
+		-- AddButton
+		rootDescription:CreateButton(L["OptionAddName"], function() RaidSummon:SetOptionAdd(_, contextData.name) end)
+		-- RemoveButton
+		rootDescription:CreateButton(L["OptionRemoveName"], function() RaidSummon:SetOptionRemove(_, contextData.name) end)
+	end)
 end
 
 function RaidSummon:OnDisable()
