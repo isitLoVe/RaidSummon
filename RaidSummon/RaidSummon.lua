@@ -329,33 +329,7 @@ function RaidSummon:UNIT_SPELLCAST_CHANNEL_START(eventName,...)
 				targetname = targetname .. "-" .. targetrealm
 			end
 			
-			if GetZoneText() == "" then
-				zonetext = nil
-			else
-				zonetext = GetZoneText()
-			end
-
-			if GetSubZoneText() == "" then
-				subzonetext = nil
-			else
-				subzonetext = GetSubZoneText()
-			end
-
-			if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
-			elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
-			elseif not self.db.profile.zone and self.db.profile.whisper then
-				SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
-			end
-				
-			if self.db.profile.zone and self.db.profile.raidmsg and zonetext and subzonetext then
-				SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
-			elseif self.db.profile.zone and self.db.profile.raidmsg and zonetext and not subzonetext then
-				SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
-			elseif not self.db.profile.zone and self.db.profile.raidmsg then
-				SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
-			end
+			RaidSummon:sendChatMsg(targetname)
 				
 			for i, v in ipairs (RaidSummonSyncDB) do
 				if v == targetname then
@@ -520,34 +494,8 @@ function RaidSummon:NameListButton_PreClick(source, button)
 					return
 				end
 				
-				if GetZoneText() == "" then
-					zonetext = nil
-				else
-					zonetext = GetZoneText()
-				end
+				RaidSummon:sendChatMsg(targetname)
 
-				if GetSubZoneText() == "" then
-					subzonetext = nil
-				else
-					subzonetext = GetSubZoneText()
-				end
-
-				if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
-					SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
-				elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
-					SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
-				elseif not self.db.profile.zone and self.db.profile.whisper then
-					SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
-				end
-				
-				if self.db.profile.zone and self.db.profile.raidmsg and zonetext and subzonetext then
-					SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), "RAID")
-				elseif self.db.profile.zone and self.db.profile.raidmsg and zonetext and not subzonetext then
-					SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), "RAID")
-				elseif not self.db.profile.zone and self.db.profile.raidmsg then
-					SendChatMessage(L["SummonAnnounceR"](targetname), "RAID")
-				end
-				
 				for i, v in ipairs (RaidSummonSyncDB) do
 					if v == targetname then
 						RaidSummon:SendCommMessage(COMM_PREFIX_REMOVE, targetname, "RAID")
@@ -729,6 +677,47 @@ function RaidSummon:ChatCommand(input)
 	else
 		LibStub("AceConfigCmd-3.0"):HandleCommand("rs", "RaidSummon", input)
 	end
+end
+
+--send chat message
+function RaidSummon:sendChatMsg(targetname)
+
+	if GetZoneText() == "" then
+		zonetext = nil
+	else
+		zonetext = GetZoneText()
+	end
+
+	if GetSubZoneText() == "" then
+		subzonetext = nil
+	else
+		subzonetext = GetSubZoneText()
+	end
+
+	if self.db.profile.zone and self.db.profile.whisper and zonetext and subzonetext then
+		SendChatMessage(L["SummonAnnounceWZS"](zonetext, subzonetext), "WHISPER", nil, targetname)
+	elseif self.db.profile.zone and self.db.profile.whisper and zonetext and not subzonetext then
+		SendChatMessage(L["SummonAnnounceWZ"](zonetext), "WHISPER", nil, targetname)
+	elseif not self.db.profile.zone and self.db.profile.whisper then
+		SendChatMessage(L["SummonAnnounceW"], "WHISPER", nil, targetname)
+	end
+	
+	if IsInRaid() then
+		channel = "RAID"
+	elseif IsInGroup() then
+		channel = "PARTY"
+	else
+		channel = "SAY"
+	end
+	
+	if self.db.profile.zone and self.db.profile.raidmsg and zonetext and subzonetext then
+		SendChatMessage(L["SummonAnnounceRZS"](targetname, zonetext, subzonetext), channel)
+	elseif self.db.profile.zone and self.db.profile.raidmsg and zonetext and not subzonetext then
+		SendChatMessage(L["SummonAnnounceRZ"](targetname, zonetext), channel)
+	elseif not self.db.profile.zone and self.db.profile.raidmsg then
+		SendChatMessage(L["SummonAnnounceR"](targetname), channel)
+	end
+
 end
 
 --Option Functions
